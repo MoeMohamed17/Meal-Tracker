@@ -27,28 +27,22 @@ ENV_SERVER_PATH="./.env"
 sed -i "/^ORACLE_HOST=/c\ORACLE_HOST=dbhost.students.cs.ubc.ca" $ENV_SERVER_PATH
 sed -i "/^ORACLE_PORT=/c\ORACLE_PORT=1522" $ENV_SERVER_PATH
 
-# Define a range
-START=50000
-END=60000
+# Define the fixed port
+PORT=65532
 
-# Loop through the range and check if the port is in use
-for PORT in $(seq $START $END); do
-    # Check if the port is in use
-    if ! ss -tuln | grep :$PORT > /dev/null; then
-        # Bind to the port using a temporary process
-        nc -l -p $PORT &
-        TEMP_PID=$!
+# Check if the port is in use
+if ! ss -tuln | grep :$PORT > /dev/null; then
+    # Update the port number in the .env file
+    sed -i "/^PORT=/c\PORT=$PORT" $ENV_SERVER_PATH
+    echo "Updated $ENV_SERVER_PATH with PORT=$PORT."
 
-        # Update the port number in the .env file
-        sed -i "/^PORT=/c\PORT=$PORT" $ENV_SERVER_PATH
-        echo "Updated $ENV_SERVER_PATH with PORT=$PORT."
+    # Replace the bash process with the Node process
+    exec node server.js
 
-        # Kill the temporary process
-        kill $TEMP_PID
+else
+    echo "Port $PORT is already in use."
+    exit 1
+fi
 
-        # Replace the bash process with the Node process
-        exec node server.js
-        break
-    fi
 done
 
