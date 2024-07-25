@@ -4,7 +4,7 @@ const nextConfig = {
     async rewrites() {
         return [
             {
-            source: '/:path*',
+            source: 'api/:path*',
             destination: 'http://localhost:65532/:path*',
             },
         ];
