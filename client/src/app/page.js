@@ -1,95 +1,52 @@
-import Image from "next/image";
+'use client';
+
 import styles from "./page.module.css";
+import { useState, useEffect } from "react";
+import { Button } from "@mantine/core";
 
 export default function Home() {
+
+  /*
+  We declare the state variable `test` here which can change and trigger updates in 
+  components that use them like tables, buttons, etc.
+  `setTest` is a state updater function which we can call to update the value of test
+  */
+  const [test, setTest] = useState('');
+
+  /*
+  The `useEffect` hook lets us use state variables like `test` in components. 
+  You should always wrap your API calls in `useEffect`.
+  */
+  useEffect(() => {
+
+    // Encapsulate the asynchronous API call in `fetchTest`
+    const fetchTest = async() => {
+      try {
+        const response = await fetch('api/test');
+        const data = await response.text();
+
+        // `test` variable is set to whatever's retrieved from the API call
+        setTest(data);
+
+      } catch (error) {
+        console.error('Error with test endpoint:', error);
+      }
+    }
+
+    // call the `fetchTest` function
+    fetchTest();
+  }, [])
+
+
+  
+  /*
+  What the page will render
+  Should be a button named "Hello world!"
+  */
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    <div>
+      <Button size='xl' radius='xl' component='a' href='api/test'>{test}</Button>
+    </div>
   );
 }

@@ -18,7 +18,7 @@ async function checkDbConnection() {
     const statusElem = document.getElementById('dbStatus');
     const loadingGifElem = document.getElementById('loadingGif');
 
-    const response = await fetch('/check-db-connection', {
+    const response = await fetch('api/check-db-connection', {
         method: "GET"
     });
 
@@ -41,7 +41,7 @@ async function fetchAndDisplayUsers() {
     const tableElement = document.getElementById('demotable');
     const tableBody = tableElement.querySelector('tbody');
 
-    const response = await fetch('/demotable', {
+    const response = await fetch('api/demotable', {
         method: 'GET'
     });
 
@@ -64,7 +64,7 @@ async function fetchAndDisplayUsers() {
 
 // This function resets or initializes the demotable.
 async function resetDemotable() {
-    const response = await fetch("/initiate-demotable", {
+    const response = await fetch("api/initiate-demotable", {
         method: 'POST'
     });
     const responseData = await response.json();
@@ -85,7 +85,7 @@ async function insertDemotable(event) {
     const idValue = document.getElementById('insertId').value;
     const nameValue = document.getElementById('insertName').value;
 
-    const response = await fetch('/insert-demotable', {
+    const response = await fetch('api/insert-demotable', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -114,7 +114,7 @@ async function updateNameDemotable(event) {
     const oldNameValue = document.getElementById('updateOldName').value;
     const newNameValue = document.getElementById('updateNewName').value;
 
-    const response = await fetch('/update-name-demotable', {
+    const response = await fetch('api/update-name-demotable', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -139,7 +139,7 @@ async function updateNameDemotable(event) {
 // Counts rows in the demotable.
 // Modify the function accordingly if using different aggregate functions or procedures.
 async function countDemotable() {
-    const response = await fetch("/count-demotable", {
+    const response = await fetch("api/count-demotable", {
         method: 'GET'
     });
 
