@@ -1,0 +1,10 @@
+.recipe-container {
+    width: 400px;
+    
+}
+
+.recipe-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
