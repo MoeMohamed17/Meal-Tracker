@@ -68,6 +68,49 @@ async function withOracleDB(action) {
 // ----------------------------------------------------------
 // Core functions for database operations
 // Modify these functions, especially the SQL queries, based on your project's requirements and design.
+
+/*
+Given a UserID, returns the User's UserID, Name, points, and corresponding rank
+*/
+async function fetchUser(UserID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            SELECT u.UserId, u.Name, u.Points, p.Rank
+            FROM User2 u
+            JOIN User1 p ON u.Points >= p.Points 
+            WHERE u.UserID=${UserID}
+                AND p.Points = (
+                    SELECT MAX(Points)
+                    FROM User1
+                    WHERE u.Points >= Points
+            )`);
+        return result.rows;
+    }).catch(() => {    
+        return [];
+    });
+}
+
+/*
+Returns UserIDs, Names, points, and corresponding ranks for all users
+*/
+async function fetchAllUsers(UserID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            SELECT u.UserId, u.Name, u.Points, p.Rank
+            FROM User2 u
+            JOIN User1 p ON u.Points >= p.Points 
+            WHERE p.Points = (
+                SELECT MAX(Points)
+                FROM User1
+                WHERE u.Points >= Points
+                )
+            ORDER BY u.UserID`);
+        return result.rows;
+    }).catch(() => {    
+        return [];
+    });
+}
+
 async function testOracleConnection() {
     return await withOracleDB(async (connection) => {
         return true;
@@ -143,6 +186,8 @@ async function countDemotable() {
 }
 
 module.exports = {
+    fetchUser,
+    fetchAllUsers,
     testOracleConnection,
     fetchDemotableFromDb,
     initiateDemotable, 

@@ -6,8 +6,30 @@ const router = express.Router();
 // ----------------------------------------------------------
 // API endpoints
 // Modify or extend these routes based on your project's needs.
+
+
+/* 
+API test endpoint
+*/
 router.get('/test', async (req, res) => {
     res.send("Hello world!");
+});
+
+
+/*
+API endpoint to GET a User's UserID, Name, Points, and Rank
+*/
+router.get('/user/:id', async (req, res) => {
+    const UserID = req.params.id;
+    const tableContent = await appService.fetchUser(UserID);
+    res.json({data: tableContent});
+});
+
+
+// API endpoint to GET all users' UserID, Name, Points, and Rank
+router.get('/user', async (req, res) => {
+    const tableContent = await appService.fetchAllUsers();
+    res.json({data: tableContent});
 });
 
 router.get('/check-db-connection', async (req, res) => {
