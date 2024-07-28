@@ -4,7 +4,7 @@ const SQL_QUERIES = {
     CREATE_RECIPE_CREATED1: `
         CREATE TABLE RecipeCreated1(
             Cuisine CHAR(30),
-            Level INTEGER,
+            Rank INTEGER,
             PRIMARY KEY (Cuisine)
                 ON DELETE NO ACTION
                 ON UPDATE CASCADE
@@ -68,7 +68,7 @@ const SQL_QUERIES = {
     CREATE_USER1: `
         CREATE TABLE User1(
             Points INTEGER,
-            Level INTEGER,
+            Rank INTEGER,
             PRIMARY KEY (Points)
         )
     `,
