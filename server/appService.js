@@ -90,6 +90,7 @@ async function fetchUser(UserID) {
     });
 }
 
+
 /*
 Returns UserIDs, Names, points, and corresponding ranks for all users
 */
@@ -110,6 +111,25 @@ async function fetchAllUsers(UserID) {
         return [];
     });
 }
+
+
+/*
+Returns all pantries associated with UserID
+*/
+async function fetchPantries(UserID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            SELECT u.UserID, u.PantryID, p.Category
+            FROM UserPantries u
+            JOIN SavedPantry p
+            ON u.PantryID = p.PantryID
+            WHERE u.UserID = ${UserID}`);
+        return result.rows;
+    }).catch(() => {    
+        return [];
+    });
+}
+
 
 async function testOracleConnection() {
     return await withOracleDB(async (connection) => {
@@ -188,6 +208,7 @@ async function countDemotable() {
 module.exports = {
     fetchUser,
     fetchAllUsers,
+    fetchPantries,
     testOracleConnection,
     fetchDemotableFromDb,
     initiateDemotable, 

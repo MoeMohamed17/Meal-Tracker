@@ -17,7 +17,7 @@ router.get('/test', async (req, res) => {
 
 
 /*
-API endpoint to GET a User's UserID, Name, Points, and Rank
+API endpoint to GET a user's UserID, Name, Points, and Rank
 */
 router.get('/user/:id', async (req, res) => {
     const UserID = req.params.id;
@@ -26,7 +26,9 @@ router.get('/user/:id', async (req, res) => {
 });
 
 
-// API endpoint to GET all users' UserID, Name, Points, and Rank
+/* 
+API endpoint to GET all users' UserID, Name, Points, and Rank
+*/
 router.get('/user', async (req, res) => {
     const tableContent = await appService.fetchAllUsers();
     res.json({data: tableContent});
@@ -39,6 +41,16 @@ router.get('/check-db-connection', async (req, res) => {
     } else {
         res.send('unable to connect');
     }
+});
+
+
+/*
+API endpoint to GET a user's pantries
+*/
+router.get('/pantry/:id', async (req, res) => {
+    const UserID = req.params.id;
+    const tableContent = await appService.fetchPantries(UserID);
+    res.json({data: tableContent});
 });
 
 router.get('/demotable', async (req, res) => {
