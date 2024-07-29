@@ -3,8 +3,9 @@
 //LIST OF ALL RECIPES PAGE
 import { useState, useEffect } from "react";
 import "./Recipes.css";
-import Recipe from '../components/Recipe';
-import NavBar from '../components/NavBar'
+import Recipe from '../components/RecipeCard';
+import NavBar from '../components/NavBar';
+
 
 const Recipes = () => {
 
@@ -28,12 +29,20 @@ const Recipes = () => {
         <div>
             <NavBar />
             <h1>Recipes</h1>
-            <Recipe />
+            <div className='recipe-grid'>
+                {recipes.map((recipe, index) => (
+                    <Recipe
+                        key={index}
+                        name={recipe.name}
+                        cuisine={recipe.cuisine}
+                        level={recipe.level}
+                        time={recipe.time}
+                        image={recipe.image}
+                    />
+                ))}
+            </div>
         </div>
-
     )
-
-
 }
 
 export default Recipes
