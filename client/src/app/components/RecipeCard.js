@@ -19,4 +19,4 @@ const Recipe = ({ name, level, cuisine, time, image }) => {
   );
 }
 
-export default Recipe
+export default Recipe;
