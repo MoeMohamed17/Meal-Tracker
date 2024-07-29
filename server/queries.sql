@@ -1,9 +1,35 @@
+DROP TABLE Users1;
+DROP TABLE Users2;
+DROP TABLE RecipeCreated1;
+DROP TABLE RecipeCreated2;
+DROP TABLE RecipesLiked;
+DROP TABLE Images;
+DROP TABLE ImagesInRecipes;
+DROP TABLE Locations;
+DROP TABLE UserLocations;
+DROP TABLE GroceryStore;
+DROP TABLE NearbyStores;
+DROP TABLE SavedPantry;
+DROP TABLE UserPantries;
+DROP TABLE FoodItem1;
+DROP TABLE FoodItem2;
+DROP TABLE FoodsInRecipes;
+DROP TABLE StepContains;
+DROP TABLE IngredientInstances;
+DROP TABLE IngredientsInPantry;
+
+
+CREATE TABLE Users1(
+    UserLevel INTEGER,
+    Points INTEGER,
+    PRIMARY KEY (UserID)
+);
+
 -- Create User table
-CREATE TABLE Users(
+CREATE TABLE Users2(
     UserID INTEGER,
     UserName VARCHAR2(50),
     Points INTEGER,
-    UserLevel INTEGER,
     PRIMARY KEY (UserID)
 );
 
@@ -17,14 +43,15 @@ CREATE TABLE RecipeCreated1(
 -- Create RecipeCreated2 table
 CREATE TABLE RecipeCreated2(
     RecipeID INTEGER,
+    RecipeName VARCHAR(50),
     Cuisine CHAR(30),
     CookingTime INTERVAL DAY TO SECOND,
     UserID INTEGER NOT NULL,
     PRIMARY KEY (RecipeID),
-    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+    FOREIGN KEY (UserID) REFERENCES Users2(UserID)
         ON DELETE NO ACTION
-        ON UPDATE CASCADE
 );
+
 
 -- Create RecipesLiked table
 CREATE TABLE RecipesLiked(
@@ -33,8 +60,9 @@ CREATE TABLE RecipesLiked(
     Liked NUMBER(1),
     PRIMARY KEY (RecipeID, UserID),
     FOREIGN KEY (RecipeID) REFERENCES RecipeCreated2(RecipeID),
-    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+    FOREIGN KEY (UserID) REFERENCES Users2(UserID)
 );
+
 
 -- Create Images table
 CREATE TABLE Images(
@@ -42,6 +70,7 @@ CREATE TABLE Images(
     Caption VARCHAR2(512),
     PRIMARY KEY (ImageURL)
 );
+
 
 -- Create ImagesInRecipes table
 CREATE TABLE ImagesInRecipes(
@@ -52,15 +81,6 @@ CREATE TABLE ImagesInRecipes(
     FOREIGN KEY (RecipeID) REFERENCES RecipeCreated2(RecipeID)
 );
 
--- Create FoodsInRecipes table
-CREATE TABLE FoodsInRecipes(
-    FoodName VARCHAR2(30),
-    RecipeID INTEGER,
-    Quantity INTEGER NOT NULL,
-    PRIMARY KEY (FoodName, RecipeID),
-    FOREIGN KEY (FoodName) REFERENCES FoodItem(FoodName),
-    FOREIGN KEY (RecipeID) REFERENCES RecipeCreated2(RecipeID)
-);
 
 -- Create Location table
 CREATE TABLE Locations(
@@ -71,6 +91,7 @@ CREATE TABLE Locations(
     PRIMARY KEY (Street, City, Province)
 );
 
+
 -- Create UserLocations table
 CREATE TABLE UserLocations(
     UserID INTEGER,
@@ -78,10 +99,20 @@ CREATE TABLE UserLocations(
     City VARCHAR2(30),
     Province VARCHAR2(30),    
     PRIMARY KEY(UserID, Street, City, Province),
-    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (UserID) REFERENCES Users2(UserID),
     FOREIGN KEY (Street, City, Province) REFERENCES Locations(Street, City, Province)
 );
 
+-- Create GroceryStore table
+CREATE TABLE GroceryStore(
+    Street VARCHAR2(30),
+    City VARCHAR2(30),
+    Province VARCHAR2(30),
+    StoreName VARCHAR2(30) NOT NULL,
+    PRIMARY KEY (Street, City, Province)
+);
+
+--are we doing distance?
 -- Create NearbyStores table
 CREATE TABLE NearbyStores(
     LocationStreet VARCHAR2(30),
@@ -96,13 +127,11 @@ CREATE TABLE NearbyStores(
     FOREIGN KEY (GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince) REFERENCES GroceryStore(Street, City, Province)
 );
 
--- Create GroceryStore table
-CREATE TABLE GroceryStore(
-    Street VARCHAR2(30),
-    City VARCHAR2(30),
-    Province VARCHAR2(30),
-    StoreName VARCHAR2(30) NOT NULL,
-    PRIMARY KEY (Street, City, Province)
+-- Create SavedPantry table
+CREATE TABLE SavedPantry(
+    PantryID INTEGER,
+    Category CHAR(30),
+    PRIMARY KEY (PantryID)
 );
 
 -- Create UserPantries table
@@ -110,15 +139,54 @@ CREATE TABLE UserPantries(
     UserID INTEGER,
     PantryID INTEGER,
     PRIMARY KEY (UserID, PantryID),
-    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (UserID) REFERENCES Users2(UserID),
     FOREIGN KEY (PantryID) REFERENCES SavedPantry(PantryID)
 );
 
--- Create SavedPantry table
-CREATE TABLE SavedPantry(
-    PantryID INTEGER,
-    Category CHAR(30),
-    PRIMARY KEY (PantryID)
+-- Create FoodItem table
+CREATE TABLE FoodItem1(
+    Healthy NUMBER(1),
+    Calories INTEGER,
+    FoodGroup VARCHAR2(30),
+    PRIMARY KEY (Calories,FoodGroup)
+);
+
+CREATE TABLE FoodItem2(
+    FoodName VARCHAR2(30),
+    ShelfLife INTERVAL DAY TO SECOND,
+    Calories INTEGER,
+    FoodGroup VARCHAR2(30),
+    PRIMARY KEY (FoodName)
+);
+
+-- Create FoodsInRecipes table
+CREATE TABLE FoodsInRecipes(
+    FoodName VARCHAR2(30),
+    RecipeID INTEGER,
+    Quantity INTEGER NOT NULL,
+    PRIMARY KEY (FoodName, RecipeID),
+    FOREIGN KEY (FoodName) REFERENCES FoodItem2(FoodName),
+    FOREIGN KEY (RecipeID) REFERENCES RecipeCreated2(RecipeID)
+);
+
+-- Create StepContains table
+CREATE TABLE StepContains(
+    StepNum INTEGER,
+    InstructionText VARCHAR2(512),
+    RecipeID INTEGER,
+    PRIMARY KEY (StepNum, RecipeID),
+    FOREIGN KEY (RecipeID) REFERENCES RecipeCreated2(RecipeID)
+        ON DELETE CASCADE
+);
+
+-- Create IngredientInstances table
+CREATE TABLE IngredientInstances(
+    DateAdded DATE,
+    ExpiryDate DATE,
+    FoodName CHAR(30),
+    PRIMARY KEY (DateAdded, FoodName),
+    FOREIGN KEY (FoodName) REFERENCES FoodItem2(FoodName)
+        ON DELETE CASCADE
 );
 
 -- Create IngredientsInPantry table
@@ -132,35 +200,6 @@ CREATE TABLE IngredientsInPantry(
     FOREIGN KEY (DateAdded, FoodName) REFERENCES IngredientInstances(DateAdded, FoodName)
 );
 
--- Create FoodItem table
-CREATE TABLE FoodItem(
-    FoodName VARCHAR2(30),
-    Healthy NUMBER(1),
-    ShelfLife INTERVAL DAY TO SECOND,
-    Calories INTEGER,
-    FoodGroup VARCHAR2(30),
-    PRIMARY KEY (FoodName)
-);
-
--- Create StepContains table
-CREATE TABLE StepContains(
-    StepNum INTEGER,
-    InstructionText VARCHAR2(512) NOT NULL,
-    RecipeID INTEGER,
-    PRIMARY KEY (StepNum, RecipeID),
-    FOREIGN KEY (RecipeID) REFERENCES RecipeCreated2(RecipeID)
-        ON DELETE CASCADE
-);
-
--- Create IngredientInstances table
-CREATE TABLE IngredientInstances(
-    DateAdded DATE,
-    ExpiryDate DATE,
-    FoodName CHAR(30),
-    PRIMARY KEY (DateAdded, FoodName),
-    FOREIGN KEY (FoodName) REFERENCES FoodItem(FoodName)
-        ON DELETE CASCADE
-);
 
 -- Insert statements
 INSERT INTO Users (UserID, UserName, Points, UserLevel) VALUES 
@@ -276,11 +315,3 @@ INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName) VALUES
 (TO_DATE('2024-07-20', 'YYYY-MM-DD'), TO_DATE('2024-08-30', 'YYYY-MM-DD'), 'bell pepper');
 
 
--- Select all users
-SELECT * FROM Users;
-
--- Select a specific user by UserID
-SELECT * FROM Users WHERE UserID = 1;
-
--- Select all recipes from RecipeCreated1
-SELECT * FROM RecipeCreated1;
