@@ -1,35 +1,38 @@
-DROP TABLE Users1;
-DROP TABLE Users2;
-DROP TABLE RecipeCreated1;
-DROP TABLE RecipeCreated2;
 DROP TABLE RecipesLiked;
-DROP TABLE Images;
 DROP TABLE ImagesInRecipes;
-DROP TABLE Locations;
+DROP TABLE FoodsInRecipes;
+DROP TABLE IngredientInstances;
+DROP TABLE IngredientsInPantry;
 DROP TABLE UserLocations;
+DROP TABLE UserPantries;
+DROP TABLE StepContains;
+DROP TABLE RecipeCreated2;
 DROP TABLE GroceryStore;
 DROP TABLE NearbyStores;
 DROP TABLE SavedPantry;
-DROP TABLE UserPantries;
+DROP TABLE Locations;
+DROP TABLE Users2;
 DROP TABLE FoodItem1;
 DROP TABLE FoodItem2;
-DROP TABLE FoodsInRecipes;
-DROP TABLE StepContains;
-DROP TABLE IngredientInstances;
-DROP TABLE IngredientsInPantry;
+DROP TABLE Images;
+DROP TABLE RecipeCreated1;
+-- DROP TABLE Users1;
 
 
-CREATE TABLE Users1(
-    UserLevel INTEGER,
-    Points INTEGER,
-    PRIMARY KEY (UserID)
-);
 
--- Create User table
+-- CREATE TABLE Users1(
+--     UserID INTEGER,
+--     UserLevel INTEGER,
+--     Points INTEGER,
+--     PRIMARY KEY (UserID)
+-- );
+
+-- Create Users table
 CREATE TABLE Users2(
     UserID INTEGER,
     UserName VARCHAR2(50),
     Points INTEGER,
+    UserLevel INTEGER,
     PRIMARY KEY (UserID)
 );
 
@@ -49,20 +52,17 @@ CREATE TABLE RecipeCreated2(
     UserID INTEGER NOT NULL,
     PRIMARY KEY (RecipeID),
     FOREIGN KEY (UserID) REFERENCES Users2(UserID)
-        ON DELETE NO ACTION
 );
-
 
 -- Create RecipesLiked table
 CREATE TABLE RecipesLiked(
     RecipeID INTEGER,
     UserID INTEGER,
-    Liked NUMBER(1),
+    Liked INTEGER,
     PRIMARY KEY (RecipeID, UserID),
     FOREIGN KEY (RecipeID) REFERENCES RecipeCreated2(RecipeID),
     FOREIGN KEY (UserID) REFERENCES Users2(UserID)
 );
-
 
 -- Create Images table
 CREATE TABLE Images(
@@ -70,7 +70,6 @@ CREATE TABLE Images(
     Caption VARCHAR2(512),
     PRIMARY KEY (ImageURL)
 );
-
 
 -- Create ImagesInRecipes table
 CREATE TABLE ImagesInRecipes(
@@ -81,8 +80,7 @@ CREATE TABLE ImagesInRecipes(
     FOREIGN KEY (RecipeID) REFERENCES RecipeCreated2(RecipeID)
 );
 
-
--- Create Location table
+-- Create Locations table
 CREATE TABLE Locations(
     Street VARCHAR2(30),
     City VARCHAR2(30),
@@ -90,7 +88,6 @@ CREATE TABLE Locations(
     LocationType VARCHAR2(30),
     PRIMARY KEY (Street, City, Province)
 );
-
 
 -- Create UserLocations table
 CREATE TABLE UserLocations(
@@ -112,7 +109,6 @@ CREATE TABLE GroceryStore(
     PRIMARY KEY (Street, City, Province)
 );
 
---are we doing distance?
 -- Create NearbyStores table
 CREATE TABLE NearbyStores(
     LocationStreet VARCHAR2(30),
@@ -143,14 +139,15 @@ CREATE TABLE UserPantries(
     FOREIGN KEY (PantryID) REFERENCES SavedPantry(PantryID)
 );
 
--- Create FoodItem table
+-- Create FoodItem1 table
 CREATE TABLE FoodItem1(
-    Healthy NUMBER(1),
+    Healthy INTEGER,
     Calories INTEGER,
     FoodGroup VARCHAR2(30),
     PRIMARY KEY (Calories,FoodGroup)
 );
 
+-- Create FoodItem2 table
 CREATE TABLE FoodItem2(
     FoodName VARCHAR2(30),
     ShelfLife INTERVAL DAY TO SECOND,
@@ -202,116 +199,99 @@ CREATE TABLE IngredientsInPantry(
 
 
 -- Insert statements
-INSERT INTO Users (UserID, UserName, Points, UserLevel) VALUES 
-(1, 'Karen', 300, 6),
-(2, 'Moe', 87, 9),
-(3, 'Chris', 303, 8),
-(300, 'Bob', 65, 4),
-(499, 'Joe', 0, 1);
+INSERT INTO Users2 (UserID, UserName, Points, UserLevel) VALUES (1, 'Karen', 300, 6);
+INSERT INTO Users2 (UserID, UserName, Points, UserLevel) VALUES (2, 'Moe', 87, 9);
+INSERT INTO Users2 (UserID, UserName, Points, UserLevel) VALUES (3, 'Chris', 303, 8);
+INSERT INTO Users2 (UserID, UserName, Points, UserLevel) VALUES (300, 'Bob', 65, 4);
+INSERT INTO Users2 (UserID, UserName, Points, UserLevel) VALUES (499, 'Joe', 0, 1);
 
-INSERT INTO RecipeCreated2 (RecipeID, Cuisine, CookingTime, UserID) VALUES 
-(1, 'Italian', INTERVAL '1' HOUR '30' MINUTE, 1),
-(2, 'Japanese', INTERVAL '1' HOUR '15' MINUTE, 2),
-(10, 'Greek', INTERVAL '1' HOUR '30' MINUTE, 3),
-(28, 'Italian', INTERVAL '45' MINUTE, 4),
-(15, 'Italian', INTERVAL '1' HOUR, 5);
+INSERT INTO RecipeCreated2 (RecipeID, RecipeName, Cuisine, CookingTime, UserID) VALUES (1, 'Lasagna', 'Italian', INTERVAL '1' HOUR '30' MINUTE, 1);
+INSERT INTO RecipeCreated2 (RecipeID, RecipeName, Cuisine, CookingTime, UserID) VALUES (2, 'Sushi', 'Japanese', INTERVAL '1' HOUR '15' MINUTE, 2);
+INSERT INTO RecipeCreated2 (RecipeID, RecipeName, Cuisine, CookingTime, UserID) VALUES (10, 'Greek Salad', 'Greek', INTERVAL '1' HOUR '30' MINUTE, 3);
+INSERT INTO RecipeCreated2 (RecipeID, RecipeName, Cuisine, CookingTime, UserID) VALUES (28, 'Pizza', 'Italian', INTERVAL '45' MINUTE, 4);
+INSERT INTO RecipeCreated2 (RecipeID, RecipeName, Cuisine, CookingTime, UserID) VALUES (15, 'Chicken Parmesan', 'Italian', INTERVAL '1' HOUR, 5);
 
-INSERT INTO RecipesLiked (RecipeID, UserID, Liked) VALUES 
-(1, 3, 1),
-(19, 5, 1),
-(1, 3, 1),
-(3, 6, 1),
-(8, 5, 1);
+INSERT INTO RecipesLiked (RecipeID, UserID, Liked) VALUES (1, 3, 1);
+INSERT INTO RecipesLiked (RecipeID, UserID, Liked) VALUES (19, 5, 1);
+INSERT INTO RecipesLiked (RecipeID, UserID, Liked) VALUES (1, 3, 1);
+INSERT INTO RecipesLiked (RecipeID, UserID, Liked) VALUES (3, 6, 1);
+INSERT INTO RecipesLiked (RecipeID, UserID, Liked) VALUES (8, 5, 1);
 
-INSERT INTO Images (ImageURL, Caption) VALUES 
-('https://xyz.com', 'lasagna'),
-('https://xyz1.com', 'sushi'),
-('https://xyz2.com', 'pizza'),
-('https://xyz3.com', 'ramen'),
-('https://xyz4.com', 'chicken parmesan');
+INSERT INTO Images (ImageURL, Caption) VALUES ('https://xyz.com', 'lasagna');
+INSERT INTO Images (ImageURL, Caption) VALUES ('https://xyz1.com', 'sushi');
+INSERT INTO Images (ImageURL, Caption) VALUES ('https://xyz2.com', 'pizza');
+INSERT INTO Images (ImageURL, Caption) VALUES ('https://xyz3.com', 'ramen');
+INSERT INTO Images (ImageURL, Caption) VALUES ('https://xyz4.com', 'chicken parmesan');
 
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID) VALUES 
-('https://xyz4.com', 88),
-('https://xyz3.com', 56),
-('https://xyz8.com', 34),
-('https://xyz9.com', 10),
-('https://xyz4.com', 24);
+INSERT INTO ImagesInRecipes (ImageURL, RecipeID) VALUES ('https://xyz4.com', 88);
+INSERT INTO ImagesInRecipes (ImageURL, RecipeID) VALUES ('https://xyz3.com', 56);
+INSERT INTO ImagesInRecipes (ImageURL, RecipeID) VALUES ('https://xyz8.com', 34);
+INSERT INTO ImagesInRecipes (ImageURL, RecipeID) VALUES ('https://xyz9.com', 10);
+INSERT INTO ImagesInRecipes (ImageURL, RecipeID) VALUES ('https://xyz4.com', 24);
 
-INSERT INTO FoodsInRecipes (FoodName, RecipeID, Quantity) VALUES 
-('tomato', 1, 2),
-('onion', 45, 1),
-('garlic', 3, 5),
-('bell pepper', 5, 2),
-('broccoli', 4, 1);
+INSERT INTO FoodsInRecipes (FoodName, RecipeID, Quantity) VALUES ('tomato', 1, 2);
+INSERT INTO FoodsInRecipes (FoodName, RecipeID, Quantity) VALUES ('onion', 45, 1);
+INSERT INTO FoodsInRecipes (FoodName, RecipeID, Quantity) VALUES ('garlic', 3, 5);
+INSERT INTO FoodsInRecipes (FoodName, RecipeID, Quantity) VALUES ('bell pepper', 5, 2);
+INSERT INTO FoodsInRecipes (FoodName, RecipeID, Quantity) VALUES ('broccoli', 4, 1);
 
-INSERT INTO UserLocations (UserID, Street, City, Province) VALUES 
-(1, '3 University Drive', 'Vancouver', 'British Columbia'),
-(34, '88 Broadway Street', 'Vancouver', 'British Columbia'),
-(67, '77 Fieldstone Way', 'Toronto', 'Ontario'),
-(34, '90 Orange Road', 'Edmonton', 'Alberta'),
-(99, '8 Blue Willow Drive', 'Vaughan', 'Ontario');
+INSERT INTO UserLocations (UserID, Street, City, Province) VALUES (1, '3 University Drive', 'Vancouver', 'British Columbia');
+INSERT INTO UserLocations (UserID, Street, City, Province) VALUES (34, '88 Broadway Street', 'Vancouver', 'British Columbia');
+INSERT INTO UserLocations (UserID, Street, City, Province) VALUES (67, '77 Fieldstone Way', 'Toronto', 'Ontario');
+INSERT INTO UserLocations (UserID, Street, City, Province) VALUES (34, '90 Orange Road', 'Edmonton', 'Alberta');
+INSERT INTO UserLocations (UserID, Street, City, Province) VALUES (99, '8 Blue Willow Drive', 'Vaughan', 'Ontario');
 
-INSERT INTO Locations (Street, City, Province, LocationType) VALUES 
-('8 Blue Willow Drive', 'Vaughan', 'Ontario', 'home'),
-('90 Yellow Road', 'Vaughan', 'Ontario', 'work'),
-('8 Orange Way', 'Toronto', 'Ontario', 'home'),
-('192 Willow Drive', 'Vancouver', 'British Columbia', 'home'),
-('80 Blue Drive', 'Vaughan', 'Ontario', 'work');
+INSERT INTO Locations (Street, City, Province, LocationType) VALUES ('8 Blue Willow Drive', 'Vaughan', 'Ontario', 'home');
+INSERT INTO Locations (Street, City, Province, LocationType) VALUES ('90 Yellow Road', 'Vaughan', 'Ontario', 'work');
+INSERT INTO Locations (Street, City, Province, LocationType) VALUES ('8 Orange Way', 'Toronto', 'Ontario', 'home');
+INSERT INTO Locations (Street, City, Province, LocationType) VALUES ('192 Willow Drive', 'Vancouver', 'British Columbia', 'home');
+INSERT INTO Locations (Street, City, Province, LocationType) VALUES ('80 Blue Drive', 'Vaughan', 'Ontario', 'work');
 
-INSERT INTO NearbyStores (LocationStreet, LocationCity, LocationProvince, GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince, Distance) VALUES 
-('80 Blue Drive', 'Vaughan', 'Ontario', '90 Blue Drive', 'Vaughan', 'Ontario', 2.3),
-('3 Yellow Road', 'Toronto', 'Ontario', '10 Blue Drive', 'Vaughan', 'Ontario', 4.3),
-('230 Brown Drive', 'Vaughan', 'Ontario', '90 Blue Drive', 'Mississauga', 'Ontario', 8.0),
-('90 Salish Drive', 'Vaughan', 'Ontario', '90 Blue Drive', 'Markham', 'Ontario', 2.6),
-('80 Pear Drive', 'Vaughan', 'Ontario', '90 Apple Drive', 'Calgary', 'Alberta', 1.9);
+INSERT INTO NearbyStores (LocationStreet, LocationCity, LocationProvince, GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince, Distance) VALUES ('80 Blue Drive', 'Vaughan', 'Ontario', '90 Blue Drive', 'Vaughan', 'Ontario', 2.3);
+INSERT INTO NearbyStores (LocationStreet, LocationCity, LocationProvince, GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince, Distance) VALUES ('3 Yellow Road', 'Toronto', 'Ontario', '10 Blue Drive', 'Vaughan', 'Ontario', 4.3);
+INSERT INTO NearbyStores (LocationStreet, LocationCity, LocationProvince, GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince, Distance) VALUES ('230 Brown Drive', 'Vaughan', 'Ontario', '90 Blue Drive', 'Mississauga', 'Ontario', 8.0);
+INSERT INTO NearbyStores (LocationStreet, LocationCity, LocationProvince, GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince, Distance) VALUES ('90 Salish Drive', 'Vaughan', 'Ontario', '90 Blue Drive', 'Markham', 'Ontario', 2.6);
+INSERT INTO NearbyStores (LocationStreet, LocationCity, LocationProvince, GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince, Distance) VALUES ('80 Pear Drive', 'Vaughan', 'Ontario', '90 Apple Drive', 'Calgary', 'Alberta', 1.9);
 
-INSERT INTO GroceryStore (Street, City, Province, StoreName) VALUES 
-('80 Pear Drive', 'Vaughan', 'Ontario', 'Sue’s Mart'),
-('45 Apple Drive', 'Toronto', 'Ontario', 'Loblaw'),
-('50 Yellow Way', 'Vaughan', 'Ontario', 'FreshCo'),
-('77 Marker Drive', 'Vancouver', 'British Columbia', 'Walmart'),
-('33 Mouse Lane', 'Edmonton', 'Alberta', 'Farm Boy');
+INSERT INTO GroceryStore (Street, City, Province, StoreName) VALUES ('80 Pear Drive', 'Vaughan', 'Ontario', 'Sue’s Mart');
+INSERT INTO GroceryStore (Street, City, Province, StoreName) VALUES ('45 Apple Drive', 'Toronto', 'Ontario', 'Loblaw');
+INSERT INTO GroceryStore (Street, City, Province, StoreName) VALUES ('50 Yellow Way', 'Vaughan', 'Ontario', 'FreshCo');
+INSERT INTO GroceryStore (Street, City, Province, StoreName) VALUES ('77 Marker Drive', 'Vancouver', 'British Columbia', 'Walmart');
+INSERT INTO GroceryStore (Street, City, Province, StoreName) VALUES ('33 Mouse Lane', 'Edmonton', 'Alberta', 'Farm Boy');
 
-INSERT INTO UserPantries (UserID, PantryID) VALUES 
-(1, 2),
-(4, 27),
-(8, 28),
-(5, 20),
-(10, 8);
+INSERT INTO UserPantries (UserID, PantryID) VALUES (1, 2);
+INSERT INTO UserPantries (UserID, PantryID) VALUES (4, 27);
+INSERT INTO UserPantries (UserID, PantryID) VALUES (8, 28);
+INSERT INTO UserPantries (UserID, PantryID) VALUES (5, 20);
+INSERT INTO UserPantries (UserID, PantryID) VALUES (10, 8);
 
-INSERT INTO SavedPantry (PantryID, Category) VALUES 
-(2, 'work'),
-(4, 'home'),
-(6, 'beach house'),
-(5, 'airbnb'),
-(8, 'airbnb');
+INSERT INTO SavedPantry (PantryID, Category) VALUES (2, 'work');
+INSERT INTO SavedPantry (PantryID, Category) VALUES (4, 'home');
+INSERT INTO SavedPantry (PantryID, Category) VALUES (6, 'beach house');
+INSERT INTO SavedPantry (PantryID, Category) VALUES (5, 'airbnb');
+INSERT INTO SavedPantry (PantryID, Category) VALUES (8, 'airbnb');
 
-INSERT INTO IngredientsInPantry (PantryID, DateAdded, FoodName, Quantity) VALUES 
-(3, TO_DATE('2024-07-06', 'YYYY-MM-DD'), 'Broccoli', 1),
-(10, TO_DATE('2024-08-06', 'YYYY-MM-DD'), 'Bread', 4),
-(32, TO_DATE('2024-09-03', 'YYYY-MM-DD'), 'Orange', 6),
-(4, TO_DATE('2024-09-04', 'YYYY-MM-DD'), 'Milk', 3),
-(6, TO_DATE('2024-07-20', 'YYYY-MM-DD'), 'Lemon', 4);
+INSERT INTO IngredientsInPantry (PantryID, DateAdded, FoodName, Quantity) VALUES (3, TO_DATE('2024-07-06', 'YYYY-MM-DD'), 'Broccoli', 1);
+INSERT INTO IngredientsInPantry (PantryID, DateAdded, FoodName, Quantity) VALUES (10, TO_DATE('2024-08-06', 'YYYY-MM-DD'), 'Bread', 4);
+INSERT INTO IngredientsInPantry (PantryID, DateAdded, FoodName, Quantity) VALUES (32, TO_DATE('2024-09-03', 'YYYY-MM-DD'), 'Orange', 6);
+INSERT INTO IngredientsInPantry (PantryID, DateAdded, FoodName, Quantity) VALUES (4, TO_DATE('2024-09-04', 'YYYY-MM-DD'), 'Milk', 3);
+INSERT INTO IngredientsInPantry (PantryID, DateAdded, FoodName, Quantity) VALUES (6, TO_DATE('2024-07-20', 'YYYY-MM-DD'), 'Lemon', 4);
 
-INSERT INTO FoodItem (FoodName, Healthy, ShelfLife, Calories, FoodGroup) VALUES 
-('broccoli', 0, INTERVAL '36' HOUR, 200, 'vegetable'),
-('milk', 0, INTERVAL '48' HOUR, 250, 'dairy'),
-('orange', 0, INTERVAL '98' HOUR, 20, 'fruit'),
-('pasta', 1, INTERVAL '100' HOUR, 300, 'grains'),
-('bread', 1, INTERVAL '200' HOUR, 450, 'grains');
+INSERT INTO FoodItem2 (FoodName, Healthy, ShelfLife, Calories, FoodGroup) VALUES ('broccoli', 0, INTERVAL '36' HOUR, 200, 'vegetable');
+INSERT INTO FoodItem2 (FoodName, Healthy, ShelfLife, Calories, FoodGroup) VALUES ('milk', 0, INTERVAL '48' HOUR, 250, 'dairy');
+INSERT INTO FoodItem2 (FoodName, Healthy, ShelfLife, Calories, FoodGroup) VALUES ('orange', 0, INTERVAL '98' HOUR, 20, 'fruit');
+INSERT INTO FoodItem2 (FoodName, Healthy, ShelfLife, Calories, FoodGroup) VALUES ('pasta', 1, INTERVAL '100' HOUR, 300, 'grains');
+INSERT INTO FoodItem2 (FoodName, Healthy, ShelfLife, Calories, FoodGroup) VALUES ('bread', 1, INTERVAL '200' HOUR, 450, 'grains');
 
-INSERT INTO StepContains (StepNum, InstructionText, RecipeID) VALUES 
-(3, 'Preheat oven to 350 deg F', 1),
-(1, 'Chop the onion into cubes', 1),
-(4, 'Place a pan on high heat', 1),
-(2, 'Mince 3 garlic cloves', 1),
-(8, 'Let the dish cook for 30 minutes', 1);
+INSERT INTO StepContains (StepNum, InstructionText, RecipeID) VALUES (3, 'Preheat oven to 350 deg F', 1);
+INSERT INTO StepContains (StepNum, InstructionText, RecipeID) VALUES (1, 'Chop the onion into cubes', 1);
+INSERT INTO StepContains (StepNum, InstructionText, RecipeID) VALUES (4, 'Place a pan on high heat', 1);
+INSERT INTO StepContains (StepNum, InstructionText, RecipeID) VALUES (2, 'Mince 3 garlic cloves', 1);
+INSERT INTO StepContains (StepNum, InstructionText, RecipeID) VALUES (8, 'Let the dish cook for 30 minutes', 1);
 
-INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName) VALUES 
-(TO_DATE('2024-07-20', 'YYYY-MM-DD'), TO_DATE('2024-07-29', 'YYYY-MM-DD'), 'broccoli'),
-(TO_DATE('2024-05-20', 'YYYY-MM-DD'), TO_DATE('2024-06-01', 'YYYY-MM-DD'), 'milk'),
-(TO_DATE('2024-06-01', 'YYYY-MM-DD'), TO_DATE('2024-06-02', 'YYYY-MM-DD'), 'lemon'),
-(TO_DATE('2024-04-24', 'YYYY-MM-DD'), TO_DATE('2024-05-24', 'YYYY-MM-DD'), 'lime'),
-(TO_DATE('2024-07-20', 'YYYY-MM-DD'), TO_DATE('2024-08-30', 'YYYY-MM-DD'), 'bell pepper');
-
+INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName) VALUES (TO_DATE('2024-07-20', 'YYYY-MM-DD'), TO_DATE('2024-07-29', 'YYYY-MM-DD'), 'broccoli');
+INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName) VALUES (TO_DATE('2024-05-20', 'YYYY-MM-DD'), TO_DATE('2024-06-01', 'YYYY-MM-DD'), 'milk');
+INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName) VALUES (TO_DATE('2024-06-01', 'YYYY-MM-DD'), TO_DATE('2024-06-02', 'YYYY-MM-DD'), 'lemon');
+INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName) VALUES (TO_DATE('2024-04-24', 'YYYY-MM-DD'), TO_DATE('2024-05-24', 'YYYY-MM-DD'), 'lime');
+INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName) VALUES (TO_DATE('2024-07-20', 'YYYY-MM-DD'), TO_DATE('2024-08-30', 'YYYY-MM-DD'), 'bell pepper');
 
