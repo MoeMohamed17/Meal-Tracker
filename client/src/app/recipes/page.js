@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import "./Recipes.css";
 import Recipe from '../components/Recipe';
+import NavBar from '../components/NavBar'
 
 const Recipes = () => {
 
@@ -25,6 +26,7 @@ const Recipes = () => {
 
     return (
         <div>
+            <NavBar />
             <h1>Recipes</h1>
             <Recipe />
         </div>

@@ -1,5 +1,6 @@
 import pastaImage from '../assets/pasta.jpg'
 import lasagnaImage from '../assets/lasagna.png'
+import NavBar from '../components/NavBar'
 
 const Recipe = () => {
 
@@ -21,7 +22,7 @@ const Recipe = () => {
     }
   ];
 
-  return (
+  return (    
     <div className='recipe-container'>
       {elements.map((recipe, index) => (
         <div>

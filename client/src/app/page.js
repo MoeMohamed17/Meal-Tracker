@@ -1,8 +1,9 @@
 'use client';
 
-import styles from "./page.module.css";
 import { useState, useEffect } from "react";
 import { Button } from "@mantine/core";
+import NavBar from "./components/NavBar"
+import styles from "./page.css"
 
 export default function Home() {
 
@@ -46,7 +47,11 @@ export default function Home() {
 
   return (
     <div>
-      <Button size='xl' radius='xl' component='a' href='api/test'>{test}</Button>
+      <NavBar />
+      <img src="https://img2.10bestmedia.com/Images/Photos/406808/The-Fresh-Market_55_660x440.jpg" 
+        alt="Home" className="home-image" />
+      <h1 className="logo">Meal Mapper</h1>
+      <Button className="start-button" size='xl' radius='xl' component='a' href='api/test'>{test}</Button>
     </div>
   );
 }
