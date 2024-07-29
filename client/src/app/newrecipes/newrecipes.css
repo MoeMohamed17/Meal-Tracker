@@ -1,0 +1,20 @@
+.recipe-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background-color:#f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0,5);
+}
+
+.steps {
+    margin: 0;
+}
+
+.add-step-button,
+.add-recipe-button {
+    background-color: rgba(101, 85, 143, 1);
+}
