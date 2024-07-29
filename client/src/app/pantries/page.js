@@ -3,10 +3,12 @@
 //LIST OF ALL PANTRIES
 import { useState, useEffect } from "react";
 import './Pantries.css'
+import NavBar from "../components/NavBar";
+import Pantry from "../components/PantryCard"
 
 const Pantries = () => {
 
-    const [recipes, setPantries] = useState([]);
+    const [pantries, setPantries] = useState([]);
 
     useEffect(() => {
         const fetchPantries = async () => {
@@ -24,7 +26,16 @@ const Pantries = () => {
 
     return (
         <div className="pantries">
+            <NavBar />
             <h1>My Pantries</h1>
+            <div className="pantries-grid">
+                {pantries.map((pantry, index) => (
+                    <Pantry
+                        key = {index}
+                        category={pantry.category}
+                    />
+                ))}
+            </div>
         </div>
 
     )
