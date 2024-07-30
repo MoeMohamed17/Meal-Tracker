@@ -60,6 +60,19 @@ router.get('/recipes/liked', async (req, res) => {
     }
 });
 
+/*
+API endpoint to GET liked recipes liked by user
+*/
+router.get('/recipes/liked/:id', async (req, res) => {
+    const UserID = req.params.id;
+    const recipes = await appService.fetchUserLikedRecipes(UserID);
+    if (recipes.length === 0) {
+        res.status(404).json({ error: 'No liked recipes found' });
+    } else {
+        res.json({ data: recipes });
+    }
+});
+
 
 /*
 API endpoint to CREATE a new recipe

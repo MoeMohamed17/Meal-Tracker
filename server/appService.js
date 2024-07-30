@@ -96,10 +96,10 @@ async function fetchAllLocations() {
 async function fetchAllRecipes() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(`
-            SELECT r.RecipeID, r.RecipeName, r.Cuisine, rc.RecipeLevel, r.CookingTime, u.UserName as CreatedBy
-            FROM RecipeCreated2 r
-            JOIN RecipeCreated1 rc ON r.Cuisine = rc.Cuisine
-            JOIN Users2 u ON r.UserID = u.UserID
+            SELECT r.RecipeID, r.RecipeName, r.Cuisine, r.CookingTime, l.RecipeLevel, u.UserName
+            FROM RecipeCreated r
+            LEFT JOIN Users u ON r.UserID = u.UserID
+            LEFT JOIN RecipeLevels l ON r.Cuisine = l.Cuisine
             ORDER BY r.RecipeID
         `);
         return result.rows;
@@ -113,12 +113,30 @@ async function fetchAllRecipes() {
 async function fetchLikedRecipes() {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(`
-            SELECT rl.RecipeID, rc.RecipeName, rc.Cuisine, rc.CookingTime, u.UserName as CreatedBy
-            FROM RecipesLiked rl
-            JOIN RecipeCreated2 rc ON rl.RecipeID = rc.RecipeID
-            JOIN Users2 u ON rc.UserID = u.UserID
-            WHERE rl.Liked = 1
-            ORDER BY rl.RecipeID
+            SELECT r.RecipeID, r.RecipeName, r.Cuisine, r.CookingTime, l.RecipeLevel, u.UserName
+            FROM RecipeCreated r
+            JOIN RecipesLiked rl ON r.RecipeID = rl.RecipeID
+            LEFT JOIN Users u ON r.UserID = u.UserID
+            LEFT JOIN RecipeLevels l ON r.Cuisine = l.Cuisine
+            ORDER BY r.RecipeID
+        `);
+        return result.rows;
+    }).catch((err) => {
+        console.error(err);
+        return [];
+    });
+}
+
+// Fetch user's liked recipes
+async function fetchUserLikedRecipes(UserID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            SELECT r.RecipeID, r.RecipeName, r.Cuisine, r.CookingTime, l.RecipeLevel, u.UserName
+            FROM RecipeCreated r
+            JOIN RecipesLiked rl ON r.RecipeID = rl.RecipeID
+            LEFT JOIN Users u ON r.UserID = u.UserID
+            LEFT JOIN RecipeLevels l ON r.Cuisine = l.Cuisine
+            WHERE r.UserID=${UserID}
         `);
         return result.rows;
     }).catch((err) => {
@@ -172,12 +190,12 @@ async function fetchUser(UserID) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(`
             SELECT u.UserId, u.UserName, u.Points, p.UserLevel
-            FROM User2 u
-            JOIN User1 p ON u.Points >= p.Points 
+            FROM Users u
+            JOIN UserLevels p ON u.Points >= p.Points 
             WHERE u.UserID=${UserID}
                 AND p.Points = (
                     SELECT MAX(Points)
-                    FROM User1
+                    FROM UserLevels
                     WHERE u.Points >= Points
             )`);
         return result.rows;
@@ -194,11 +212,11 @@ async function fetchAllUsers(UserID) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(`
             SELECT u.UserId, u.UserName, u.Points, p.UserLevel
-            FROM User2 u
-            JOIN User1 p ON u.Points >= p.Points 
+            FROM Users u
+            JOIN UserLevels p ON u.Points >= p.Points 
             WHERE p.Points = (
                 SELECT MAX(Points)
-                FROM User1
+                FROM UserLevels
                 WHERE u.Points >= Points
                 )
             ORDER BY u.UserID`);
@@ -284,6 +302,7 @@ module.exports = {
     updateRecipe,
     deleteRecipe,
     fetchAllLocations,
-    fetchLikedRecipes
+    fetchLikedRecipes,
+    fetchUserLikedRecipes
 };
 
