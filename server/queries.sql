@@ -688,40 +688,40 @@ VALUES ('Olive oil', 11, 11);
 
 -- IngredientInstances table
 INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName, PantryID, Quantity)
-VALUES ('2024-07-01 14:30:00', '2024-08-04 14:30:00', 'Chicken', 1, 1)
+VALUES (TO_DATE('2024-07-01 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2024-07-04 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'Chicken', 1, 1);
 
 INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName, PantryID, Quantity)
-VALUES ('2024-07-02 14:30:00', '2024-08-05 14:30:00', 'Ground beef', 1, 2)
+VALUES (TO_DATE('2024-07-02 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2024-07-05 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'Ground beef', 1, 2);
 
 INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName, PantryID, Quantity)
-VALUES ('2024-07-03 14:30:00', '2024-08-07 14:30:00', 'Sliced ham', 1, 3)
+VALUES (TO_DATE('2024-07-03 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2024-07-07 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'Sliced ham', 1, 3);
 
 INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName, PantryID, Quantity)
-VALUES ('2024-07-02 14:30:00', '2024-08-05 14:30:00', 'Chicken', 2, 2)
+VALUES (TO_DATE('2024-07-02 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2024-07-05 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'Chicken', 2, 2);
 
 INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName, PantryID, Quantity)
-VALUES ('2024-07-03 14:30:00', '2024-08-06 14:30:00', 'Chicken', 3, 3)
+VALUES (TO_DATE('2024-07-03 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2024-07-06 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'Chicken', 3, 3);
 
 INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName, PantryID, Quantity)
-VALUES ('2024-07-304 14:30:00', '2024-08-07 14:30:00', 'Chicken', 4, 4)
+VALUES (TO_DATE('2024-07-04 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2024-07-07 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'Chicken', 4, 4);
 
 INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName, PantryID, Quantity)
-VALUES ('2024-07-05 14:30:00', '2024-08-08 14:30:00', 'Chicken', 5, 5)
+VALUES (TO_DATE('2024-07-05 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2024-07-08 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'Chicken', 5, 5);
 
 INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName, PantryID, Quantity)
-VALUES ('2024-07-06 14:30:00', '2024-08-09 14:30:00', 'Chicken', 6, 6)
+VALUES (TO_DATE('2024-07-06 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2024-07-09 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'Chicken', 6, 6);
 
 INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName, PantryID, Quantity)
-VALUES ('2024-07-07 14:30:00', '2024-08-10 14:30:00', 'Chicken', 7, 7)
+VALUES (TO_DATE('2024-07-07 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2024-07-10 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'Chicken', 7, 7);
 
 INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName, PantryID, Quantity)
-VALUES ('2024-07-08 14:30:00', '2024-08-11 14:30:00', 'Chicken', 8, 8)
+VALUES (TO_DATE('2024-07-08 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2024-07-11 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'Chicken', 8, 8);
 
 INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName, PantryID, Quantity)
-VALUES ('2024-07-09 14:30:00', '2024-08-12 14:30:00', 'Chicken', 9, 9)
+VALUES (TO_DATE('2024-07-09 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2024-07-12 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'Chicken', 9, 9);
 
 INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName, PantryID, Quantity)
-VALUES ('2024-07-10 14:30:00', '2024-08-13 14:30:00', 'Chicken', 10, 10)
+VALUES (TO_DATE('2024-07-10 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2024-07-13 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'Chicken', 10, 10);
 
 INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName, PantryID, Quantity)
-VALUES ('2024-07-11 14:30:00', '2024-08-14 14:30:00', 'Chicken', 11, 11)
+VALUES (TO_DATE('2024-07-11 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('2024-07-14 14:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'Chicken', 11, 11);
