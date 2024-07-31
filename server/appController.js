@@ -47,6 +47,20 @@ router.get('/recipes', async (req, res) => {
     }
 });
 
+/*
+API endpoint to GET a single recipe by ID
+*/
+router.get('/recipe/:id', async (req, res) => {
+    const RecipeID = req.params.id;
+    const recipe = await appService.fetchRecipeByID(RecipeID);
+    if (recipe.length === 0) {
+        res.status(404).json({ error: 'Recipe not found' });
+    } else {
+        res.json({ data: recipe });
+    }
+});
+
+
 
 /*
 API endpoint to GET all liked recipes
@@ -79,9 +93,9 @@ API endpoint to CREATE a new recipe
 */
 router.post('/recipe', async (req, res) => {
     const recipe = req.body;
-    const recipeID = await appService.createRecipe(recipe);
-    if (recipeID) {
-        res.status(201).json({ message: 'Recipe created', recipeID: recipeID });
+    const response = await appService.createRecipe(recipe);
+    if (response) {
+        res.status(201).json({ message: 'Recipe created', response });
     } else {
         res.status(500).json({ error: 'Failed to create recipe' });
     }
@@ -133,18 +147,6 @@ router.get('/pantry/:id', async (req, res) => {
 
 
 
-/*
-API endpoint to GET a single recipe by ID
-*/
-router.get('/recipe/:id', async (req, res) => {
-    const RecipeID = req.params.id;
-    const recipe = await appService.fetchRecipeByID(RecipeID);
-    if (recipe.length === 0) {
-        res.status(404).json({ error: 'Recipe not found' });
-    } else {
-        res.json({ data: recipe });
-    }
-});
 
 
 /*

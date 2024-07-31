@@ -109,6 +109,24 @@ async function fetchAllRecipes() {
     });
 }
 
+// Fetches recipe by RecipeID
+async function fetchRecipeByID(RecipeID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            SELECT r.RecipeID, r.RecipeName, r.Cuisine, r.CookingTime, l.RecipeLevel, u.UserName
+            FROM RecipeCreated r
+            LEFT JOIN Users u ON r.UserID = u.UserID
+            LEFT JOIN RecipeLevels l ON r.Cuisine = l.Cuisine
+            WHERE r.RecipeID = :RecipeID`,
+        [RecipeID]
+    );
+        return result.rows;
+    }).catch((err) => {
+        console.error(err);
+        return [];
+    });
+}
+
 // Fetch all liked recipes
 async function fetchLikedRecipes() {
     return await withOracleDB(async (connection) => {
@@ -126,6 +144,7 @@ async function fetchLikedRecipes() {
         return [];
     });
 }
+
 
 // Fetch user's liked recipes
 async function fetchUserLikedRecipes(UserID) {
@@ -148,22 +167,32 @@ async function fetchUserLikedRecipes(UserID) {
 // Create a new recipe
 async function createRecipe(recipe) {
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute(`
-            INSERT INTO RecipeCreated2 (RecipeID, RecipeName, Cuisine, CookingTime, UserID)
-            VALUES (recipe_seq.NEXTVAL, :recipeName, :cuisine, :cookingTime, :userID)
-            RETURNING RecipeID INTO :recipeID
-        `, {
-            recipeName: recipe.RecipeName,
-            cuisine: recipe.Cuisine,
-            cookingTime: recipe.CookingTime,
-            userID: recipe.UserID,
-            recipeID: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
-        });
-        await connection.commit();
-        return result.outBinds.recipeID[0];
-    }).catch((err) => {
-        console.error(err);
-        return null;
+        const result = await connection.execute(
+            `INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID) 
+            VALUES (:RecipeName, :Cuisine, :CookingTime, :UserID)
+            RETURNING RecipeID INTO :RecipeID`,
+            {
+                RecipeName: recipe.RecipeName, 
+                Cuisine: recipe.Cuisine, 
+                CookingTime: recipe.CookingTime, 
+                UserID: recipe.UserID,
+                RecipeID: { 
+                    type: oracledb.INTEGER,
+                    dir: oracledb.BIND_OUT
+                }
+            },
+            { autoCommit: true }
+        );
+        return {
+            RecipeID: result.outBinds.RecipeID[0],
+            RecipeName: recipe.RecipeName,
+            Cuisine: recipe.Cuisine,
+            CookingTime: recipe.CookingTime,
+            UserID: recipe.UserID
+        };
+    }).catch(() => {
+        console.log("STOP");
+        return false;
     });
 }
 
@@ -171,10 +200,11 @@ async function createRecipe(recipe) {
 async function deleteRecipe(recipeID) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(`
-            DELETE FROM RecipeCreated2
-            WHERE RecipeID = :recipeID
-        `, [recipeID]);
-        await connection.commit();
+            DELETE FROM RecipeCreated
+            WHERE RecipeID = :recipeID`,
+            [recipeID],
+            { autoCommit: true}
+        );
         return result.rowsAffected;
     }).catch((err) => {
         console.error(err);
@@ -246,20 +276,7 @@ async function fetchPantries(UserID) {
 
 
 
-async function fetchRecipeByID(RecipeID) {
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute(`
-            SELECT r.RecipeID, r.RecipeName, r.Cuisine, r.CookingTime, u.UserName as CreatedBy
-            FROM RecipeCreated2 r
-            JOIN Users2 u ON r.UserID = u.UserID
-            WHERE r.RecipeID = :recipeID
-        `, [RecipeID]);
-        return result.rows;
-    }).catch((err) => {
-        console.error(err);
-        return [];
-    });
-}
+
 
 
 

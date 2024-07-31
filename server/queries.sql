@@ -231,7 +231,7 @@ INSERT INTO Users (UserName, Points) VALUES ('Kevin Red', 950);
 
 -- UserLevels
 INSERT INTO UserLevels (Points, UserLevel) VALUES (0, 1);
-INSERT INTO UserLevels (Points, UserLevel) VALUES (10, 2);
+INSERT INTO UserLevels (Points, UserLevel) VALUES (100, 2);
 INSERT INTO UserLevels (Points, UserLevel) VALUES (200, 3);
 INSERT INTO UserLevels (Points, UserLevel) VALUES (300, 4);
 INSERT INTO UserLevels (Points, UserLevel) VALUES (400, 5);
@@ -258,7 +258,7 @@ INSERT INTO Locations (Street, City, Province, LocationType)
 VALUES ('202 Birch Boulevard', 'Halifax', 'Nova Scotia', 'Commercial');
 
 
---RecipeCreated
+-- RecipeLevels
 INSERT INTO RecipeLevels (Cuisine, RecipeLevel) 
 VALUES ('Italian', 1);
 
