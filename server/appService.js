@@ -191,7 +191,6 @@ async function createRecipe(recipe) {
             UserID: recipe.UserID
         };
     }).catch(() => {
-        console.log("STOP");
         return false;
     });
 }
@@ -209,6 +208,27 @@ async function deleteRecipe(recipeID) {
     }).catch((err) => {
         console.error(err);
         return 0;
+    });
+}
+
+
+
+// Insert a single step associated with a recipe
+async function insertStep(StepNum, InstructionText, RecipeID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `INSERT INTO StepContains (StepNum, InstructionText, RecipeID)
+            VALUES (:StepNum, :InstructionText, :RecipeID)`,
+            [
+                StepNum, 
+                InstructionText, 
+                RecipeID
+            ],
+            { autoCommit: true }
+        );
+        return result.rowsAffected;
+    }).catch(() => {
+        return false;
     });
 }
 
@@ -320,6 +340,7 @@ module.exports = {
     deleteRecipe,
     fetchAllLocations,
     fetchLikedRecipes,
-    fetchUserLikedRecipes
+    fetchUserLikedRecipes,
+    insertStep
 };
 

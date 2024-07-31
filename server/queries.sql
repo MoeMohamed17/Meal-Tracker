@@ -118,8 +118,8 @@ CREATE TABLE UserLocations(
     City VARCHAR(30),
     Province VARCHAR(30),    
     PRIMARY KEY (UserID, Street, City, Province),
-    FOREIGN KEY (UserID) REFERENCES Users(UserID),
-    ON DELETE CASCADE
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+    ON DELETE CASCADE,
     FOREIGN KEY (Street, City, Province) REFERENCES Locations(Street, City, Province)
     ON DELETE CASCADE
 );
@@ -143,8 +143,8 @@ CREATE TABLE NearbyStores(
     GroceryStoreProvince VARCHAR(30),
     Distance INTEGER NOT NULL,
     PRIMARY KEY(LocationStreet, LocationCity, LocationProvince, GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince),
-    FOREIGN KEY (LocationStreet, LocationCity, LocationProvince) REFERENCES Locations(Street, City, Province),
-    ON DELETE CASCADE
+    FOREIGN KEY (LocationStreet, LocationCity, LocationProvince) REFERENCES Locations(Street, City, Province)
+    ON DELETE CASCADE,
     FOREIGN KEY (GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince) REFERENCES GroceryStore(Street, City, Province)
     ON DELETE CASCADE
 );
@@ -199,8 +199,8 @@ CREATE TABLE FoodsInRecipes(
     RecipeID INTEGER,
     Quantity INTEGER NOT NULL,
     PRIMARY KEY (FoodName, RecipeID),
-    FOREIGN KEY (FoodName) REFERENCES FoodItem(FoodName),
-    ON DELETE CASCADE
+    FOREIGN KEY (FoodName) REFERENCES FoodItem(FoodName)
+    ON DELETE CASCADE,
     FOREIGN KEY (RecipeID) REFERENCES RecipeCreated(RecipeID)
     ON DELETE CASCADE
 );

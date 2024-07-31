@@ -90,6 +90,13 @@ router.get('/recipes/liked/:id', async (req, res) => {
 
 /*
 API endpoint to CREATE a new recipe
+Pass in a dictionary containing necessary inputs
+e.g. {  'RecipeName': 'Pasta Verde', 
+        'Cuisine': 'Italian', 
+        'CookingTime': '00 00:30:00',
+        'UserID': 3}
+
+Be sure to retrieve RecipeID in response, use that to call steps endpoint
 */
 router.post('/recipe', async (req, res) => {
     const recipe = req.body;
@@ -101,6 +108,8 @@ router.post('/recipe', async (req, res) => {
     }
 });
 
+
+
 /*
 API endpoint to DELETE a recipe
 */
@@ -111,6 +120,42 @@ router.delete('/recipe/:id', async (req, res) => {
         res.json({ message: 'Recipe deleted' });
     } else {
         res.status(404).json({ error: 'Recipe not found or not deleted' });
+    }
+});
+
+
+
+/*
+API endpoint to insert steps associated with recipe
+
+Note that this should never be run by itself. First, create a new recipe,
+retrieve the RecipeID returned in the response, then call this endpoint
+with the appropriate RecipeID.
+
+At some point, should probably just fold this into the create recipe endpoint
+as you can't have a recipe without steps, and vice versa...
+
+steps value should be a list of strings corresponding to instructions
+e.g., ['Preheat the oven to 350F', ...]
+*/
+router.post('/steps/:id', async (req, res) => {
+    const recipeID = req.params.id;
+    const steps = req.body.steps;
+    let success = true; 
+
+    for (let i = 0; i < steps.length; i++) {
+        const response = await appService.insertStep(i + 1, steps[i], recipeID);
+        console.log(response);
+        if (!response) {
+            success = false;
+            break;
+        }
+    }
+
+    if (success) {
+        res.status(201).json({ message: 'Steps inserted successfully' });
+    } else {
+        res.status(500).json({ error: 'Failed to insert all steps' });
     }
 });
 
