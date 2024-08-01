@@ -1,5 +1,4 @@
 
-'use client';
 
 // // LIST OF ALL RECIPES PAGE
 // import { useState, useEffect } from "react";
@@ -52,6 +51,9 @@
 // };
 
 // export default Recipes;
+
+
+'use client';
 
 import { useState, useEffect } from "react";
 import NavBar from '../components/NavBar';
