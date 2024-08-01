@@ -164,6 +164,22 @@ async function fetchUserLikedRecipes(UserID) {
     });
 }
 
+// Fetch steps for a specific recipe by RecipeID
+async function fetchRecipeSteps(RecipeID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            SELECT StepNum, InstructionText
+            FROM StepContains
+            WHERE RecipeID = :RecipeID
+            ORDER BY StepNum
+        `, [RecipeID]);
+        return result.rows;
+    }).catch((err) => {
+        console.error(err);
+        return [];
+    });
+}
+
 // Create a new recipe
 async function createRecipe(recipe) {
     return await withOracleDB(async (connection) => {
@@ -341,6 +357,7 @@ module.exports = {
     fetchAllLocations,
     fetchLikedRecipes,
     fetchUserLikedRecipes,
-    insertStep
+    insertStep,
+    fetchRecipeSteps
 };
 

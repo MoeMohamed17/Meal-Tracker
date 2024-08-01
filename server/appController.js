@@ -87,6 +87,19 @@ router.get('/recipes/liked/:id', async (req, res) => {
     }
 });
 
+/*
+API endpoint to GET steps for a specific recipe by ID
+*/
+router.get('/recipe/:id/steps', async (req, res) => {
+    const RecipeID = req.params.id;
+    const steps = await appService.fetchRecipeSteps(RecipeID);
+    if (steps.length === 0) {
+        res.status(404).json({ error: 'No steps found for this recipe' });
+    } else {
+        res.json({ data: steps });
+    }
+});
+
 
 /*
 API endpoint to CREATE a new recipe
