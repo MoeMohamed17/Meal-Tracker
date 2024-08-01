@@ -1,19 +1,11 @@
+
 .home-image {
     width: 100%; 
     height: auto;
-    opacity: 0.5
-}
-
-.start-button {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, 130%);
-    background-color: rgba(101, 85, 143, 1);
-    color: white;
-}
-
-.logo {
+    opacity: 0.5;
+  }
+  
+  .logo {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -21,4 +13,27 @@
     color: rgba(101, 85, 143, 1);
     font-size: 60px;
     font-weight: 700;
-}
+    text-align: center;
+  }
+  
+  .user-select-container {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 300px; /* Adjust width as needed */
+  }
+  
+  .user-select {
+    width: 100%; /* Ensure the dropdown fills its container */
+  }
+  
+  .start-button {
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, 130%);
+    background-color: rgba(101, 85, 143, 1);
+    color: white;
+  }
+  
