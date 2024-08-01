@@ -1,7 +1,14 @@
-.recipeGrid {
-  display: flex;
+/* .recipeGrid {
+  display: grid;
   flex-wrap: wrap;         
   gap: 20px;               
+  padding: 20px;
+} */
+
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust the minmax value to control the size of the boxes */
+  gap: 20px; /* Adjust the gap between grid items */
   padding: 20px;
 }
 

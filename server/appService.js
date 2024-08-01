@@ -77,55 +77,102 @@ async function testOracleConnection() {
     });
 }
 
-// Fetch all locations
-async function fetchAllLocations() {
+// Helper function for turning list of lists into list of dictionaries
+function processResults(result) {
+    const colNames = result.metaData.map(column => column.name);
+    const rows = result.rows.map(row => {
+        const rowDict = {};
+        row.forEach((value, index) => {
+            rowDict[colNames[index]] = value;
+        });
+        return rowDict;
+    });
+
+    return rows;
+}
+
+
+
+/*================================================
+=================RECIPE FUNCTIONS=================
+================================================*/
+async function fetchRecipes(columns, filter, id, img, captionless) {
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute(`
-            SELECT Street, City, Province, LocationType
-            FROM Locations
-            ORDER BY City, Street
-        `);
-        return result.rows;
+        // Sanitize columns
+        const allCols = ['r.RecipeID', 'r.RecipeName', 'r.Cuisine', 'r.CookingTime', 'l.RecipeLevel', 'u.UserName'];
+        const pKey = 'r.RecipeID';
+        let selCols = columns ? columns : allCols;
+        if (!selCols.includes(pKey)) {
+            selCols = [pKey, ...selCols];
+        }
+        const cols = selCols.join(', ');
+
+        // Sanitize the filter input
+        const filters = [];
+        if (filter) {
+            filters.push(`r.Cuisine = '${filter}'`);
+        }
+        if (id) {
+            filters.push(`r.RecipeID = ${id}`);
+        }
+        const filtString = filters.length > 0 ? `WHERE ${filters.join(' AND ')}` : '';
+
+        if (!img) {
+            // Query without images
+            const query = `
+                SELECT ${cols}
+                FROM RecipeCreated r
+                LEFT JOIN Users u ON r.UserID = u.UserID
+                LEFT JOIN RecipeLevels l ON r.Cuisine = l.Cuisine
+                ${filtString}
+                ORDER BY r.RecipeID`;
+
+            // Execute the query
+            const result = await connection.execute(query);
+            const processedResults = processResults(result);
+            return processedResults;
+
+        } else {
+            // With images
+            const imgCols = captionless == 1 ? 'i.ImageURL' : 'i.ImageURL, i.Caption';
+            const query = `
+                SELECT ${cols}, ${imgCols}
+                FROM RecipeCreated r
+                LEFT JOIN Users u ON r.UserID = u.UserID
+                LEFT JOIN RecipeLevels l ON r.Cuisine = l.Cuisine
+                LEFT JOIN ImagesInRecipes ir ON r.RecipeID = ir.RecipeID
+                LEFT JOIN Images i ON ir.ImageURL = i.ImageURL
+                ${filtString}
+                ORDER BY r.RecipeID`;
+
+            // Execute the query
+            const result = await connection.execute(query);
+            const processedResults = processResults(result);
+            return processedResults;
+        }
     }).catch((err) => {
         console.error(err);
         return [];
     });
 }
 
-// Fetch all recipes
-async function fetchAllRecipes() {
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute(`
-            SELECT r.RecipeID, r.RecipeName, r.Cuisine, r.CookingTime, l.RecipeLevel, u.UserName
-            FROM RecipeCreated r
-            LEFT JOIN Users u ON r.UserID = u.UserID
-            LEFT JOIN RecipeLevels l ON r.Cuisine = l.Cuisine
-            ORDER BY r.RecipeID
-        `);
-        return result.rows;
-    }).catch((err) => {
-        console.error(err);
-        return [];
-    });
-}
-
-// Fetches recipe by RecipeID
-async function fetchRecipeByID(RecipeID) {
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute(`
-            SELECT r.RecipeID, r.RecipeName, r.Cuisine, r.CookingTime, l.RecipeLevel, u.UserName
-            FROM RecipeCreated r
-            LEFT JOIN Users u ON r.UserID = u.UserID
-            LEFT JOIN RecipeLevels l ON r.Cuisine = l.Cuisine
-            WHERE r.RecipeID = :RecipeID`,
-        [RecipeID]
-    );
-        return result.rows;
-    }).catch((err) => {
-        console.error(err);
-        return [];
-    });
-}
+// // Fetches recipe by RecipeID
+// async function fetchRecipeByID(RecipeID) {
+//     return await withOracleDB(async (connection) => {
+//         const result = await connection.execute(`
+//             SELECT r.RecipeID, r.RecipeName, r.Cuisine, r.CookingTime, l.RecipeLevel, u.UserName
+//             FROM RecipeCreated r
+//             LEFT JOIN Users u ON r.UserID = u.UserID
+//             LEFT JOIN RecipeLevels l ON r.Cuisine = l.Cuisine
+//             WHERE r.RecipeID = :RecipeID`,
+//         [RecipeID]
+//     );
+//         return result.rows;
+//     }).catch((err) => {
+//         console.error(err);
+//         return [];
+//     });
+// }
 
 // Fetch all liked recipes
 async function fetchLikedRecipes() {
@@ -144,7 +191,6 @@ async function fetchLikedRecipes() {
         return [];
     });
 }
-
 
 // Fetch user's liked recipes
 async function fetchUserLikedRecipes(UserID) {
@@ -211,6 +257,43 @@ async function deleteRecipe(recipeID) {
     });
 }
 
+// Fetch steps for a specific recipe by RecipeID
+async function fetchRecipeSteps(RecipeID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            SELECT StepNum, InstructionText
+            FROM StepContains
+            WHERE RecipeID = :RecipeID
+            ORDER BY StepNum
+        `, [RecipeID]);
+        return result.rows;
+    }).catch((err) => {
+        console.error(err);
+        return [];
+    });
+}
+
+/*================================================
+==================IMAGE FUNCTIONS=================
+================================================*/
+// Fetch all images and captions linked to RecipeID
+async function fetchImagesByID(RecipeID, captionless) {
+    return await withOracleDB(async (connection) => {
+        const cols = captionless == 1 ? 'i.ImageURL' : 'i.ImageURL, i.Caption';
+        const result = await connection.execute(`
+            SELECT ${cols}
+            FROM ImagesInRecipes ir
+            JOIN Images i ON ir.ImageURL = i.ImageURL
+            WHERE ir.RecipeID = :RecipeID`,
+        [RecipeID]);
+        return processResults(result);
+    }).catch((err) => {
+        console.error(err);
+        return [];
+    });
+}
+
+
 
 
 // Insert a single step associated with a recipe
@@ -232,21 +315,26 @@ async function insertStep(StepNum, InstructionText, RecipeID) {
     });
 }
 
-
+/*================================================
+==================USER FUNCTIONS==================
+================================================*/
 /*
 Given a UserID, returns the User's UserID, Name, points, and corresponding rank
 */
-async function fetchUser(UserID) {
+async function fetchUser(UserID, columns) {
     return await withOracleDB(async (connection) => {
+        const allCols = ['u.UserId', 'u.UserName', 'u.Points', 'p.UserLevel'];
+        const selCols = columns ? columns.join(', ') : allCols.join(', ');
+
         const result = await connection.execute(`
-            SELECT u.UserId, u.UserName, u.Points, p.UserLevel
+            SELECT ${selCols}
             FROM Users u
             JOIN UserLevels p ON u.Points >= p.Points 
             WHERE u.UserID=${UserID}
-                AND p.Points = (
-                    SELECT MAX(Points)
-                    FROM UserLevels
-                    WHERE u.Points >= Points
+            AND p.Points = (
+                SELECT MAX(Points)
+                FROM UserLevels
+                WHERE u.Points >= Points
             )`);
         return result.rows;
     }).catch(() => {    
@@ -254,22 +342,23 @@ async function fetchUser(UserID) {
     });
 }
 
-
 /*
 Returns UserIDs, Names, points, and corresponding ranks for all users
 */
-async function fetchAllUsers(UserID) {
+async function fetchAllUsers(columns) {
     return await withOracleDB(async (connection) => {
+        const allCols = ['u.UserId', 'u.UserName', 'u.Points', 'p.UserLevel'];
+        const selCols = columns ? columns.join(', ') : allCols.join(', ');
+
         const result = await connection.execute(`
-            SELECT u.UserId, u.UserName, u.Points, p.UserLevel
+            SELECT ${selCols}
             FROM Users u
             JOIN UserLevels p ON u.Points >= p.Points 
-            WHERE p.Points = (
+            AND p.Points = (
                 SELECT MAX(Points)
                 FROM UserLevels
                 WHERE u.Points >= Points
-                )
-            ORDER BY u.UserID`);
+            )`);
         return result.rows;
     }).catch(() => {    
         return [];
@@ -325,6 +414,21 @@ async function updateRecipe(recipe) {
     });
 }
 
+// Fetch all locations
+async function fetchAllLocations() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            SELECT Street, City, Province, LocationType
+            FROM Locations
+            ORDER BY City, Street
+        `);
+        return result.rows;
+    }).catch((err) => {
+        console.error(err);
+        return [];
+    });
+}
+
 
 
 
@@ -333,14 +437,16 @@ module.exports = {
     fetchAllUsers,
     fetchPantries,
     testOracleConnection,
-    fetchAllRecipes,
-    fetchRecipeByID,
+    fetchRecipes,
+    // fetchRecipeByID,
     createRecipe,
     updateRecipe,
     deleteRecipe,
     fetchAllLocations,
     fetchLikedRecipes,
     fetchUserLikedRecipes,
-    insertStep
+    insertStep,
+    fetchImagesByID,
+    fetchRecipeSteps
 };
 
