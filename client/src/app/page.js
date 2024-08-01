@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { Button } from "@mantine/core";
+import { Button, Select, Title } from "@mantine/core";
 import NavBar from "./components/NavBar"
-import styles from "./page.css"
+import styles from "./page.module.css"
 
 export default function Home() {
 
@@ -13,6 +13,8 @@ export default function Home() {
   `setTest` is a state updater function which we can call to update the value of test
   */
   const [test, setTest] = useState('');
+  const [users, setUsers] = useState([]);
+  const [selected, setSelected] = useState(null);
 
   /*
   The `useEffect` hook lets us use state variables like `test` in components. 
@@ -39,6 +41,24 @@ export default function Home() {
   }, [])
 
 
+  useEffect(() => {
+    const fetchUsers = async() => {
+      try {
+        const response = await fetch('api/users');
+        const data = await response.json();
+        setUsers(data.data);
+        console.log(data.data);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    }
+
+    // call the `fetchTest` function
+    fetchUsers();
+
+  }, [])
+
+  console.log(users);
   
   /*
   What the page will render
@@ -48,10 +68,27 @@ export default function Home() {
   return (
     <div>
       <NavBar />
-      <img src="https://img2.10bestmedia.com/Images/Photos/406808/The-Fresh-Market_55_660x440.jpg" 
-        alt="Home" className="home-image" />
-      <h1 className="logo">Meal Mapper</h1>
-      <Button className="start-button" size='xl' radius='xl' component='a' href='api/test'>{test}</Button>
+      <div>
+        <img 
+          src="https://images.ctfassets.net/lufu0clouua1/1ZWoXhCf0C4MyBU4xfN4q3/540ca2e3e585e3d413bd1c49e0b18a75/produce-dept.png" 
+          alt="Home" 
+          className={styles.homeSplash}/>
+          <Title order={1} className={styles.homeTitle}>Lorem ipsum dolor</Title>
+      </div>
+      <div>
+        <Select
+            label="Username"
+            placeholder="Pick a user"
+            data={users.map((user, index) => user[0] + '. ' + user[1])}
+            onChange={(event) => setSelected(event.currentTarget.value)}
+            className={styles.userSelect} />
+        <Button 
+            color="rgba(101, 85, 143, 1)"
+            // onChange={}
+            className={styles.selectUserButton}
+            >Login</Button>
+      </div>
+
     </div>
   );
 }

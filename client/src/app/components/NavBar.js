@@ -1,6 +1,7 @@
 import { Button } from '@mantine/core'
 import React from 'react'
 import Link from 'next/link';
+import styles from './NavBar.css'
 
 
 const NavBar = () => {
