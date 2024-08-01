@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import "./Recipes.css";
 import Recipe from '../components/RecipeCard';
 import NavBar from '../components/NavBar';
+import GroupRecipes from "../util/GroupRecipes";
 
 
 const Recipes = () => {
@@ -23,14 +24,14 @@ const Recipes = () => {
     //     }
 
     useEffect(() => {
-        const fetchRecipes = async () => {
+        const fetchRecipes = async () => {  
             try {
-                const response = await fetch('/api/recipes');
+                const response = await fetch('/api/recipes?img=true');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
                 const { data } = await response.json();
-                setRecipes(Array.isArray(data) ? data : []); // Ensure data is an array
+                setRecipes(GroupRecipes(data));
             } catch (error) {
                 console.error('Error fetching recipes:', error);
             }
@@ -48,12 +49,13 @@ const Recipes = () => {
                 {recipes && recipes.length > 0 ? (
                     recipes.map((recipe, index) => (
                         <Recipe
-                            key={index}
-                            name={recipe.RecipeName}
-                            cuisine={recipe.Cuisine}
-                            level={recipe.RecipeLevel}
-                            time={recipe.CookingTime}
-                            createdBy={recipe.CreatedBy}
+                            // key={recipe.RECIPEID}
+                            name={recipe.RECIPENAME}
+                            cuisine={recipe.CUISINE}
+                            time={recipe.COOKINGTIME}
+                            level={recipe.RECIPELEVEL}
+                            createdBy={recipe.USERNAME}
+                            // image={recipe.IMAGEURL} note that image is an array 
                         />
                     ))
                 ) : (

@@ -1,10 +1,12 @@
 import "../recipes/Recipes.css"
 
-const Recipe = ({ name, level, cuisine, time, image }) => {
+// image is an array to be parsed apart
+
+const Recipe = ({ name, cuisine, time, level, image }) => {
   return (    
     <div className='recipe-container'>
         <div className='recipe-card'>
-          <img src={image} alt={name} className="recipe-image" />
+          {/* <img src={image} alt={name} className="recipe-image" /> */}
           <div className='recipe-description'>
             <p><strong>Name:</strong> {name}</p>
             <p><strong>Level:</strong> {level}</p>
