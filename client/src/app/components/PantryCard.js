@@ -24,3 +24,4 @@ const PantryCard = ({ category }) => {
 };
 
 export default PantryCard;
+

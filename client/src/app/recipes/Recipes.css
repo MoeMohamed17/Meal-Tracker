@@ -7,7 +7,7 @@
 
 .recipe-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust the minmax value to control the size of the boxes */
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Adjust the minmax value to control the size of the boxes */
   gap: 20px; /* Adjust the gap between grid items */
   padding: 20px;
 }
@@ -25,32 +25,36 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    width: 300px;            
+    width: 100%;            
     display: grid;
     grid-template-rows: auto auto auto;
   }
   
-.recipe-image {
-    width: 100%;
-    height: auto;
+  .recipe-image {
+    width: 100%;          
+    height: 200px;         
+    object-fit: cover;     /* Crop the image to fit within the width and height */
     border-bottom: 1px solid #ddd;
-  }
+    display: block;        /* Ensure that the image displays as a block element */
+    margin: 0 auto;        /* Center the image within the container */
+}
   
-.recipe-description,
-.recipe-info {
+
+  .recipe-description,
+  .recipe-info {
     padding: 15px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
   }
   
-.recipe-description p,
-.recipe-info p {
+  .recipe-description p,
+  .recipe-info p {
     margin: 5px 0;
   }
   
-.recipe-info {
+  .recipe-info {
     background-color: #f1f1f1;
     border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between; /* Align elements evenly */
   }
 
   /* src/app/recipes/Recipes.css */
@@ -60,6 +64,28 @@
   border: 1px solid #ddd;
   border-radius: 8px;
   margin: 20px;
+}
+
+
+/* After the api chnages  */
+.search-filter-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.search-input, .cuisine-select {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.caption-toggle {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
 }
 
 

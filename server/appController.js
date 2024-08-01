@@ -65,18 +65,18 @@ router.get('/recipes', async (req, res) => {
     }
 });
 
-// /*
-// API endpoint to GET a single recipe by ID
-// */
-// router.get('/recipe/:id', async (req, res) => {
-//     const RecipeID = req.params.id;
-//     const recipe = await appService.fetchRecipeByID(RecipeID);
-//     if (recipe.length === 0) {
-//         res.status(404).json({ error: 'Recipe not found' });
-//     } else {
-//         res.json({ data: recipe });
-//     }
-// });
+/*
+API endpoint to GET a single recipe by ID
+*/
+router.get('/recipe/:id', async (req, res) => {
+    const RecipeID = req.params.id;
+    const recipe = await appService.fetchRecipeByID(RecipeID);
+    if (recipe.length === 0) {
+        res.status(404).json({ error: 'Recipe not found' });
+    } else {
+        res.json({ data: recipe });
+    }
+});
 
 /*
 API endpoint to GET all liked recipes
