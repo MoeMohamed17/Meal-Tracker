@@ -96,7 +96,8 @@ function processResults(result) {
 /*================================================
 =================RECIPE FUNCTIONS=================
 ================================================*/
-async function fetchRecipes(columns, filter, id, img, captionless) {
+
+async function fetchRecipes(columns, filter, searchTerm, img, captionless) {
     return await withOracleDB(async (connection) => {
         // Sanitize columns
         const allCols = ['r.RecipeID', 'r.RecipeName', 'r.Cuisine', 'r.CookingTime', 'l.RecipeLevel', 'u.UserName'];
@@ -112,8 +113,14 @@ async function fetchRecipes(columns, filter, id, img, captionless) {
         if (filter) {
             filters.push(`r.Cuisine = '${filter}'`);
         }
-        if (id) {
-            filters.push(`r.RecipeID = ${id}`);
+        if (searchTerm) {
+            if (!isNaN(searchTerm)) {
+                // If searchTerm is numeric, assume it's an ID
+                filters.push(`r.RecipeID = ${searchTerm}`);
+            } else {
+                // Otherwise, search by RecipeName
+                filters.push(`LOWER(r.RecipeName) LIKE LOWER('%${searchTerm}%')`);
+            }
         }
         const filtString = filters.length > 0 ? `WHERE ${filters.join(' AND ')}` : '';
 
@@ -156,23 +163,26 @@ async function fetchRecipes(columns, filter, id, img, captionless) {
     });
 }
 
-// // Fetches recipe by RecipeID
-// async function fetchRecipeByID(RecipeID) {
-//     return await withOracleDB(async (connection) => {
-//         const result = await connection.execute(`
-//             SELECT r.RecipeID, r.RecipeName, r.Cuisine, r.CookingTime, l.RecipeLevel, u.UserName
-//             FROM RecipeCreated r
-//             LEFT JOIN Users u ON r.UserID = u.UserID
-//             LEFT JOIN RecipeLevels l ON r.Cuisine = l.Cuisine
-//             WHERE r.RecipeID = :RecipeID`,
-//         [RecipeID]
-//     );
-//         return result.rows;
-//     }).catch((err) => {
-//         console.error(err);
-//         return [];
-//     });
-// }
+
+
+
+// Fetches recipe by RecipeID
+async function fetchRecipeByID(RecipeID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            SELECT r.RecipeID, r.RecipeName, r.Cuisine, r.CookingTime, l.RecipeLevel, u.UserName
+            FROM RecipeCreated r
+            LEFT JOIN Users u ON r.UserID = u.UserID
+            LEFT JOIN RecipeLevels l ON r.Cuisine = l.Cuisine
+            WHERE r.RecipeID = :RecipeID`,
+        [RecipeID]
+    );
+        return result.rows;
+    }).catch((err) => {
+        console.error(err);
+        return [];
+    });
+}
 
 // Fetch all liked recipes
 async function fetchLikedRecipes() {
@@ -438,7 +448,7 @@ module.exports = {
     fetchPantries,
     testOracleConnection,
     fetchRecipes,
-    // fetchRecipeByID,
+    fetchRecipeByID,
     createRecipe,
     updateRecipe,
     deleteRecipe,

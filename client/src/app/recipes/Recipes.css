@@ -63,4 +63,26 @@
 }
 
 
+/* After the api chnages  */
+.search-filter-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.search-input, .cuisine-select {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.caption-toggle {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+}
+
+
   
