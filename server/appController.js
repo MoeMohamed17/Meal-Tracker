@@ -23,23 +23,41 @@ router.get('/test', async (req, res) => {
     res.send("Hello world!");
 });
 
-/*
-API endpoint to GET all locations
-*/
-router.get('/locations', async (req, res) => {
-    const locations = await appService.fetchAllLocations();
-    if (locations.length === 0) {
-        res.status(404).json({ error: 'No locations found' });
-    } else {
-        res.json({ data: locations });
-    }
-});
 
+
+/*================================================
+=================RECIPE ENDPOINTS=================
+================================================*/
 /*
-API endpoint to GET all recipes
+API endpoint to GET recipe and attached images
+Example of usage:
+...await fetch('/api/recipes?img=<anything>');
+    Fetches recipes with images 
+
+...await fetch('/api/recipes?img=<anything>&captionless=1');
+    Fetches recipes with images but no captions
+
+...await fetch('/api/recipes?columns=r.Username,r.Cuisine&img=<anything>');
+    Fetches recipes but with only username, cuisine attributes and with images
+
+...await fetch('/api/recipes?columns=r.Username,r.Cuisine&img=<anything>');
+    Fetches recipes but with only recipeID, username, cuisine attributes and with images
+
+...await fetch('/api/recipes?columns=r.RecipeLevels&filter=Greek,img=<anything>');
+    Fetches recipes but with only recipeID, username, cuisine attributes and with images, filtering for Greek cuisine
+
+...await fetch('/api/recipes?id=3');
+    Fetches recipe with id 3, no images
+
+TODO: figure out how to apply more than just the cuisine filter
 */
 router.get('/recipes', async (req, res) => {
-    const recipes = await appService.fetchAllRecipes();
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const filter = req.query.filter || null;
+    const id = req.query.id || null;
+    const img = req.query.img;
+    const captionless = req.query.captionless;
+    const recipes = await appService.fetchRecipes(columns, filter, id, img, captionless);
     if (recipes.length === 0) {
         res.status(404).json({ error: 'No recipes found' });
     } else {
@@ -47,20 +65,18 @@ router.get('/recipes', async (req, res) => {
     }
 });
 
-/*
-API endpoint to GET a single recipe by ID
-*/
-router.get('/recipe/:id', async (req, res) => {
-    const RecipeID = req.params.id;
-    const recipe = await appService.fetchRecipeByID(RecipeID);
-    if (recipe.length === 0) {
-        res.status(404).json({ error: 'Recipe not found' });
-    } else {
-        res.json({ data: recipe });
-    }
-});
-
-
+// /*
+// API endpoint to GET a single recipe by ID
+// */
+// router.get('/recipe/:id', async (req, res) => {
+//     const RecipeID = req.params.id;
+//     const recipe = await appService.fetchRecipeByID(RecipeID);
+//     if (recipe.length === 0) {
+//         res.status(404).json({ error: 'Recipe not found' });
+//     } else {
+//         res.json({ data: recipe });
+//     }
+// });
 
 /*
 API endpoint to GET all liked recipes
@@ -88,20 +104,6 @@ router.get('/recipes/liked/:id', async (req, res) => {
 });
 
 /*
-API endpoint to GET steps for a specific recipe by ID
-*/
-router.get('/recipe/:id/steps', async (req, res) => {
-    const RecipeID = req.params.id;
-    const steps = await appService.fetchRecipeSteps(RecipeID);
-    if (steps.length === 0) {
-        res.status(404).json({ error: 'No steps found for this recipe' });
-    } else {
-        res.json({ data: steps });
-    }
-});
-
-
-/*
 API endpoint to CREATE a new recipe
 Pass in a dictionary containing necessary inputs
 e.g. {  'RecipeName': 'Pasta Verde', 
@@ -121,8 +123,6 @@ router.post('/recipe', async (req, res) => {
     }
 });
 
-
-
 /*
 API endpoint to DELETE a recipe
 */
@@ -136,8 +136,40 @@ router.delete('/recipe/:id', async (req, res) => {
     }
 });
 
+/*
+API endpoint to GET steps for a specific recipe by ID
+*/
+router.get('/recipe/:id/steps', async (req, res) => {
+    const RecipeID = req.params.id;
+    const steps = await appService.fetchRecipeSteps(RecipeID);
+    if (steps.length === 0) {
+        res.status(404).json({ error: 'No steps found for this recipe' });
+    } else {
+        res.json({ data: steps });
+    }
+});
+
+/*================================================
+==================IMAGE ENDPOINTS=================
+================================================*/
+/*
+API endpoint to GET all images and captions associated with RecipeID
+*/
+router.get('/images/:id', async (req, res) => {
+    const captionless = req.query.captionless == 1;
+    const RecipeID = req.params.id;
+    const images = await appService.fetchImagesByID(RecipeID, captionless);
+    if (images.length === 0) {
+        res.status(404).json({ error: 'Images not found' });
+    } else {
+        res.json({ data: images });
+    }
+});
 
 
+/*================================================
+==================STEP ENDPOINTS==================
+================================================*/
 /*
 API endpoint to insert steps associated with recipe
 
@@ -174,23 +206,54 @@ router.post('/steps/:id', async (req, res) => {
 
 
 
+
+
+
+/*================================================
+==================USER ENDPOINTS==================
+================================================*/
 /*
 API endpoint to GET a user's UserID, Name, Points, and Rank
 */
 router.get('/user/:id', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
     const UserID = req.params.id;
-    const tableContent = await appService.fetchUser(UserID);
+    const tableContent = await appService.fetchUser(UserID, columns);
     res.json({data: tableContent});
 });
-
 
 /* 
 API endpoint to GET all users' UserID, Name, Points, and Rank
 */
-router.get('/user', async (req, res) => {
-    const tableContent = await appService.fetchAllUsers();
+router.get('/users', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const tableContent = await appService.fetchAllUsers(columns);
     res.json({data: tableContent});
 });
+
+/*
+API endpoint to CREATE a new user
+Pass in a dictionary containing the name
+e.g. {  'Username': 'Ford Prefect' }
+
+Be sure to retrieve RecipeID in response, use that to call steps endpoint
+*/
+router.post('/recipe', async (req, res) => {
+    const Username = req.body;
+    const response = await appService.createRecipe(Username);
+    if (response) {
+        res.status(201).json({ message: 'User created', response });
+    } else {
+        res.status(500).json({ error: 'Failed to create new user' });
+    }
+});
+
+
+
+
+
+
+
 
 
 
@@ -236,56 +299,21 @@ router.delete('/recipe/:id', async (req, res) => {
 
 
 
-// router.get('/demotable', async (req, res) => {
-//     const tableContent = await appService.fetchDemotableFromDb();
-//     res.json({data: tableContent});
-// });
+/*
+API endpoint to GET all locations
+*/
+router.get('/locations', async (req, res) => {
+    const locations = await appService.fetchAllLocations();
+    if (locations.length === 0) {
+        res.status(404).json({ error: 'No locations found' });
+    } else {
+        res.json({ data: locations });
+    }
+});
 
-// router.post("/initiate-demotable", async (req, res) => {
-//     const initiateResult = await appService.initiateDemotable();
-//     if (initiateResult) {
-//         res.json({ success: true });
-//     } else {
-//         res.status(500).json({ success: false });
-//     }
-// });
-
-// router.post("/insert-demotable", async (req, res) => {
-//     const { id, name } = req.body;
-//     const insertResult = await appService.insertDemotable(id, name);
-//     if (insertResult) {
-//         res.json({ success: true });
-//     } else {
-//         res.status(500).json({ success: false });
-//     }
-// });
-
-// router.post("/update-name-demotable", async (req, res) => {
-//     const { oldName, newName } = req.body;
-//     const updateResult = await appService.updateNameDemotable(oldName, newName);
-//     if (updateResult) {
-//         res.json({ success: true });
-//     } else {
-//         res.status(500).json({ success: false });
-//     }
-// });
-
-// router.get('/count-demotable', async (req, res) => {
-//     const tableCount = await appService.countDemotable();
-//     if (tableCount >= 0) {
-//         res.json({ 
-//             success: true,  
-//             count: tableCount
-//         });
-//     } else {
-//         res.status(500).json({ 
-//             success: false, 
-//             count: tableCount
-//         });
-//     }
-// });
 
 
 module.exports = router;
 
 
+	
