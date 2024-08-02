@@ -28,7 +28,7 @@ sed -i "/^ORACLE_HOST=/c\ORACLE_HOST=dbhost.students.cs.ubc.ca" $ENV_SERVER_PATH
 sed -i "/^ORACLE_PORT=/c\ORACLE_PORT=1522" $ENV_SERVER_PATH
 
 # Define the fixed port
-PORT=61000
+PORT=63000
 
 # Check if the port is in use
 if ! ss -tuln | grep :$PORT > /dev/null; then

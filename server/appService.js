@@ -404,18 +404,6 @@ async function createUser(UserName) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 Returns all pantries associated with UserID
 */
@@ -481,6 +469,22 @@ async function fetchAllLocations() {
 
 
 
+// Fetch all ingredient instances for a specific pantry
+async function fetchIngredientInstances(pantryID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            SELECT DateAdded, ExpiryDate, FoodName, Quantity
+            FROM IngredientInstances
+            WHERE PantryID = :pantryID
+            ORDER BY DateAdded
+        `, [pantryID]);
+        return processResults(result);
+    }).catch((err) => {
+        console.error(err);
+        return [];
+    });
+}
+
 
 module.exports = {
     fetchUser,
@@ -498,6 +502,7 @@ module.exports = {
     insertStep,
     fetchImagesByID,
     fetchRecipeSteps,
-    createUser
+    createUser,
+    fetchIngredientInstances
 };
 
