@@ -7,6 +7,37 @@
   min-height: 100vh;
 }
 
+.imageContainer {
+  position: relative;
+  text-align: center;
+  color: white;
+}
+
+.homeSplash {
+  width: 100%;
+  opacity: 0.33;
+}
+
+.homeTitle {
+  position: absolute;
+  top:50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+  color: rgba(101, 85, 143, 1);
+  font-size: 80px;
+  text-shadow: #231f26 3px 2px 2px;
+}
+
+.horizontalColumn { 
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
 .userSelect {
   position: absolute;
   bottom: 20%;
@@ -21,22 +52,9 @@
   right: 38%;
 }
 
-.homeTitle{
-  position: absolute;
-  top:45%;
-  left:50%;
-  transform: translate(-50%, -50%);
-  color: rgba(101, 85, 143, 1);
-  font-size: 80px;
-  text-shadow: #231f26 3px 2px 2px;
-}
 
-.homeSplash {
-  width: 100%;
-  opacity: 0.25;
-  clip-path: inset(20% 0 40% 0);
-  transform: translate(0%, -20%);
-}
+
+
 
 .description {
   display: inherit;
