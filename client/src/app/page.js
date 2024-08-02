@@ -65,8 +65,7 @@ export default function Home() {
 
   return (
     <div> 
-      <NavBar />
-      <div class={styles.imageContainer}>
+      <div className={styles.imageContainer}>
         <img 
           src={"http://localhost:3000/home_splash.png"} 
           alt="Home" 
