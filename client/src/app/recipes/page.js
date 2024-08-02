@@ -43,7 +43,7 @@ const Recipes = () => {
     return (
         <div>
             <NavBar />
-            <div className="container">
+            <div>
                 <h1>Recipes</h1>
                 <div className="search-filter-bar">
                     <input
