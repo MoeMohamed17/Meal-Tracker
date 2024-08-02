@@ -78,7 +78,7 @@ const LikedRecipes = () => {
   return (
     <div>
       <NavBar />
-      <div className="container">
+      <div>
         <h1>My Liked Recipes</h1>
         <div className="search-filter-bar">
           <input

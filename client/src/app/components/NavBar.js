@@ -37,6 +37,12 @@ const NavBar = () => {
                         size="lg" radius="xl" component='a'>Contribute
                     </Button>
                 </Link>
+
+                <Link href="/admin" passHref>
+                    <Button variant="filled" color="rgba(101, 85, 143, 1)"
+                        size="lg" radius="xl" component='a'>Admin
+                    </Button>
+                </Link>
             </div>
         </header>
     )
