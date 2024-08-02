@@ -376,6 +376,45 @@ async function fetchAllUsers(columns) {
     });
 }
 
+// Create a new user
+async function createUser(UserName) {
+    return await withOracleDB(async (connection) => {
+        console.log(UserName);
+        const result = await connection.execute(
+            `INSERT INTO Users (UserName) 
+            VALUES (:UserName)
+            RETURNING UserID INTO :UserID`,
+            {
+                UserName: UserName,
+                UserID: { 
+                    type: oracledb.INTEGER,
+                    dir: oracledb.BIND_OUT
+                }
+            },
+            { autoCommit: true }
+        );
+        return {
+            UserID: result.outBinds.UserID[0],
+            UserName: UserName,
+            Points: 0
+        };
+    }).catch(() => {
+        return false;
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
 Returns all pantries associated with UserID
@@ -442,6 +481,22 @@ async function fetchAllLocations() {
 
 
 
+// Fetch all ingredient instances for a specific pantry
+async function fetchIngredientInstances(pantryID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            SELECT DateAdded, ExpiryDate, FoodName, Quantity
+            FROM IngredientInstances
+            WHERE PantryID = :pantryID
+            ORDER BY DateAdded
+        `, [pantryID]);
+        return processResults(result);
+    }).catch((err) => {
+        console.error(err);
+        return [];
+    });
+}
+
 
 module.exports = {
     fetchUser,
@@ -458,6 +513,8 @@ module.exports = {
     fetchUserLikedRecipes,
     insertStep,
     fetchImagesByID,
-    fetchRecipeSteps
+    fetchRecipeSteps,
+    createUser,
+    fetchIngredientInstances
 };
 

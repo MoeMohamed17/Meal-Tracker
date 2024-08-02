@@ -235,12 +235,10 @@ router.get('/users', async (req, res) => {
 API endpoint to CREATE a new user
 Pass in a dictionary containing the name
 e.g. {  'Username': 'Ford Prefect' }
-
-Be sure to retrieve RecipeID in response, use that to call steps endpoint
 */
-router.post('/recipe', async (req, res) => {
-    const Username = req.body;
-    const response = await appService.createRecipe(Username);
+router.post('/user', async (req, res) => {
+    const Username = req.body.UserName;
+    const response = await appService.createUser(Username);
     if (response) {
         res.status(201).json({ message: 'User created', response });
     } else {
@@ -250,10 +248,21 @@ router.post('/recipe', async (req, res) => {
 
 
 
-
-
-
-
+/*================================================
+==================PANTRY ENDPOINTS=================
+================================================*/
+/*
+API endpoint to GET all ingredient instances of a specific pantry
+*/
+router.get('/pantry/:id/ingredients', async (req, res) => {
+    const pantryID = req.params.id;
+    const ingredientInstances = await appService.fetchIngredientInstances(pantryID);
+    if (ingredientInstances.length === 0) {
+        res.status(404).json({ error: 'No ingredients found for this pantry' });
+    } else {
+        res.json({ data: ingredientInstances });
+    }
+});
 
 
 
@@ -265,8 +274,6 @@ router.get('/pantry/:id', async (req, res) => {
     const tableContent = await appService.fetchPantries(UserID);
     res.json({data: tableContent});
 });
-
-
 
 
 
