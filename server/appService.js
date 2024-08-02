@@ -367,8 +367,9 @@ async function fetchAllUsers(columns) {
             AND p.Points = (
                 SELECT MAX(Points)
                 FROM UserLevels
-                WHERE u.Points >= Points
-            )`);
+                WHERE u.Points >= Points)
+            ORDER BY u.UserId
+            `);
         return result.rows;
     }).catch(() => {    
         return [];
