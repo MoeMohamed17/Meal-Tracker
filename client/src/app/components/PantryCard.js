@@ -17,7 +17,7 @@ import React from 'react';
 import Link from 'next/link';
 import '../pantries/Pantries.css'; // Ensure you have styles for this component
 
-const PantryCard = ({ pantryId, category }) => {
+const PantryCard = ({ key, pantryId, category }) => {
   return (
     <Link href={`/pantries/${pantryId}`} passHref>
       <div className="pantry-card">

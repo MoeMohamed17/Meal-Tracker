@@ -17,6 +17,7 @@ const Pantries = () => {
           const response = await fetch(`/api/pantry/${selectedUser}`);
           const data = await response.json();
           setPantries(data.data || []); // Handle case where data may be undefined
+          console.log(data.data);
         } catch (error) {
           console.error('Error fetching pantries:', error);
         }
@@ -32,7 +33,7 @@ const Pantries = () => {
       <h1>My Pantries</h1>
       <div className="pantries-grid">
         {pantries.map((pantry, index) => (
-          <PantryCard key={index} category={pantry[2]} />
+          <PantryCard key={index} pantryId={pantry.PANTRYID} category={pantry.CATEGORY} />
         ))}
       </div>
     </div>
