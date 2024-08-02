@@ -23,33 +23,39 @@
   top:50%;
   left:50%;
   transform: translate(-50%, -50%);
-  color: rgba(101, 85, 143, 1);
+  color: seagreen;
   font-size: 80px;
   text-shadow: #231f26 3px 2px 2px;
 }
 
-.horizontalColumn { 
-  width: 100%;
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
 .userSelect {
-  position: absolute;
-  bottom: 20%;
-  left: 40%;
-  /* transform: translate(-50%, 0%); */
-  z-index: 1;
+  width: 80%;
+  margin-top: 10px;
 }
 
-.selectUserButton {
-  position: absolute;
-  bottom: 20%;
-  right: 38%;
+.userButton {
+  align-self: flex-end;
+  margin-top: 20px;
+}
+
+.userInput {
+  width: 80%;
+  margin-top: -30px;
+}
+
+.userInputButton {
+  align-self: flex-end;
+  margin-top: -20px;
+}
+
+.dividerHome {
+  padding-top:40px;
+}
+
+.homeText {
+  padding-top: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 

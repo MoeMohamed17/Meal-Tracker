@@ -235,12 +235,10 @@ router.get('/users', async (req, res) => {
 API endpoint to CREATE a new user
 Pass in a dictionary containing the name
 e.g. {  'Username': 'Ford Prefect' }
-
-Be sure to retrieve RecipeID in response, use that to call steps endpoint
 */
-router.post('/recipe', async (req, res) => {
-    const Username = req.body;
-    const response = await appService.createRecipe(Username);
+router.post('/user', async (req, res) => {
+    const Username = req.body.UserName;
+    const response = await appService.createUser(Username);
     if (response) {
         res.status(201).json({ message: 'User created', response });
     } else {
