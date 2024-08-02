@@ -31,3 +31,5 @@ const PantryCard = ({ pantryId, category }) => {
 
 export default PantryCard;
 
+
+

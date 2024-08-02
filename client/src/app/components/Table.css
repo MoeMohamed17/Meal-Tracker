@@ -1,0 +1,38 @@
+.table-container {
+    margin-bottom: 10px;
+}
+
+.column-space {
+    margin-bottom: 10px;
+}
+
+.columns-checkboxes {
+    display: inline-flex;
+    margin-right: 10px;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: rgba(101, 85, 143, 1); 
+    color: white; 
+    padding: 10px;
+}
+
+td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd; /* Cell border color */
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2; /* Even row background color */
+}
+
+tr:hover {
+    background-color: #ddd; /* Row hover color */
+}
