@@ -61,7 +61,7 @@ const RecipeCard = ({ id, name, level, cuisine, time, imageUrl, caption, liked, 
       </ActionIcon>
       <div className="recipe-card">
         <Carousel withIndicators>{slides}</Carousel>
-        <Link href={`/recipes/${id}`} style={{textDecoration: 'none', color: '#3B3C36'}} passHref>
+        <Link href={`/recipes/${id}`} style={{textDecoration: 'none', color: '#3B3C36 '}} passHref>
           <div className="recipe-description">
             <p>
               <Title order={2}>{name}</Title> 
