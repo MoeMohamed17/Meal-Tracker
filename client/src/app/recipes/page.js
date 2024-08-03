@@ -85,6 +85,7 @@ const Recipes = () => {
                                 createdBy={recipe.USERNAME}
                                 imageUrl={recipe.IMAGEURL}
                                 caption={showCaptions ? recipe.CAPTION : ''}
+                                liked={false}
                             />
                         ))
                     ) : (
