@@ -449,7 +449,7 @@ async function fetchPantries(UserID) {
             JOIN SavedPantry p
             ON u.PantryID = p.PantryID
             WHERE u.UserID = ${UserID}`);
-        return result.rows;
+        return processResults(result);
     }).catch(() => {    
         return [];
     });

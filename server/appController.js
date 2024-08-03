@@ -277,9 +277,21 @@ router.post('/user', async (req, res) => {
 
 
 
-
-
-
+/*================================================
+==================PANTRY ENDPOINTS=================
+================================================*/
+/*
+API endpoint to GET all ingredient instances of a specific pantry
+*/
+router.get('/pantry/:id/ingredients', async (req, res) => {
+    const pantryID = req.params.id;
+    const ingredientInstances = await appService.fetchIngredientInstances(pantryID);
+    if (ingredientInstances.length === 0) {
+        res.status(404).json({ error: 'No ingredients found for this pantry' });
+    } else {
+        res.json({ data: ingredientInstances });
+    }
+});
 
 /*
 API endpoint to GET a user's pantries
