@@ -26,11 +26,11 @@ const NavBar = () => {
                     </Button>
                 </Link>
 
-                <Link href="/likedrecipes" passHref>
+                {/* <Link href="/likedrecipes" passHref>
                     <Button variant="filled" color="rgba(101, 85, 143, 1)"
                         size="lg" radius="xl" component='a'>My Favourites
                     </Button>
-                </Link>
+                </Link> */}
 
                 <Link href="/newrecipes" passHref>
                     <Button variant="filled" color="rgba(101, 85, 143, 1)"

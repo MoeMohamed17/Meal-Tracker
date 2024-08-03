@@ -15,6 +15,7 @@ const Recipes = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [cuisineFilter, setCuisineFilter] = useState('');
     const [showCaptions, setShowCaptions] = useState(true);
+    const [onlyLiked, setOnlyLiked] = useState(false);
     const [likedRecipes, setLikedRecipes] = useState([]);
 
     useEffect(() => {
@@ -92,6 +93,7 @@ const Recipes = () => {
     }
     };
 
+    const onlyLikedRecipes = onlyLiked ? likedRecipes ? recipes.filter(recipe => likedRecipes.includes(recipe.RECIPEID)) : [] : recipes;
 
     return (
         <div>
@@ -124,10 +126,18 @@ const Recipes = () => {
                         />
                         Show Captions
                     </label>
+                    <label className="caption-toggle">
+                        <input
+                            type="checkbox"
+                            checked={onlyLiked}
+                            onChange={(e) => setOnlyLiked(e.target.checked)}
+                        />
+                        Liked Recipes
+                    </label>
                 </div>
                 <div className='recipe-grid'>
-                    {recipes && recipes.length > 0 ? (
-                        recipes.map((recipe, index) => (
+                    {onlyLikedRecipes && onlyLikedRecipes.length > 0 ? (
+                        onlyLikedRecipes.map((recipe, index) => (
                             <RecipeCard
                                 key={index}
                                 id={recipe.RECIPEID}
