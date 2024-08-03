@@ -1,44 +1,116 @@
 'use client';
-import { useState } from 'react'
-import { Button, TextInput, Textarea } from '@mantine/core';
-import styles from "../newrecipes/newrecipes.css";
 
+import { useState, useEffect } from 'react';
+import { Button, TextInput, Textarea, Title, Group } from '@mantine/core';
+import styles from '../newrecipes/newrecipes.css';
 
-//whos going to set the level in this case? the user? or we need
-// to come up with a system that assigns a level to all incoming new recipes
-// for images are we letting them just one image at first, then they can add more later?
 const RecipeForm = () => {
     const [name, setName] = useState('');
     const [cuisine, setCuisine] = useState('');
     const [time, setTime] = useState('');
     const [image, setImage] = useState('');
     const [steps, setSteps] = useState(['']);
+    const [userID, setUserID] = useState(null);
+
+    useEffect(() => {
+        // Retrieve the UserID from local storage when the component mounts
+        const storedUserID = localStorage.getItem('selectedUser');
+        setUserID(storedUserID);
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const newRecipe = { name, cuisine, time, image, steps };
+        // Ensure userID is available
+        if (!userID) {
+            console.error('No user ID available. Please log in.');
+            return;
+        }
+
+        // Construct the new recipe data
+        const newRecipe = { 
+            RecipeName: name, 
+            Cuisine: cuisine, 
+            CookingTime: time, 
+            UserID: userID 
+        };
 
         try {
-            const response = await fetch('/api/recipes', {
+            // Send the new recipe to the server
+            const response = await fetch('/api/recipe', {
                 method: 'POST',
                 headers: {
-                    "Content-Type": 'application/json'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(newRecipe)
             });
 
             const result = await response.json();
-            console.log(result);
+            if (response.ok) {
+                console.log('Recipe created:', result);
 
-            setName('');
-            setCuisine('');
-            setTime('');
-            setImage('');
-            setSteps(['']);
+                // Optionally, add steps after creating the recipe
+                if (steps.length > 0) {
+                    const recipeID = result.response.RecipeID;
+                    await addStepsToRecipe(recipeID, steps);
+                }
+
+                // Add image with a default caption
+                if (image) {
+                    const defaultCaption = `Image of ${name}`;
+                    await addImageToRecipe(result.response.RecipeID, image, defaultCaption);
+                }
+
+                // Reset form fields
+                setName('');
+                setCuisine('');
+                setTime('');
+                setImage('');
+                setSteps(['']);
+            } else {
+                console.error('Error creating recipe:', result.error);
+            }
 
         } catch (error) {
-            console.error('error adding recipe:', error)
+            console.error('Error adding recipe:', error);
+        }
+    };
+
+    // Function to add steps to the created recipe
+    const addStepsToRecipe = async (recipeID, steps) => {
+        try {
+            const response = await fetch(`/api/steps/${recipeID}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ steps })
+            });
+
+            if (!response.ok) {
+                console.error('Failed to add steps:', await response.json());
+            }
+        } catch (error) {
+            console.error('Error adding steps:', error);
+        }
+    };
+
+    // Function to add image to the recipe
+    const addImageToRecipe = async (recipeID, imageURL, caption) => {
+        try {
+            const response = await fetch('/api/images', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ recipeID, imageURL, caption })
+            });
+
+            if (!response.ok) {
+                console.error('Failed to add image:', await response.json());
+            }
+        } catch (error) {
+            console.error('Error adding image:', error);
         }
     };
 
@@ -46,59 +118,59 @@ const RecipeForm = () => {
         const newSteps = [...steps];
         newSteps[index] = value;
         setSteps(newSteps);
-      };
-    
-      const handleAddStep = () => {
+    };
+
+    const handleAddStep = () => {
         setSteps([...steps, '']);
-      };
+    };
 
     return (
         <div>
-          <form onSubmit={handleSubmit} className="recipe-form">
-            <TextInput
-              label="Recipe Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-            <TextInput
-              label="Cuisine"
-              value={cuisine}
-              onChange={(e) => setCuisine(e.target.value)}
-              required
-            />
-            <TextInput
-              label="Time"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-              required
-            />
-            <TextInput
-              label="Image URL"
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-              required
-            />
-            <h2 className='steps'>Steps</h2>
-            {steps.map((step, index) => (
-              <Textarea
-                key={index}
-                label={`Step ${index + 1}`}
-                value={step}
-                onChange={(e) => handleStepChange(index, e.target.value)}
-                required
-              />
-            ))}
-            <Button type="button" onClick={handleAddStep} className="add-step-button" size="md">
-              Add Step
-            </Button>
-            <Button type="submit" size="lg" className="add-recipe-button">
-              Add Recipe
-            </Button>
-          </form>
+            <form onSubmit={handleSubmit} className="recipe-form">
+                <Title order={3}>Add a New Recipe</Title>
+                <TextInput
+                    label="Recipe Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                />
+                <TextInput
+                    label="Cuisine"
+                    value={cuisine}
+                    onChange={(e) => setCuisine(e.target.value)}
+                    required
+                />
+                <TextInput
+                    label="Cooking Time (HH MM:SS)"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                    required
+                />
+                <TextInput
+                    label="Image URL"
+                    value={image}
+                    onChange={(e) => setImage(e.target.value)}
+                    required
+                />
+                <h2 className="steps">Steps</h2>
+                {steps.map((step, index) => (
+                    <Textarea
+                        key={index}
+                        label={`Step ${index + 1}`}
+                        value={step}
+                        onChange={(e) => handleStepChange(index, e.target.value)}
+                        required
+                    />
+                ))}
+                <Button type="button" onClick={handleAddStep} className="add-step-button" size="md">
+                    Add Step
+                </Button>
+                <Button type="submit" size="lg" className="add-recipe-button">
+                    Add Recipe
+                </Button>
+            </form>
         </div>
-      );
-
+    );
 }
 
 export default RecipeForm;

@@ -338,6 +338,26 @@ async function fetchImagesByID(RecipeID, captionless) {
     });
 }
 
+async function addImageToRecipe(recipeID, imageURL, caption) {
+    return await withOracleDB(async (connection) => {
+        // Insert image data into the Images table
+        await connection.execute(
+            `INSERT INTO Images (ImageURL, Caption) VALUES (:imageURL, :caption)`,
+            { imageURL, caption },
+            { autoCommit: true }
+        );
+
+        // Link the image to a recipe in the ImagesInRecipes table
+        await connection.execute(
+            `INSERT INTO ImagesInRecipes (ImageURL, RecipeID) VALUES (:imageURL, :recipeID)`,
+            { imageURL, recipeID },
+            { autoCommit: true }
+        );
+    }).catch((err) => {
+        console.error('Error adding image to recipe:', err);
+        throw new Error('Failed to add image');
+    });
+}
 
 
 
@@ -539,6 +559,7 @@ module.exports = {
     createUser,
     fetchIngredientInstances,
     UserLikedRecipe,
-    UserUnlikedRecipe
+    UserUnlikedRecipe,
+    addImageToRecipe
 };
 

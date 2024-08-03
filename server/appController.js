@@ -334,7 +334,6 @@ router.delete('/recipe/:id', async (req, res) => {
 });
 
 
-
 /*
 API endpoint to GET all locations
 */
@@ -347,6 +346,19 @@ router.get('/locations', async (req, res) => {
     }
 });
 
+// API endpoint to add an image to a recipe
+router.post('/api/images', async (req, res) => {
+    const { recipeID, imageURL, caption } = req.body;
+
+    try {
+        // Call the service function to add image to the database
+        await appService.addImageToRecipe(recipeID, imageURL, caption);
+        res.status(201).json({ message: 'Image added successfully' });
+    } catch (error) {
+        console.error('Error in /api/images endpoint:', error);
+        res.status(500).json({ error: 'Failed to add image' });
+    }
+});
 
 
 module.exports = router;
