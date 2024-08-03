@@ -46,7 +46,7 @@ const RecipeCard = ({ id, name, level, cuisine, time, imageUrl, caption, liked, 
       {/* <Image src={url} className="recipe-image"/> */}
       <Card
         image={url}
-        title={caption[index]}
+        title={(caption ? caption[index] : null)}
         category={cuisine}
       />
     </Carousel.Slide>
