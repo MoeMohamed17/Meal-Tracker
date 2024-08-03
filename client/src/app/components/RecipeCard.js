@@ -4,10 +4,13 @@ import { ActionIcon } from "@mantine/core";
 import { IconHeart } from '@tabler/icons-react';
 
 
-const RecipeCard = ({ id, name, level, cuisine, time, imageUrl, caption, liked }) => {
+const RecipeCard = ({ id, name, level, cuisine, time, imageUrl, caption, liked, callback }) => {
   return (
     <div className="recipe-container">
-      <ActionIcon variant={liked ? "primary" : "light"} className="recipe-heart">
+      <ActionIcon 
+        variant={liked ? "primary" : "light"}
+        onClick={() => {callback(id);}}
+        className="recipe-heart">
         <IconHeart size={20} stroke={2} />
       </ActionIcon>
       <Link href={`/recipes/${id}`} passHref className="recipe-card">

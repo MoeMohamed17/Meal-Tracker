@@ -10,10 +10,12 @@ import GroupRecipes from "../util/GroupRecipes";
 const cuisineOptions = ['Italian', 'Mexican', 'Chinese', 'Indian', 'American'];
 
 const Recipes = () => {
+    const selectedUser = localStorage.getItem('selectedUser');
     const [recipes, setRecipes] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [cuisineFilter, setCuisineFilter] = useState('');
     const [showCaptions, setShowCaptions] = useState(true);
+    const [likedRecipes, setLikedRecipes] = useState([]);
 
     useEffect(() => {
         const fetchRecipes = async () => {  
@@ -39,6 +41,57 @@ const Recipes = () => {
 
         fetchRecipes();
     }, [cuisineFilter, searchQuery, showCaptions]); // Dependencies to trigger re-fetch
+
+
+
+    useEffect(() => {
+        const getLikedRecipes = async () => {
+          if (selectedUser) {
+            try {
+              const response = await fetch(`/api/recipes/liked/${selectedUser}/`);
+              const data = await response.json();
+              setLikedRecipes(data.data);
+            } catch (error) {
+              console.error('Error fetching liked recipes:', error);
+            }
+          }
+        };
+    
+        getLikedRecipes();
+      }, []);
+
+
+
+    const likeAction = async (id) => {
+    try {
+        if (likedRecipes && likedRecipes.includes(id)) {
+            const response = await fetch('api/unlikeRecipe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ UserID: selectedUser, RecipeID: id}),
+            });
+        } else {
+            const response = await fetch('api/likeRecipe', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ UserID: selectedUser, RecipeID: id}),
+            });
+        }
+
+        const updatedLikes = await fetch(`/api/recipes/liked/${selectedUser}/`);
+        const data = await updatedLikes.json();
+        setLikedRecipes(data.data);
+        console.log(data.data);
+
+    } catch (error) {
+        console.error('Error fetching pantries:', error);
+    }
+    };
+
 
     return (
         <div>
@@ -85,7 +138,8 @@ const Recipes = () => {
                                 createdBy={recipe.USERNAME}
                                 imageUrl={recipe.IMAGEURL}
                                 caption={showCaptions ? recipe.CAPTION : ''}
-                                liked={false}
+                                liked={(likedRecipes ? likedRecipes.includes(recipe.RECIPEID) : false)}
+                                callback={likeAction}
                             />
                         ))
                     ) : (

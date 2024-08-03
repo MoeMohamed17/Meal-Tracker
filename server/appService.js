@@ -206,14 +206,49 @@ async function fetchLikedRecipes() {
 async function fetchUserLikedRecipes(UserID) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(`
-            SELECT r.RecipeID, r.RecipeName, r.Cuisine, r.CookingTime, l.RecipeLevel, u.UserName
-            FROM RecipeCreated r
-            JOIN RecipesLiked rl ON r.RecipeID = rl.RecipeID
-            LEFT JOIN Users u ON r.UserID = u.UserID
-            LEFT JOIN RecipeLevels l ON r.Cuisine = l.Cuisine
-            WHERE r.UserID=${UserID}
+            SELECT RecipeID
+            FROM RecipesLiked 
+            WHERE UserID=${UserID}
         `);
-        return result.rows;
+        return result.rows.flat();
+    }).catch((err) => {
+        console.error(err);
+        return [];
+    });
+}
+
+// Make user like a recipe
+async function UserLikedRecipe(info) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            INSERT INTO RecipesLiked (RecipeID, UserID)
+            VALUES (:RecipeID, :UserID)`,
+        {
+            RecipeID: info.RecipeID,
+            UserID: info.UserID
+        },
+        { autoCommit: true}
+    );
+        return [info.RecipeID, info.UserID];
+    }).catch((err) => {
+        console.error(err);
+        return [];
+    });
+}
+
+// Make user unlike a recipe
+async function UserUnlikedRecipe(info) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            DELETE FROM RecipesLiked
+            WHERE RecipeID = :RecipeID AND UserID = :UserID`,
+        {
+            RecipeID: info.RecipeID,
+            UserID: info.UserID
+        },
+        { autoCommit: true }
+    );
+        return [info.RecipeID, info.UserID];
     }).catch((err) => {
         console.error(err);
         return [];
@@ -379,7 +414,6 @@ async function fetchAllUsers(columns) {
 // Create a new user
 async function createUser(UserName) {
     return await withOracleDB(async (connection) => {
-        console.log(UserName);
         const result = await connection.execute(
             `INSERT INTO Users (UserName) 
             VALUES (:UserName)
@@ -415,7 +449,7 @@ async function fetchPantries(UserID) {
             JOIN SavedPantry p
             ON u.PantryID = p.PantryID
             WHERE u.UserID = ${UserID}`);
-        return processResults(result);
+        return result.rows;
     }).catch(() => {    
         return [];
     });
@@ -503,6 +537,8 @@ module.exports = {
     fetchImagesByID,
     fetchRecipeSteps,
     createUser,
-    fetchIngredientInstances
+    fetchIngredientInstances,
+    UserLikedRecipe,
+    UserUnlikedRecipe
 };
 
