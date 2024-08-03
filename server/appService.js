@@ -539,6 +539,77 @@ async function fetchIngredientInstances(pantryID) {
     });
 }
 
+// Function to create a new pantry
+async function createPantry(UserID, Category) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `INSERT INTO SavedPantry (Category) 
+            VALUES (:Category)
+            RETURNING PantryID INTO :PantryID`,
+            {
+                Category,
+                PantryID: {
+                    type: oracledb.INTEGER,
+                    dir: oracledb.BIND_OUT
+                }
+            },
+            { autoCommit: true }
+        );
+
+        const pantryID = result.outBinds.PantryID[0];
+
+        await connection.execute(
+            `INSERT INTO UserPantries (UserID, PantryID) 
+            VALUES (:UserID, :PantryID)`,
+            {
+                UserID,
+                PantryID: pantryID
+            },
+            { autoCommit: true }
+        );
+
+        return { PantryID: pantryID, Category };
+    }).catch((err) => {
+        console.error(err);
+        return false;
+    });
+}
+
+// Function to add a new ingredient instance
+async function addIngredient(PantryID, FoodName, Quantity, ExpiryDate) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName, PantryID, Quantity) 
+            VALUES (SYSDATE, TO_DATE(:ExpiryDate, 'YYYY-MM-DD'), :FoodName, :PantryID, :Quantity)`,
+            {
+                ExpiryDate,
+                FoodName,
+                PantryID,
+                Quantity
+            },
+            { autoCommit: true }
+        );
+
+        return result.rowsAffected > 0;
+    }).catch((err) => {
+        console.error(err);
+        return false;
+    });
+}
+
+async function fetchCuisineOptions() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            SELECT DISTINCT Cuisine FROM RecipeCreated ORDER BY Cuisine
+        `);
+        return result.rows.map(row => row[0]); // Map the rows to an array of cuisine names
+    }).catch((err) => {
+        console.error(err);
+        return [];
+    });
+}
+
+
 
 module.exports = {
     fetchUser,
@@ -560,6 +631,9 @@ module.exports = {
     fetchIngredientInstances,
     UserLikedRecipe,
     UserUnlikedRecipe,
-    addImageToRecipe
+    addImageToRecipe,
+    createPantry,
+    addIngredient,
+    fetchCuisineOptions
 };
 
