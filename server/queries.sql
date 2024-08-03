@@ -641,6 +641,9 @@ VALUES ('Home');
 INSERT INTO SavedPantry (Category)
 VALUES ('Work');
 
+INSERT INTO SavedPantry (Category)
+VALUES ('Work');
+
 -- UserPantries table
 INSERT INTO UserPantries (UserID, PantryID)
 VALUES (1, 1);
@@ -674,6 +677,9 @@ VALUES (10, 10);
 
 INSERT INTO UserPantries (UserID, PantryID)
 VALUES (11, 11);
+
+INSERT INTO UserPantries (UserID, PantryID)
+VALUES (1, 12);
 
 -- Create FoodItem table
 INSERT INTO FoodItem (FoodName, ShelfLife, Calories, FoodGroup)

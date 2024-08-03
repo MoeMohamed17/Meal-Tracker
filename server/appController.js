@@ -302,6 +302,23 @@ router.get('/pantry/:id', async (req, res) => {
     res.json({data: tableContent});
 });
 
+/*
+API endpoint to GET all pantries from all users
+*/
+router.get('/pantries', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const tableContent = await appService.fetchSavedPantries(columns);
+    res.json({data: tableContent});
+});
+
+/*
+API endpoint to GET all existing pantries
+*/
+router.get('/savedpantries', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const tableContent = await appService.fetchAllPantries(columns);
+    res.json({data: tableContent});
+});
 
 
 

@@ -475,10 +475,52 @@ async function fetchPantries(UserID) {
     });
 }
 
+/*
+Returns all pantries associated with all users by UserId
+*/
+async function fetchAllPantries(columns) {
+    return await withOracleDB(async (connection) => {
+        const allCols = ['up.UserID', 'up.PantryID', 'u.UserName', 'sp.Category'];
+        const selCols = columns ? columns.join(', ') : allCols.join(', ');
 
+        const query = `
+            SELECT ${selCols}
+            FROM UserPantries up
+            JOIN Users u ON up.UserID = u.UserID
+            JOIN SavedPantry sp ON up.PantryID = sp.PantryID
+            ORDER BY up.UserID
+        `;
 
+        try {
+            const result = await connection.execute(query, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+            console.log('Query result:', result.rows); // Debug: Log query results
+            return result.rows;
+        } catch (error) {
+            console.error('Error executing query:', error);
+            return [];
+        }
+    }).catch((error) => {
+        console.error('Error in withOracleDB:', error);
+        return [];
+    });
+}
 
+/*
+Returns all existing pantries regardless of user
+*/
+async function fetchSavedPantries(columns) {
+    return await withOracleDB(async (connection) => {
+        const allCols = ['sp.PantryID', 'sp.Category'];
+        const selCols = columns ? columns.join(', ') : allCols.join(', ');
 
+        const result = await connection.execute(`
+            SELECT ${selCols}
+            FROM SavedPantry sp`);
+        return processResults(result);
+    }).catch(() => {    
+        return [];
+    });
+}
 
 
 // Update an existing recipe
@@ -560,6 +602,8 @@ module.exports = {
     fetchIngredientInstances,
     UserLikedRecipe,
     UserUnlikedRecipe,
-    addImageToRecipe
+    addImageToRecipe,
+    fetchAllPantries,
+    fetchSavedPantries
 };
 
