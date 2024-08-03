@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button, TextInput, Textarea, Title, Group } from '@mantine/core';
+import { Button, TextInput, Textarea, Title, Group, Select} from '@mantine/core';
 import styles from '../newrecipes/newrecipes.css';
 
 const RecipeForm = () => {
@@ -134,10 +134,23 @@ const RecipeForm = () => {
                     onChange={(e) => setName(e.target.value)}
                     required
                 />
-                <TextInput
+                <Select
                     label="Cuisine"
                     value={cuisine}
-                    onChange={(e) => setCuisine(e.target.value)}
+                    onChange={(value) => setCuisine(value)}
+                    data={[
+                        'Brazilian',
+                        'Chinese',
+                        'Ethiopian',
+                        'French',
+                        'Greek',
+                        'Indian',
+                        'Italian',
+                        'Japanese',
+                        'Lebanese',
+                        'Mexican',
+                        'Thai',
+                    ]}
                     required
                 />
                 <TextInput
@@ -174,3 +187,5 @@ const RecipeForm = () => {
 }
 
 export default RecipeForm;
+
+
