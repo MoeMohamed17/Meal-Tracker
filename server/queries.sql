@@ -465,6 +465,32 @@ VALUES ('https://feelgoodfoodie.net/wp-content/uploads/2023/09/Lebanese-Tabboule
 INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
 VALUES ('https://www.mygreekdish.com/wp-content/uploads/2013/05/Moussaka-recipe-Traditional-Greek-Moussaka-with-Eggplants.jpg', 11);
 
+-- multi image test
+INSERT INTO Images(ImageURL, Caption)
+VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123');
+INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 1);
+INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 2);
+INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 3);
+INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 4);
+INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 5);
+INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 6);
+INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 7);
+INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 8);
+INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 9);
+INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 10);
+INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 11);
+
 
 -- StepContains
 INSERT INTO StepContains (StepNum, InstructionText, RecipeID)
