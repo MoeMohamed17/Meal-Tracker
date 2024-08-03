@@ -175,6 +175,18 @@ router.get('/recipe/:id/steps', async (req, res) => {
     }
 });
 
+/*
+API endpoint to GET cuisine options
+*/
+router.get('/cuisines', async (req, res) => {
+    const cuisines = await appService.fetchCuisineOptions();
+    if (cuisines.length === 0) {
+        res.status(404).json({ error: 'No cuisines found' });
+    } else {
+        res.json({ data: cuisines });
+    }
+});
+
 /*================================================
 ==================IMAGE ENDPOINTS=================
 ================================================*/
@@ -303,6 +315,30 @@ router.get('/pantry/:id', async (req, res) => {
 });
 
 
+// Add this endpoint to handle the creation of a new pantry
+router.post('/pantry', async (req, res) => {
+    const { UserID, Category } = req.body;
+    const response = await appService.createPantry(UserID, Category);
+    if (response) {
+        res.status(201).json({ message: 'Pantry created', response });
+    } else {
+        res.status(500).json({ error: 'Failed to create pantry' });
+    }
+});
+
+
+
+// Add this endpoint to handle adding a new ingredient instance
+router.post('/ingredient', async (req, res) => {
+    const { PantryID, FoodName, Quantity, ExpiryDate } = req.body;
+    const response = await appService.addIngredient(PantryID, FoodName, Quantity, ExpiryDate);
+    if (response) {
+        res.status(201).json({ message: 'Ingredient added', response });
+    } else {
+        res.status(500).json({ error: 'Failed to add ingredient' });
+    }
+});
+
 
 
 
@@ -347,7 +383,7 @@ router.get('/locations', async (req, res) => {
 });
 
 // API endpoint to add an image to a recipe
-router.post('/api/images', async (req, res) => {
+router.post('/images', async (req, res) => {
     const { recipeID, imageURL, caption } = req.body;
 
     try {
