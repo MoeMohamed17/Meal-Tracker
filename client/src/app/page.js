@@ -112,7 +112,7 @@ export default function Home() {
               withAsterisk
               required
               label='Name'
-              placeholder="Dentist Crentist"
+              placeholder="DentistCrentist"
               sx={{ width: '100%', textAlign: 'right' }}
               className={styles.userInput}
               error={newUserError}

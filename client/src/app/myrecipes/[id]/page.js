@@ -19,6 +19,7 @@ const EditRecipe = () => {
   const [cuisineOptions, setCuisineOptions] = useState([]);
   const [users, setUsers] = useState([]);
   const [steps, setSteps] = useState([]);
+  const [error, setError] = useState('');
 
   const router = useRouter();
 
@@ -91,45 +92,142 @@ const EditRecipe = () => {
   });
 
   const handleSubmit = async (values) => {
-    const updatedRecipe = {}
-    const updatedImages = {}
-    const updatedSteps = {}
-    if (values.name && values.name !== recipe.RECIPENAME) {
-      updatedRecipe.RecipeName = values.name;
-    }
-    if (values.cuisine && values.cuisine !== recipe.CUISINE) {
-      updatedRecipe.Cuisine = values.cuisine;
-    }
-    if (values.time && values.time !== recipe.COOKINGTIME) {
-      updatedRecipe.CookingTime = values.time;
-    }
-    if (values.user && values.user.split('.')[1].replace(/\s/g, '') !== recipe.USERNAME) {
-      updatedRecipe.UserID = values.user.split('.')[0];
-    }
-    if (values.url && values.url !== recipe.IMAGEURL.join('\n')) {
-      updatedImages.ImageURL = values.url.split('\n');
-    }
-    if (values.caption && values.caption !== recipe.CAPTION.join('\n')) {
-      updatedImages.Caption = values.caption. split('\n');
-    }
-    if (values.steps && values.steps !== steps.map(step => `${step[1]}`).join('\n')) {
-      updatedRecipe.InstructionText = values.steps.split('\n');
+    form.setFieldError('url', '');
+    form.setFieldError('caption', '');
+  
+    const updatedRecipe = {
+      RecipeName: values.name || recipe.RECIPENAME,
+      Cuisine: values.cuisine || recipe.CUISINE,
+      CookingTime: values.time || recipe.COOKINGTIME,
+      UserID: (values.user && values.user.split('.')[1].trim() !== recipe.USERNAME) ? values.user.split('.')[0] : recipe.USERID,
+      InstructionText: values.steps ? values.steps.split('\n') : steps.map(step => `${step[1]}`)
+    };
+  
+    const updatedImages = {
+      ImageURL: values.url ? values.url.split('\n') : recipe.IMAGEURL,
+      Caption: values.caption ? values.caption.split('\n') : recipe.CAPTION
+    };
+
+    if (updatedImages.ImageURL.length !== updatedImages.Caption.length) {
+      form.setFieldError('url', 'Number of image URLs must match number of captions.');
+      form.setFieldError('caption', 'Number of image URLs must match number of captions.');
+      return;
     }
 
-    console.log(updatedRecipe);
+    const updatedSteps = values.steps && values.steps !== steps.map(step => `${step[1]}`).join('\n') ? { steps: values.steps.split('\n') } : { steps: steps.map((step) => step[1])};
+
+    // console.log(updatedRecipe);
     console.log(updatedImages);
-    console.log(updatedSteps);
+    // console.log(updatedSteps);
     
-    // try {
-    //   const response = await fetch('/api/', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({})
-    //   })
-    // }
+    try {
+      const response = await fetch(`/api/recipe/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedRecipe)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update recipe');
+      }
+    } catch (error) {
+      console.log("Failed to update");
+      setError(error);
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/steps/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }});
+
+      if (!response.ok) {
+        throw new Error('Failed to delete steps');
+      }
+    } catch (error) {
+      console.log("Failed to delete steps");
+      setError(error);
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/steps/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedSteps)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add new steps');
+      }
+    } catch (error) {
+      console.log("Failed to add new steps");
+      setError(error);
+      return;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    try {
+      const response = await fetch(`/api/images/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }});
+
+      if (!response.ok) {
+        throw new Error('Failed to delete images');
+      }
+    } catch (error) {
+      console.log("Failed to delete images");
+      setError(error);
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/images/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedImages)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add new images');
+      }
+    } catch (error) {
+      console.log("Failed to add new images");
+      setError(error);
+      return;
+    }
+
+    router.push('/myrecipes');
   };
+
+
+
+
+
+
+
 
   const handleDelete = async () => {
     try {
@@ -142,6 +240,7 @@ const EditRecipe = () => {
       if (!response.ok) {
         throw new Error('Failed to delete recipe');
       }
+      router.push('/myrecipes');
     } catch (error) {
       console.error('Error deleting recipe:', error);
     }
@@ -151,17 +250,19 @@ const EditRecipe = () => {
     <div>
       <NavBar/>
       <div style={{paddingLeft:'20px', paddingTop:'20px', width:'50%'}}>
-        <div>
-          {'RecipeID: ' + recipe.RECIPEID}
-        </div>
-        <br></br>
+          <div>
+            {'RecipeID: ' + recipe.RECIPEID}
+            <br/>
+            {'Any fields left blank will default to their existing values.'}
+          </div>
+        <br/>
         <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
           <TextInput
             label="Recipe Name"
             placeholder={recipe.RECIPENAME}
             {...form.getInputProps('name')}
           />
-          <br></br>
+          <br/>
 
           <Select
             label='Cuisine'
@@ -169,49 +270,49 @@ const EditRecipe = () => {
             data={cuisineOptions}
             {...form.getInputProps('cuisine')}
           />
-          <br></br>
+          <br/>
 
           <TextInput
             label="Time to prepare"
             placeholder={recipe.COOKINGTIME}
             {...form.getInputProps('time')}
           />
-          <br></br>
+          <br/>
 
           <Select
             label='Change author'
             data={users.map(user => `${user[0]}. ${user[1]}`)}
             {...form.getInputProps('user')}
           />
-          <br></br>
+          <br/>
 
           <Textarea
             label='Image URLs'
             placeholder={recipe.IMAGEURL ? recipe.IMAGEURL.join('\n') : ''}
+            error={form.errors.caption}
             {...form.getInputProps('url')}
           />
-          <br></br>
+          <br/>
 
           <Textarea
             label='Image captions'
             placeholder={recipe.CAPTION ? recipe.CAPTION.join('\n') : ''}
+            error={form.errors.caption}
             {...form.getInputProps('caption')}
           />
-          <br></br>
+          <br/>
 
           <Textarea
             label='Steps'
             placeholder={steps.map(step => `${step[1]}`).join('\n')}
             {...form.getInputProps('steps')}
           />
-          <br></br>
-
+          <br/>
           <Button type="submit">Submit</Button>
+
         </form>
-        <br></br>
-        <Link href='/myrecipes' passHref>
-          <Button onClick={handleDelete} color='red'>Delete</Button>
-        </Link>
+        <br/>
+        <Button onClick={handleDelete} color='red'>Delete</Button>
       </div>
     </div>
   );
