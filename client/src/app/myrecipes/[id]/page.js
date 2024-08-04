@@ -6,6 +6,9 @@ import { useParams } from 'next/navigation';
 import '../MyRecipes.css';
 import GroupRecipes from '@/app/util/GroupRecipes';
 import { TextInput, Textarea, Select, Button } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { useRouter } from "next/navigation";
+import Link from 'next/link';
 
 
 const EditRecipe = () => {
@@ -16,7 +19,9 @@ const EditRecipe = () => {
   const [cuisineOptions, setCuisineOptions] = useState([]);
   const [users, setUsers] = useState([]);
   const [steps, setSteps] = useState([]);
-  const [foods, setFoods] = useState([]);
+  const [error, setError] = useState('');
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUsers = async() => {
@@ -29,7 +34,7 @@ const EditRecipe = () => {
       }
     };
     fetchUsers();
-  }, [])
+  }, []);
 
   useEffect(() => {
     const fetchCuisines = async () => {
@@ -45,23 +50,6 @@ const EditRecipe = () => {
   }, []);
 
   useEffect(() => {
-    const fetchRecipes = async () => {  
-        try {
-            const response = await fetch(`/api/recipes?id=${id}&img=true`);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const { data } = await response.json();
-            setRecipe(GroupRecipes(data)[0]);
-        } catch (error) {
-            console.error('Error fetching recipes:', error);
-        }
-    };
-  
-    fetchRecipes();
-  }, []);
-
-  useEffect(() => {
     const fetchRecipe = async () => {  
         try {
             const response = await fetch(`/api/recipes?id=${id}&img=true`);
@@ -74,9 +62,8 @@ const EditRecipe = () => {
             console.error('Error fetching recipes:', error);
         }
     };
-  
     fetchRecipe();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     const fetchRecipeSteps = async () => {
@@ -86,110 +73,247 @@ const EditRecipe = () => {
           throw new Error('Failed to fetch recipe steps');
         }
         const data = await response.json();
-        setSteps(data.data);  
+        setSteps(data.data);
       } catch (error) {
         console.error('Error fetching recipe steps:', error);
       }
     };
-
     fetchRecipeSteps();
-  }, []);
+  }, [id]);
 
-  useEffect(() => {
-    const fetchFoods = async () => {
-      try {
-        const response = await fetch(`/api/recipe/${id}/fooditems`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch foods');
-        }
-        const data = await response.json();
-        setFoods(data.data);
-        console.log(data.data)
-      } catch (error) {
-        console.error('Error fetching foods:', error);
-      }
+  const form = useForm({
+    initialValues: {
+      name: '',
+      cuisine: '',
+      time: '',
+      image: '',
+      steps: ''
+    }
+  });
+
+  const handleSubmit = async (values) => {
+    form.setFieldError('url', '');
+    form.setFieldError('caption', '');
+  
+    const updatedRecipe = {
+      RecipeName: values.name || recipe.RECIPENAME,
+      Cuisine: values.cuisine || recipe.CUISINE,
+      CookingTime: values.time || recipe.COOKINGTIME,
+      UserID: (values.user && values.user.split('.')[1].trim() !== recipe.USERNAME) ? values.user.split('.')[0] : recipe.USERID,
+      InstructionText: values.steps ? values.steps.split('\n') : steps.map(step => `${step[1]}`)
+    };
+  
+    const updatedImages = {
+      ImageURL: values.url ? values.url.split('\n') : recipe.IMAGEURL,
+      Caption: values.caption ? values.caption.split('\n') : recipe.CAPTION
     };
 
-    fetchFoods();
-  }, []);
+    if (updatedImages.ImageURL.length !== updatedImages.Caption.length) {
+      form.setFieldError('url', 'Number of image URLs must match number of captions.');
+      form.setFieldError('caption', 'Number of image URLs must match number of captions.');
+      return;
+    }
 
-  
+    const updatedSteps = values.steps && values.steps !== steps.map(step => `${step[1]}`).join('\n') ? { steps: values.steps.split('\n') } : { steps: steps.map((step) => step[1])};
+
+    // console.log(updatedRecipe);
+    console.log(updatedImages);
+    // console.log(updatedSteps);
+    
+    try {
+      const response = await fetch(`/api/recipe/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedRecipe)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update recipe');
+      }
+    } catch (error) {
+      console.log("Failed to update");
+      setError(error);
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/steps/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }});
+
+      if (!response.ok) {
+        throw new Error('Failed to delete steps');
+      }
+    } catch (error) {
+      console.log("Failed to delete steps");
+      setError(error);
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/steps/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedSteps)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add new steps');
+      }
+    } catch (error) {
+      console.log("Failed to add new steps");
+      setError(error);
+      return;
+    }
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+    try {
+      const response = await fetch(`/api/images/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }});
+
+      if (!response.ok) {
+        throw new Error('Failed to delete images');
+      }
+    } catch (error) {
+      console.log("Failed to delete images");
+      setError(error);
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/images/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedImages)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add new images');
+      }
+    } catch (error) {
+      console.log("Failed to add new images");
+      setError(error);
+      return;
+    }
+
+    router.push('/myrecipes');
+  };
+
+
+
+
+
+
+
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/recipe/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      if (!response.ok) {
+        throw new Error('Failed to delete recipe');
+      }
+      router.push('/myrecipes');
+    } catch (error) {
+      console.error('Error deleting recipe:', error);
+    }
+  }
 
   return (
     <div>
       <NavBar/>
-
       <div style={{paddingLeft:'20px', paddingTop:'20px', width:'50%'}}>
-        <div>
-          {'RecipeID: ' + recipe.RECIPEID}
-        </div>
-        <br></br>
+          <div>
+            {'RecipeID: ' + recipe.RECIPEID}
+            <br/>
+            {'Any fields left blank will default to their existing values.'}
+          </div>
+        <br/>
+        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+          <TextInput
+            label="Recipe Name"
+            placeholder={recipe.RECIPENAME}
+            {...form.getInputProps('name')}
+          />
+          <br/>
 
-        <TextInput
-          description="Name of the recipe"
-          placeholder={recipe.RECIPENAME}
-        />
-        <br></br>
+          <Select
+            label='Cuisine'
+            placeholder={recipe.CUISINE}
+            data={cuisineOptions}
+            {...form.getInputProps('cuisine')}
+          />
+          <br/>
 
-        <Select
-          label='Cuisine'
-          placeholder={recipe.CUISINE}
-          data={cuisineOptions}
-        />
-        <br></br>
+          <TextInput
+            label="Time to prepare"
+            placeholder={recipe.COOKINGTIME}
+            {...form.getInputProps('time')}
+          />
+          <br/>
 
-        <TextInput
-          label="Time to prepare"
-          placeholder={recipe.COOKINGTIME}
-        />
-        <br></br>
+          <Select
+            label='Change author'
+            data={users.map(user => `${user[0]}. ${user[1]}`)}
+            {...form.getInputProps('user')}
+          />
+          <br/>
 
-        <div>
-          {'Recipe level: ' + recipe.RECIPELEVEL}
-        </div>
-        <br></br>
+          <Textarea
+            label='Image URLs'
+            placeholder={recipe.IMAGEURL ? recipe.IMAGEURL.join('\n') : ''}
+            error={form.errors.caption}
+            {...form.getInputProps('url')}
+          />
+          <br/>
 
-        <div>
-          {'Author: ' + recipe.USERNAME}
-        </div>
-        <br></br>
+          <Textarea
+            label='Image captions'
+            placeholder={recipe.CAPTION ? recipe.CAPTION.join('\n') : ''}
+            error={form.errors.caption}
+            {...form.getInputProps('caption')}
+          />
+          <br/>
 
-        <Select
-          label='Change author'
-          data={users.map(user => `${user[0]}. ${user[1]}`)}
-        />
-        <br></br>
+          <Textarea
+            label='Steps'
+            placeholder={steps.map(step => `${step[1]}`).join('\n')}
+            {...form.getInputProps('steps')}
+          />
+          <br/>
+          <Button type="submit">Submit</Button>
 
-        <Textarea
-          label='Image URLs'
-          placeholder={recipe.IMAGEURL ? recipe.IMAGEURL.join(',') : ''}
-        />
-        <br></br>
-
-        <Textarea
-          label='Image captions'
-          placeholder={recipe.IMAGEURL ? recipe.CAPTION.join(',') : ''}
-        />
-        <br></br>
-
-        <Textarea
-          label='Steps'
-          placeholder={steps.map(step => `${step[1]}`)}
-        />
-        <br></br>
-
-        <Textarea
-          label='Ingredients'
-          placeholder={foods.map(fooditem => `${fooditem.QUANTITY} ${fooditem.FOODNAME}`)}
-        />
-        <br></br>
+        </form>
+        <br/>
+        <Button onClick={handleDelete} color='red'>Delete</Button>
       </div>
-      <Button>Submit</Button>
-      <Button>Delete</Button>
-
     </div>
   );
 };
