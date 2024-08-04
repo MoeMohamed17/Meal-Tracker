@@ -407,7 +407,7 @@ async function deleteImages(recipeID) {
 // Fetch All Images 
 async function fetchAllImages(columns) {
     return await withOracleDB(async (connection) => {
-        const allCols = ['ImageURL', 'Caption', 'RecipeID'];
+        const allCols = ['RecipeID', 'Caption', 'ImageURL'];
         const selCols = columns ? columns.join(', ') : allCols.join(', ');
 
         const result = await connection.execute(`
@@ -953,6 +953,50 @@ async function fetchCuisineOptions() {
 }
 
 
+async function fetchTableNames() {
+    return await withOracleDB(async (connection) => {
+      const result = await connection.execute(`
+        SELECT table_name
+        FROM user_tables
+        ORDER BY table_name
+      `);
+      return result.rows.map(row => row[0]); 
+    }).catch((err) => {
+      console.error(err);
+      return [];
+    });
+  }
+
+async function fetchTableColumns(tableName) {
+    return await withOracleDB(async (connection) => {
+      const query = `SELECT column_name FROM user_tab_columns WHERE table_name = '${tableName.toUpperCase()}'`;
+      const result = await connection.execute(query);
+      return result.rows.map((row) => row[0]);
+    }).catch((err) => {
+      console.error('Error fetching columns:', err);
+      return [];
+    });
+  }
+
+async function fetchTableData(tableName, columns) {
+    return await withOracleDB(async (connection) => {
+      // If no columns specified, select all columns
+      const allColsQuery = `SELECT column_name FROM user_tab_columns WHERE table_name = '${tableName.toUpperCase()}'`;
+      const allColsResult = await connection.execute(allColsQuery);
+      const allCols = allColsResult.rows.map((row) => row[0]);
+  
+      const selectedCols = columns && columns.length > 0 ? columns : allCols;
+      const selColsQuery = selectedCols.join(', ');
+  
+      const query = `SELECT ${selColsQuery} FROM ${tableName}`;
+      const result = await connection.execute(query);
+      return result.rows.map((row) => Object.fromEntries(row.map((value, index) => [selectedCols[index], value])));
+    }).catch((err) => {
+      console.error('Error fetching table data:', err);
+      return [];
+    });
+  }
+  
 
 module.exports = {
     fetchUser,
@@ -994,5 +1038,8 @@ module.exports = {
     fetchAllFoodItems,
     fetchAllHealthyFoodItems,
     fetchAllFoodsInRecipes,
-    fetchAllIngredientInstances
+    fetchAllIngredientInstances,
+    fetchTableNames,
+    fetchTableData,
+    fetchTableColumns
 };

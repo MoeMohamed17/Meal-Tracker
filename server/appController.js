@@ -611,6 +611,45 @@ router.post('/images', async (req, res) => {
 });
 
 
+router.get('/tables', async (req, res) => {
+    try {
+      const tables = await appService.fetchTableNames();
+      res.json({ data: tables });
+    } catch (error) {
+      console.error('Error fetching table names:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+// Get list of columns for a specific table
+router.get('/table-columns', async (req, res) => {
+    const tableName = req.query.table;
+  
+    try {
+      const columns = await appService.fetchTableColumns(tableName);
+      res.json({ data: columns });
+    } catch (error) {
+      console.error('Error fetching table columns:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
+// Get data for a specific table with optional column filtering
+router.get('/table-data', async (req, res) => {
+    const tableName = req.query.table;
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+  
+    try {
+      const data = await appService.fetchTableData(tableName, columns);
+      res.json({ data });
+    } catch (error) {
+      console.error('Error fetching table data:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
+  
+
 module.exports = router;
 
 
