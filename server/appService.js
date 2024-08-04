@@ -693,6 +693,8 @@ module.exports = {
     createPantry,
     addIngredient,
     fetchCuisineOptions,
-    fetchRecipeFoodItems
+    fetchRecipeFoodItems,
+    fetchAllPantries,
+    fetchSavedPantries
 };
 
