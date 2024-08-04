@@ -517,7 +517,7 @@ async function fetchAllUsers(columns) {
                 WHERE u.Points >= Points)
             ORDER BY u.UserId
             `);
-        return result.rows;
+        return processResults(result);
     }).catch(() => {    
         return [];
     });
