@@ -52,7 +52,7 @@ const UpdateTable = ({ recipes }) => {
       {recipes.length > 0 ? (
         <div style={{ position: 'relative', top: '20px', left: '20px' }}>
           <Link href={`/myrecipes/${selectedID}`} passHref>
-            <Button>
+            <Button disabled={!selectedID}>
               Inspect
             </Button>
           </Link>

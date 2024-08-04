@@ -12,6 +12,7 @@ export default function Home() {
   const [selectedUser, setSelectedUser] = useState('');
   const [newUsername, setNewUsername] = useState('')
   const [newUserError, setNewUserError] = useState('');
+  const [newUserSuccess, setNewUserSuccess] = useState('');
 
   const router = useRouter();
   
@@ -53,10 +54,13 @@ export default function Home() {
       const data = await response.json(); 
       handleUserChange(data.response.UserID);
       fetchUsers();
+      setNewUserSuccess('Success!');
+      setNewUserError('');
       
     } catch (error) {
       console.error(error);
       setNewUserError('Username already taken.');
+      setNewUserSuccess();
     }
   };
 
@@ -66,8 +70,11 @@ export default function Home() {
   // Handle user selection
   const handleUserChange = (userId) => {
     console.log(userId);
-    localStorage.setItem('selectedUser', userId); // Store selected user ID in localStorage
-    router.push('/recipes');
+    localStorage.setItem('selectedUser', userId);
+    setTimeout(() => {
+      router.push('/recipes');
+    }, 1000);
+    
   };
 
 
@@ -92,7 +99,7 @@ export default function Home() {
             <Select
               label="Login to Existing User"
               placeholder="Pick a user"
-              data={users.map((user, index) => `${user[0]}. ${user[1]}`)}
+              data={users.map((user, index) => `${user.USERID}. ${user.USERNAME}`)}
               onChange={(value) => setSelectedUser(value.split('.')[0])}
               className={styles.userSelect}
             />
@@ -126,6 +133,7 @@ export default function Home() {
             >
               Create
             </Button>
+            <Text c="green">{newUserSuccess}</Text>
           </Group>
         </Grid.Col>
       </Grid>
