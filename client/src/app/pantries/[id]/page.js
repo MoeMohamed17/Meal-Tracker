@@ -3,62 +3,173 @@
 
 import { useParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import NavBar from '../../components/NavBar'; // Adjust the path if necessary
+import { Button, TextInput, Modal, Select } from '@mantine/core';
+import { DatePicker } from '@mantine/dates';
+import NavBar from '../../components/NavBar';
 
 const PantryDetails = () => {
   const params = useParams();
   const id = params.id;
 
   const [ingredients, setIngredients] = useState([]);
+  const [newIngredient, setNewIngredient] = useState({
+    foodName: '',
+    quantity: '',
+    expiryDate: null,
+    shelfLife: '',
+    calories: '',
+    foodGroup: '',
+  });
+  const [openIngredientModal, setOpenIngredientModal] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    console.log("Pantry ID:", id); // Debug log to check if ID is retrieved correctly
+  const fetchIngredients = async () => {
     if (id) {
-      const fetchIngredients = async () => {
-        try {
-          const response = await fetch(`/api/pantry/${id}/ingredients`);
-          console.log("API Response Status:", response.status); // Check response status
+      try {
+        console.log("Fetching ingredients for pantry ID:", id);
+        const response = await fetch(`/api/pantry/${id}/ingredients`);
 
-          if (!response.ok) {
-            throw new Error('Failed to fetch ingredients');
-          }
-
-          const data = await response.json();
-          console.log("Fetched Ingredients Data:", data); // Log data to see structure
-
-          setIngredients(data.data);
-        } catch (error) {
-          console.error('Error fetching ingredients:', error);
-          setError('Failed to load ingredients.');
+        if (!response.ok) {
+          throw new Error('Failed to fetch ingredients');
         }
-      };
 
-      fetchIngredients();
+        const data = await response.json();
+        setIngredients(data.data || []);
+      } catch (error) {
+        console.error('Error fetching ingredients:', error);
+        setError('Failed to load ingredients.');
+      }
     }
+  };
+
+  useEffect(() => {
+    fetchIngredients();
   }, [id]);
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+  const handleAddIngredient = async () => {
+    const { foodName, quantity, expiryDate, shelfLife, calories, foodGroup } = newIngredient;
 
-  if (!ingredients.length) {
-    return <div>Loading...</div>;
-  }
+    if (foodName && quantity && expiryDate && shelfLife && calories && foodGroup) {
+      try {
+        const formattedExpiryDate = expiryDate.toISOString().split('T')[0];
+        const response = await fetch('/api/ingredient', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            PantryID: id,
+            FoodName: foodName,
+            Quantity: parseInt(quantity, 10),
+            ExpiryDate: formattedExpiryDate,
+            ShelfLife: shelfLife,
+            Calories: parseInt(calories, 10),
+            FoodGroup: foodGroup,
+          }),
+        });
+
+        if (response.ok) {
+          setNewIngredient({
+            foodName: '',
+            quantity: '',
+            expiryDate: null,
+            shelfLife: '',
+            calories: '',
+            foodGroup: '',
+          });
+          setOpenIngredientModal(false);
+          fetchIngredients();
+        } else {
+          throw new Error('Failed to add ingredient');
+        }
+      } catch (error) {
+        console.error('Error adding ingredient:', error);
+        setError('Failed to add ingredient.');
+      }
+    }
+  };
 
   return (
     <div>
       <NavBar />
       <h1>Pantry Ingredients</h1>
+      <Button onClick={() => setOpenIngredientModal(true)}>Add Ingredient</Button>
+      <Modal
+        opened={openIngredientModal}
+        onClose={() => setOpenIngredientModal(false)}
+        title="Add New Ingredient"
+      >
+        <TextInput
+          label="Food Name"
+          placeholder="Enter food name"
+          value={newIngredient.foodName}
+          onChange={(e) =>
+            setNewIngredient({ ...newIngredient, foodName: e.currentTarget.value })
+          }
+        />
+        <TextInput
+          label="Quantity"
+          placeholder="Enter quantity"
+          value={newIngredient.quantity}
+          onChange={(e) =>
+            setNewIngredient({ ...newIngredient, quantity: e.currentTarget.value })
+          }
+        />
+        <DatePicker
+          label="Expiry Date"
+          placeholder="Select expiry date"
+          value={newIngredient.expiryDate}
+          onChange={(date) => setNewIngredient({ ...newIngredient, expiryDate: date })}
+        />
+        <TextInput
+          label="Shelf Life"
+          placeholder="Enter shelf life"
+          value={newIngredient.shelfLife}
+          onChange={(e) =>
+            setNewIngredient({ ...newIngredient, shelfLife: e.currentTarget.value })
+          }
+        />
+        <TextInput
+          label="Calories"
+          placeholder="Enter calories"
+          value={newIngredient.calories}
+          onChange={(e) =>
+            setNewIngredient({ ...newIngredient, calories: e.currentTarget.value })
+          }
+        />
+        <Select
+          label="Food Group"
+          placeholder="Select food group"
+          value={newIngredient.foodGroup}
+          onChange={(value) =>
+            setNewIngredient({ ...newIngredient, foodGroup: value })
+          }
+          data={[
+            { value: 'Fruits', label: 'Fruits' },
+            { value: 'Vegetables', label: 'Vegetables' },
+            { value: 'Grains', label: 'Grains' },
+            { value: 'Protein Foods', label: 'Protein Foods' },
+            { value: 'Dairy', label: 'Dairy' },
+            { value: 'Legumes', label: 'Legumes' },
+            { value: 'Others', label: 'Others' },
+          ]}
+        />
+        <Button onClick={handleAddIngredient}>Submit</Button>
+      </Modal>
       <ul className="ingredients-list">
-        {ingredients.map((ingredient, index) => (
-          <li key={index}>
-            <p><strong>Food Name:</strong> {ingredient.FOODNAME}</p>
-            <p><strong>Quantity:</strong> {ingredient.QUANTITY}</p>
-            <p><strong>Date Added:</strong> {new Date(ingredient.DATEADDED).toLocaleDateString()}</p>
-            <p><strong>Expiry Date:</strong> {new Date(ingredient.EXPIRYDATE).toLocaleDateString()}</p>
-          </li>
-        ))}
+        {ingredients.length > 0 ? (
+          ingredients.map((ingredient, index) => (
+            <li key={index}>
+              <p><strong>Food Name:</strong> {ingredient.FOODNAME}</p>
+              <p><strong>Quantity:</strong> {ingredient.QUANTITY}</p>
+              <p><strong>Date Added:</strong> {new Date(ingredient.DATEADDED).toLocaleDateString()}</p>
+              <p><strong>Expiry Date:</strong> {new Date(ingredient.EXPIRYDATE).toLocaleDateString()}</p>
+            </li>
+          ))
+        ) : (
+          <div>
+            <p>No ingredients found in this pantry.</p>
+            <p>Click "Add Ingredient" to start populating your pantry!</p>
+          </div>
+        )}
       </ul>
     </div>
   );
