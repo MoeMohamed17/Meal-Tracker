@@ -104,11 +104,15 @@ import Table from '../components/Table';
 import NavBar from '../components/NavBar';
 
 const Admin = () => {
+  const [selectedTable, setSelectedTable] = useState('Users'); // State for selected table
   const [usersData, setUsersData] = useState([]);
   const [recipesData, setRecipesData] = useState([]);
   const [pantriesData, setPantriesData] = useState([]);
   const [savedPantriesData, setSavedPantriesData] = useState([]);
-  const [selectedTable, setSelectedTable] = useState('Users'); // State for selected table
+  const [UserLevelsData, setUserLevelsData] = useState([]);
+  const [recipeslikedData, setRecipesLikedData] = useState([]);
+  const [recipelevelsData, setRecipeLevelsData] = useState([]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -122,7 +126,6 @@ const Admin = () => {
         const usersData = usersJson.data.map((user) =>
           Object.fromEntries(Object.entries(user).map(([key, value]) => [key.toLowerCase(), value]))
         );
-        console.log('Users data:', usersData);
         setUsersData(usersData);
 
         // Fetch Recipes data
@@ -134,7 +137,6 @@ const Admin = () => {
         const recipesData = recipesJson.data.map((recipe) =>
           Object.fromEntries(Object.entries(recipe).map(([key, value]) => [key.toLowerCase(), value]))
         );
-        console.log('Recipes data:', recipesData);
         setRecipesData(recipesData);
 
         // Fetch All Pantries from All Users data
@@ -146,7 +148,6 @@ const Admin = () => {
         const pantriesData = pantriesJson.data.map((pantries) =>
           Object.fromEntries(Object.entries(pantries).map(([key, value]) => [key.toLowerCase(), value]))
         );
-        console.log('Pantries data:', pantriesData);
         setPantriesData(pantriesData);
 
         // Fetch All Saved and Existing Pantries
@@ -158,8 +159,40 @@ const Admin = () => {
         const savedPantriesData = savedPantriesJson.data.map((savedPantries) =>
           Object.fromEntries(Object.entries(savedPantries).map(([key, value]) => [key.toLowerCase(), value]))
         );
-        console.log('Saved Pantries data:', savedPantriesData);
         setSavedPantriesData(savedPantriesData);
+        
+        // Fetch UserLevels
+        const UserLevelsResponse = await fetch('/api/userlevels');
+        if (!UserLevelsResponse.ok) {
+          throw new Error('Failed to fetch user levels data');
+        }
+        const UserLevelsJson = await UserLevelsResponse.json();
+        const UserLevelsData = UserLevelsJson.data.map((UserLevels) =>
+          Object.fromEntries(Object.entries(UserLevels).map(([key, value]) => [key.toLowerCase(), value]))
+        );
+        setUserLevelsData(UserLevelsData);        
+        
+        // Fetch RecipesLiked
+        const RecipesLikedResponse = await fetch('/api/recipes/liked');
+        if (!RecipesLikedResponse.ok) {
+          throw new Error('Failed to fetch liked recipes data');
+        }
+        const recipeslikedJson = await RecipesLikedResponse.json();
+        const recipeslikedData = recipeslikedJson.data.map((recipesliked) =>
+          Object.fromEntries(Object.entries(recipesliked).map(([key, value]) => [key.toLowerCase(), value]))
+        );
+        setRecipesLikedData(recipeslikedData);
+
+        // Fetch RecipeLevels
+        const recipelevelsResponse = await fetch('/api/recipelevels');
+        if (!recipelevelsResponse.ok) {
+          throw new Error('Failed to fetch recipe levels data');
+        }
+        const recipelevelsJson = await recipelevelsResponse.json();
+        const recipelevelsData = recipelevelsJson.data.map((recipelevels) =>
+          Object.fromEntries(Object.entries(recipelevels).map(([key, value]) => [key.toLowerCase(), value]))
+        );
+        setRecipeLevelsData(recipelevelsData);
 
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -183,6 +216,11 @@ const Admin = () => {
           <option value="Recipes Created">Recipes Created</option>
           <option value="UserPantries">User Pantries</option>
           <option value="SavedPantries">Saved Pantries</option>
+          <option value="UserLevels">User Levels</option>
+          <option value="RecipesLiked">Liked Recipes</option>
+          <option value="RecipeLevels">Recipe Levels</option>
+
+
         </select>
       </div>
 
@@ -190,6 +228,10 @@ const Admin = () => {
       {selectedTable === 'Recipes Created' && <Table tableData={recipesData} tableName="Recipes Created" />}
       {selectedTable === 'UserPantries' && <Table tableData={pantriesData} tableName="User Pantries" />}
       {selectedTable === 'SavedPantries' && <Table tableData={savedPantriesData} tableName="Saved Pantries" />}
+      {selectedTable === 'UserLevels' && <Table tableData={UserLevelsData} tableName="User Levels" />}
+      {selectedTable === 'RecipesLiked' && <Table tableData={recipeslikedData} tableName="Liked Recipes" />}
+      {selectedTable === 'RecipeLevels' && <Table tableData={recipelevelsData} tableName="Recipe Levels" />}
+
     </div>
   );
 };
