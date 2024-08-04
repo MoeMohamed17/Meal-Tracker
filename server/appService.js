@@ -516,6 +516,28 @@ async function fetchAllLocations() {
 }
 
 
+// Fetch all ingredient instances for a specific pantry
+async function fetchRecipeFoodItems(columns, recipeID) {
+    return await withOracleDB(async (connection) => {
+        const allCols = ['f.FoodName', 'r.RecipeID', 'f.Quantity'];
+        const selCols = columns ? columns.join(', ') : allCols.join(', ');
+        console.log(selCols);
+
+        const result = await connection.execute(`
+            SELECT ${selCols}
+            FROM FoodsInRecipes f, RecipeCreated r
+            WHERE f.RecipeID = r.RecipeID
+            AND f.RecipeID = :recipeID
+        `, [recipeID]);
+        return processResults(result);
+    }).catch((err) => {
+        console.error(err);
+        return [];
+    });
+}
+
+
+
 
 // Fetch all ingredient instances for a specific pantry
 async function fetchIngredientInstances(pantryID) {
@@ -628,6 +650,7 @@ module.exports = {
     addImageToRecipe,
     createPantry,
     addIngredient,
-    fetchCuisineOptions
+    fetchCuisineOptions,
+    fetchRecipeFoodItems
 };
 

@@ -286,7 +286,22 @@ router.post('/user', async (req, res) => {
 });
 
 
-
+/*================================================
+==================FOODITEM ENDPOINTS==============
+================================================*/
+/*
+API endpoint to GET all food items of a specific recipe
+*/
+router.get('/recipe/:id/fooditems', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const recipeID = req.params.id;
+    const response = await appService.fetchRecipeFoodItems(columns, recipeID);
+    if (response.length === 0) {
+        res.status(404).json({ error: 'No food items found for this recipe' });
+    } else {
+        res.json({ data: response });
+    }
+});
 
 
 
