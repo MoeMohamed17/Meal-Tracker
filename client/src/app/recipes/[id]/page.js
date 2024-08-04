@@ -143,7 +143,8 @@ const RecipeDetails = () => {
   const id = params.id;
   const [recipe, setRecipe] = useState(null);
   const [steps, setSteps] = useState([]);
-  const [error, setError] = useState(null);
+  const [foods, setFoods] = useState([]);
+
 
   useEffect(() => {
     const fetchRecipeDetails = async () => {
@@ -156,7 +157,6 @@ const RecipeDetails = () => {
         setRecipe(data.data[0]); // Assuming the first item contains the recipe details
       } catch (error) {
         console.error('Error fetching recipe:', error);
-        setError('Failed to load recipe details.');
       }
     };
 
@@ -170,19 +170,30 @@ const RecipeDetails = () => {
         setSteps(data.data);
       } catch (error) {
         console.error('Error fetching recipe steps:', error);
-        setError('Failed to load recipe steps.');
+      }
+    };
+
+    const fetchFoods = async () => {
+      try {
+        const response = await fetch(`/api/recipe/${id}/fooditems`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch foods');
+        }
+        const data = await response.json();
+        setFoods(data.data);
+        console.log(data.data)
+      } catch (error) {
+        console.error('Error fetching foods:', error);
       }
     };
 
     if (id) {
       fetchRecipeDetails();
       fetchRecipeSteps();
+      fetchFoods();
     }
   }, [id]);
 
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   if (!recipe) {
     return <div>Loading...</div>;
@@ -201,6 +212,15 @@ const RecipeDetails = () => {
         <ol>
           {steps.map((step, index) => (
             <li key={index}>{step[1]}</li> // Instruction Text
+          ))}
+        </ol>
+      </div>
+
+      <div className="recipe-steps">
+        <h2>Ingredients</h2>
+        <ol>
+          {foods.map((fooditem, index) => (
+            <li key={index}>{`${fooditem.QUANTITY}x ${fooditem.FOODNAME}`}</li> // Instruction Text
           ))}
         </ol>
       </div>
