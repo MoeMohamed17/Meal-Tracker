@@ -163,6 +163,16 @@ router.get('/recipe/:id/steps', async (req, res) => {
     }
 });
 
+/* 
+API endpoint to GET RecipeLevels (Cuisine, RecipeLevel)
+*/
+router.get('/recipelevels', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const tableContent = await appService.fetchRecipeLevels(columns);
+    res.json({data: tableContent});
+});
+
+
 /*
 API endpoint to GET cuisine options
 */
@@ -233,6 +243,14 @@ router.delete('/images/:id', async (req, res) => {
 });
 
 
+/* 
+API endpoint to GET all images
+*/
+router.get('/images', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const tableContent = await appService.fetchAllImages(columns);
+    res.json({data: tableContent});
+});
 
 /*================================================
 ==================STEP ENDPOINTS==================
@@ -297,6 +315,12 @@ router.delete('/steps/:id', async (req, res) => {
 
 
 
+//API endpoint to GET all steps for all recipes
+router.get('/steps', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const tableContent = await appService.fetchAllSteps(columns);
+    res.json({data: tableContent});
+});
 
 
 
@@ -321,6 +345,16 @@ router.get('/users', async (req, res) => {
     const tableContent = await appService.fetchAllUsers(columns);
     res.json({data: tableContent});
 });
+
+/* 
+API endpoint to GET all users' points and level
+*/
+router.get('/userlevels', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const tableContent = await appService.fetchUserLevels(columns);
+    res.json({data: tableContent});
+});
+
 
 /*
 API endpoint to CREATE a new user
@@ -355,6 +389,35 @@ router.get('/recipe/:id/fooditems', async (req, res) => {
     }
 });
 
+/*
+API endpoint to GET all food items
+*/
+router.get('/fooditems', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const tableContent = await appService.fetchAllFoodItems(columns);
+    res.json({data: tableContent});
+});
+
+/*
+API endpoint to GET all healthy food items
+*/
+router.get('/healthyfooditems', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const tableContent = await appService.fetchAllHealthyFoodItems(columns);
+    res.json({data: tableContent});
+});
+
+/*
+API endpoint to GET all foods in all recipes
+*/
+router.get('/fooditemsinrecipes', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const tableContent = await appService.fetchAllFoodsInRecipes(columns);
+    res.json({data: tableContent});
+});
+
+
+
 
 
 /*================================================
@@ -383,6 +446,16 @@ router.get('/pantry/:id/ingredients', async (req, res) => {
         console.error('Error in fetching ingredient instances:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
+});
+
+
+/*
+API endpoint to GET all ingredient instances in all pantries
+*/
+router.get('/ingredientinstances', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const tableContent = await appService.fetchAllIngredientInstances(columns);
+    res.json({data: tableContent});
 });
 
 
@@ -468,17 +541,60 @@ router.delete('/recipe/:id', async (req, res) => {
 });
 
 
+// /*
+// API endpoint to GET all locations
+// */
+// router.get('/locations', async (req, res) => {
+//     const locations = await appService.fetchAllLocations();
+//     if (locations.length === 0) {
+//         res.status(404).json({ error: 'No locations found' });
+//     } else {
+//         res.json({ data: locations });
+//     }
+// });
+
+
+/*================================================
+==================LOCATION ENDPOINTS=================
+================================================*/
+
 /*
 API endpoint to GET all locations
 */
 router.get('/locations', async (req, res) => {
-    const locations = await appService.fetchAllLocations();
-    if (locations.length === 0) {
-        res.status(404).json({ error: 'No locations found' });
-    } else {
-        res.json({ data: locations });
-    }
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const tableContent = await appService.fetchAllLocations(columns);
+    res.json({data: tableContent});
 });
+
+/*
+API endpoint to GET all user locations
+*/
+router.get('/userlocations', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const tableContent = await appService.fetchUserLocations(columns);
+    res.json({data: tableContent});
+});
+
+/*================================================
+==================GROCERY ENDPOINTS=================
+================================================*/
+/*
+API endpoint to GET all grocery stores
+*/
+router.get('/grocerystores', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const tableContent = await appService.fetchAllGroceryStores(columns);
+    res.json({data: tableContent});
+});
+
+router.get('/nearbystores', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const tableContent = await appService.fetchAllNearbyStores(columns);
+    res.json({data: tableContent});
+});
+
+
 
 // API endpoint to add an image to a recipe
 router.post('/images', async (req, res) => {

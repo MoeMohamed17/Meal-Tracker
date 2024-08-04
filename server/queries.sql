@@ -602,6 +602,59 @@ VALUES (11, '3700 W 8th Ave', 'Vancouver', 'British Columbia');
 INSERT INTO UserLocations (UserID, Street, City, Province)
 VALUES (11, '1500 W Broadway', 'Vancouver', 'British Columbia');
 
+-- GroceryStore table
+INSERT INTO GroceryStore (Street, City, Province, StoreName)
+VALUES ('1500 W Broadway', 'Vancouver', 'British Columbia', 'Moes Groceries');
+
+INSERT INTO GroceryStore (Street, City, Province, StoreName)
+VALUES ('99 Fraser St', 'Vancouver', 'British Columbia', 'Safeway');
+
+INSERT INTO GroceryStore (Street, City, Province, StoreName)
+VALUES ('82 Misty Meadow St', 'Vancouver', 'British Columbia', 'Freshco');
+
+INSERT INTO GroceryStore (Street, City, Province, StoreName)
+VALUES ('980 Victoria Dr', 'Vancouver', 'British Columbia', 'Walmart');
+
+INSERT INTO GroceryStore (Street, City, Province, StoreName)
+VALUES ('675 Main St', 'Vancouver', 'British Columbia', 'Whole Foods');
+
+INSERT INTO GroceryStore (Street, City, Province, StoreName)
+VALUES ('309 MacDonald St', 'Vancouver', 'British Columbia', 'City Avenue Market');
+
+INSERT INTO GroceryStore (Street, City, Province, StoreName)
+VALUES ('9876 Clark Dr', 'Vancouver', 'British Columbia', 'Fortinos');
+
+INSERT INTO GroceryStore (Street, City, Province, StoreName)
+VALUES ('176 4th St', 'Vancouver', 'British Columbia', 'Sobeys');
+
+INSERT INTO GroceryStore (Street, City, Province, StoreName)
+VALUES ('8654 Cambie St', 'Vancouver', 'British Columbia', 'Farm Boy');
+
+-- NearbyStores Table
+INSERT INTO NearbyStores (LocationStreet, LocationCity, LocationProvince, GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince, Distance)
+VALUES ('1190 Richelieu Ave', 'Vancouver', 'British Columbia', '8654 Cambie St', 'Vancouver', 'British Columbia', 4);
+
+INSERT INTO NearbyStores (LocationStreet, LocationCity, LocationProvince, GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince, Distance)
+VALUES ('899 W 12th Ave', 'Vancouver', 'British Columbia', '99 Fraser St', 'Vancouver', 'British Columbia', 5);
+
+INSERT INTO NearbyStores (LocationStreet, LocationCity, LocationProvince, GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince, Distance)
+VALUES ('2517 Tempe Knoll Dr', 'Vancouver', 'British Columbia', '82 Misty Meadow St', 'Vancouver', 'British Columbia', 4);
+
+INSERT INTO NearbyStores (LocationStreet, LocationCity, LocationProvince, GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince, Distance)
+VALUES ('1500 W Broadway', 'Vancouver', 'British Columbia', '980 Victoria Dr', 'Vancouver', 'British Columbia', 5);
+
+INSERT INTO NearbyStores (LocationStreet, LocationCity, LocationProvince, GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince, Distance)
+VALUES ('3700 W 8th Ave', 'Vancouver', 'British Columbia', '675 Main St', 'Vancouver', 'British Columbia', 1);
+
+INSERT INTO NearbyStores (LocationStreet, LocationCity, LocationProvince, GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince, Distance)
+VALUES ('10931 Seaward Gate', 'Richmond', 'British Columbia', '309 MacDonald St', 'Vancouver', 'British Columbia', 2);
+
+INSERT INTO NearbyStores (LocationStreet, LocationCity, LocationProvince, GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince, Distance)
+VALUES ('14156 Melrose Dr', 'Surrey', 'British Columbia', '9876 Clark Dr', 'Vancouver', 'British Columbia', 4);
+
+INSERT INTO NearbyStores (LocationStreet, LocationCity, LocationProvince, GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince, Distance)
+VALUES ('695 E 19th Ave', 'Vancouver', 'British Columbia', '176 4th St', 'Vancouver', 'British Columbia', 3);
+
 -- SavedPantry table
 INSERT INTO SavedPantry (Category)
 VALUES ('Home');
