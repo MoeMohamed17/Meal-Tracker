@@ -372,94 +372,100 @@ INSERT INTO Images (ImageURL, Caption, RecipeID)
 VALUES ('https://static01.nyt.com/images/2021/02/14/dining/carbonara-horizontal/carbonara-horizontal-square640-v2.jpg', 'A delicious plate of Spaghetti Carbonara', 1);
 
 INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2022/05/02/dining/ag-artichoke-carbonara/merlin_205954392_c64254c9-1a95-4d4e-8131-35d928e09a1b-articleLarge.jpg', 'Carbonanza!', 1);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2016/09/28/dining/28ALTON6-WEB/28ALTON6-WEB-superJumbo.jpg', 'You should not pasta up this dish', 1);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
 VALUES ('https://thecozycook.com/wp-content/uploads/2022/03/Sweet-and-Sour-Chicken-f5.jpg', 'Sweet and Sour Chicken served with rice', 2);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://i.pinimg.com/originals/3c/3c/8c/3c3c8c6631dab19dec59043758b5240b.png', 'Sweet, and sour? Who''da thunk it?', 2);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://bittmanproject.com/wp-content/uploads/08CHICKENKETCHUP-articleLarge.jpg', 'Crisp and tangy dish', 2);
 
 INSERT INTO Images (ImageURL, Caption, RecipeID)
 VALUES ('https://iamafoodblog.b-cdn.net/wp-content/uploads/2021/05/al-pastor-3507w.jpg', 'Traditional Tacos Al Pastor with pineapple', 3);
 
 INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2019/06/05/dining/04Camararex2/04Camararex2-verticalTwoByThree735.jpg', 'Mexican food is amazing!', 3);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2019/06/05/dining/04Camararex2/merlin_155267136_8a0323b8-1d07-4f62-ae0b-f6dbc82d33c6-superJumbo.jpg', 'Tacos! Tacos! Tacos!', 3);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
 VALUES ('https://moribyan.com/wp-content/uploads/2022/05/IMG_4902-scaled-e1609906617281-1.jpg', 'Butter Chicken with creamy sauce', 4);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://www.adayinthekitchen.com/wp-content/uploads/2017/10/butter-chicken-2-720x520b.jpg', 'Delicious tender chicken', 4);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://foodess.com/wp-content/uploads/2022/10/Foodess-Best-Butter-Chicken-1-2.jpg', 'Perfectly seasoned', 4);
 
 INSERT INTO Images (ImageURL, Caption, RecipeID)
 VALUES ('https://images.services.kitchenstories.io/9GIeqQwpeGj8Te6zRGt07XzEETo=/3840x0/filters:quality(80)/images.kitchenstories.io/wagtailOriginalImages/R23-final-photo-4.jpg', 'Classic French Coq au Vin', 5);
 
 INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2023/08/24/multimedia/MC-Beef-Bourguignon-lpbv/MC-Beef-Bourguignon-lpbv-articleLarge-v4.jpg', 'Impress your guests!', 5);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2016/01/23/dining/23COOKING_COQAURIESLING1/23COOKING_COQAURIESLING1-jumbo.jpg', 'Make it, damnit', 5);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
 VALUES ('https://inquiringchef.com/wp-content/uploads/2023/02/Authentic-Pad-Thai_square-1908.jpg', 'Authentic Pad Thai noodles', 6);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2017/08/09/dining/09COOKING-PADTHAI1/09COOKING-PADTHAI1-superJumbo.jpg', 'Impress and/or poison your in-laws', 6);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2022/03/23/dining/17padthairex1/merlin_203116326_32624565-ffae-482d-9a55-043cf31afb0b-verticalTwoByThree735.jpg', 'Thailand''s national dish!', 6);
 
 INSERT INTO Images (ImageURL, Caption, RecipeID)
 VALUES ('https://holycowvegan.net/wp-content/uploads/2023/02/ethiopian-lentil-stew-recipe-1.jpg', 'Ethiopian Lentil Stew', 7);
 
 INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://www.vegkit.com/wp-content/uploads/sites/2/2021/12/83051_ethiopian_lentils_detail.jpg', 'Savoury and superb', 7);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2022/09/06/dining/nd-dal-adas/merlin_212088567_c8f02dc8-a19a-492b-b8ae-9f70eb58a58f-master768.jpg', 'Utterly appetizing!', 7);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
 VALUES ('https://www.allrecipes.com/thmb/Cr3iNBwelHE5F_uUqLcbzcaEY18=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/351366-feijoada-brazilian-black-bean-stew-Melissa-Goff-4x3-1-0fb041cc43234fedb23d171172e65a10.jpg', 'Traditional Brazilian Feijoada', 8);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://www.foodandwine.com/thmb/Jr3H4e5F4_2eHnOGKSm4jdY5bF0=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Feijoada-FT-RECIPE0323-2ed2fbae5e0c4110b5bb522c6d7e0eac.jpg', 'You won''t bean-lieve it!', 8);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2015/05/31/magazine/31eat6/31eat6-articleLarge-v2.jpg', 'You''l lose your goddamn MIND', 8);
 
 INSERT INTO Images (ImageURL, Caption, RecipeID)
 VALUES ('https://www.justonecookbook.com/wp-content/uploads/2021/04/Chicken-Katsudon-9331.jpg', 'Japanese Chicken Katsu Don', 9);
 
 INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2017/10/22/magazine/22eat/22eat-superJumbo.jpg', 'Pork cutlets served Japanese style', 9);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2021/05/23/dining/kc-chicken-katsu/merlin_185308080_a60a6563-292e-4f52-a33b-386113aca0b2-jumbo.jpg', 'Served with a savoury sauce', 9);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
 VALUES ('https://feelgoodfoodie.net/wp-content/uploads/2023/09/Lebanese-Tabbouleh-Salad-TIMG.jpg', 'Fresh Lebanese Tabbouleh', 10);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2023/05/25/multimedia/MRS-Lebanese-Tabbouleh-wzpk/MRS-Lebanese-Tabbouleh-wzpk-superJumbo.jpg', 'Delicious salad', 10);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2014/04/21/dining/Tabbouleh/Tabbouleh-square640.jpg', 'Your guests will lick their plates clean', 10);
 
 INSERT INTO Images (ImageURL, Caption, RecipeID)
 VALUES ('https://www.mygreekdish.com/wp-content/uploads/2013/05/Moussaka-recipe-Traditional-Greek-Moussaka-with-Eggplants.jpg', 'Layered Greek Moussaka', 11);
 
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2017/03/27/dining/27COOKING-MOUSSAKA/27COOKING-MOUSSAKA-articleLarge.jpg', 'A unique dish from the Mediterranean', 11);
 
--- -- Insert statements for ImagesInRecipes table
--- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
--- VALUES ('https://static01.nyt.com/images/2021/02/14/dining/carbonara-horizontal/carbonara-horizontal-square640-v2.jpg', 1);
-
--- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
--- VALUES ('https://thecozycook.com/wp-content/uploads/2022/03/Sweet-and-Sour-Chicken-f5.jpg', 2);
-
--- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
--- VALUES ('https://iamafoodblog.b-cdn.net/wp-content/uploads/2021/05/al-pastor-3507w.jpg', 3);
-
--- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
--- VALUES ('https://moribyan.com/wp-content/uploads/2022/05/IMG_4902-scaled-e1609906617281-1.jpg', 4);
-
--- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
--- VALUES ('https://images.services.kitchenstories.io/9GIeqQwpeGj8Te6zRGt07XzEETo=/3840x0/filters:quality(80)/images.kitchenstories.io/wagtailOriginalImages/R23-final-photo-4.jpg', 5);
-
--- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
--- VALUES ('https://inquiringchef.com/wp-content/uploads/2023/02/Authentic-Pad-Thai_square-1908.jpg', 6);
-
--- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
--- VALUES ('https://holycowvegan.net/wp-content/uploads/2023/02/ethiopian-lentil-stew-recipe-1.jpg', 7);
-
--- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
--- VALUES ('https://www.allrecipes.com/thmb/Cr3iNBwelHE5F_uUqLcbzcaEY18=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/351366-feijoada-brazilian-black-bean-stew-Melissa-Goff-4x3-1-0fb041cc43234fedb23d171172e65a10.jpg', 8);
-
--- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
--- VALUES ('https://www.justonecookbook.com/wp-content/uploads/2021/04/Chicken-Katsudon-9331.jpg', 9);
-
--- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
--- VALUES ('https://feelgoodfoodie.net/wp-content/uploads/2023/09/Lebanese-Tabbouleh-Salad-TIMG.jpg', 10);
-
--- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
--- VALUES ('https://www.mygreekdish.com/wp-content/uploads/2013/05/Moussaka-recipe-Traditional-Greek-Moussaka-with-Eggplants.jpg', 11);
-
--- multi image test
-INSERT INTO Images(ImageURL, Caption, RecipeID)
-VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 1);
-INSERT INTO Images(ImageURL, Caption, RecipeID)
-VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 2);
-INSERT INTO Images(ImageURL, Caption, RecipeID)
-VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 3);
-INSERT INTO Images(ImageURL, Caption, RecipeID)
-VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 4);
-INSERT INTO Images(ImageURL, Caption, RecipeID)
-VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 5);
-INSERT INTO Images(ImageURL, Caption, RecipeID)
-VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 6);
-INSERT INTO Images(ImageURL, Caption, RecipeID)
-VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 7);
-INSERT INTO Images(ImageURL, Caption, RecipeID)
-VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 8);
-INSERT INTO Images(ImageURL, Caption, RecipeID)
-VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 9);
-INSERT INTO Images(ImageURL, Caption, RecipeID)
-VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 10);
-INSERT INTO Images(ImageURL, Caption, RecipeID)
-VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 11);
-
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2011/10/26/dining/26APPE_SPAN/26APPE_SPAN-articleLarge-v2.jpg', 'Like a casserole, except Greek and not horrible', 11);
 
 -- StepContains
 INSERT INTO StepContains (StepNum, InstructionText, RecipeID)
@@ -638,7 +644,7 @@ INSERT INTO NearbyStores (LocationStreet, LocationCity, LocationProvince, Grocer
 VALUES ('899 W 12th Ave', 'Vancouver', 'British Columbia', '99 Fraser St', 'Vancouver', 'British Columbia', 5);
 
 INSERT INTO NearbyStores (LocationStreet, LocationCity, LocationProvince, GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince, Distance)
-VALUES ('2517 Tempe Knoll Dr', 'Vancouver', 'British Columbia', '82 Misty Meadow St', 'Vancouver', 'British Columbia', 4);
+VALUES ('2517 Tempe Knoll Dr', 'North Vancouver', 'British Columbia', '82 Misty Meadow St', 'Vancouver', 'British Columbia', 4);
 
 INSERT INTO NearbyStores (LocationStreet, LocationCity, LocationProvince, GroceryStoreStreet, GroceryStoreCity, GroceryStoreProvince, Distance)
 VALUES ('1500 W Broadway', 'Vancouver', 'British Columbia', '980 Victoria Dr', 'Vancouver', 'British Columbia', 5);
