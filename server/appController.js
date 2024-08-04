@@ -363,15 +363,28 @@ router.get('/recipe/:id/fooditems', async (req, res) => {
 /*
 API endpoint to GET all ingredient instances of a specific pantry
 */
+// router.get('/pantry/:id/ingredients', async (req, res) => {
+//     const pantryID = req.params.id;
+//     const ingredientInstances = await appService.fetchIngredientInstances(pantryID);
+//     if (ingredientInstances.length === 0) {
+//         res.status(404).json({ error: 'No ingredients found for this pantry' });
+//     } else {
+//         res.json({ data: ingredientInstances });
+//     }
+// });
+
+// API endpoint to GET all ingredient instances of a specific pantry
 router.get('/pantry/:id/ingredients', async (req, res) => {
     const pantryID = req.params.id;
-    const ingredientInstances = await appService.fetchIngredientInstances(pantryID);
-    if (ingredientInstances.length === 0) {
-        res.status(404).json({ error: 'No ingredients found for this pantry' });
-    } else {
-        res.json({ data: ingredientInstances });
+    try {
+        const ingredientInstances = await appService.fetchIngredientInstances(pantryID);
+        res.status(200).json({ data: ingredientInstances || [] });
+    } catch (error) {
+        console.error('Error in fetching ingredient instances:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 /*
 API endpoint to GET a user's pantries
@@ -413,17 +426,17 @@ router.post('/pantry', async (req, res) => {
 
 
 
-// Add this endpoint to handle adding a new ingredient instance
+// endpoint to handle adding a new ingredient instance
 router.post('/ingredient', async (req, res) => {
-    const { PantryID, FoodName, Quantity, ExpiryDate } = req.body;
-    const response = await appService.addIngredient(PantryID, FoodName, Quantity, ExpiryDate);
+    const { PantryID, FoodName, Quantity, ExpiryDate, ShelfLife, Calories, FoodGroup } = req.body;
+    const response = await appService.addIngredient(PantryID, FoodName, Quantity, ExpiryDate, ShelfLife, Calories, FoodGroup);
     if (response) {
-        res.status(201).json({ message: 'Ingredient added', response });
+      res.status(201).json({ message: 'Ingredient added', response });
     } else {
-        res.status(500).json({ error: 'Failed to add ingredient' });
+      res.status(500).json({ error: 'Failed to add ingredient' });
     }
-});
-
+  });
+  
 
 
 
