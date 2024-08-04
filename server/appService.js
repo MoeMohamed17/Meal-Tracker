@@ -633,27 +633,59 @@ async function createPantry(UserID, Category) {
     });
 }
 
-// Function to add a new ingredient instance
-async function addIngredient(PantryID, FoodName, Quantity, ExpiryDate) {
+
+async function addIngredient(PantryID, FoodName, Quantity, ExpiryDate, ShelfLife, Calories, FoodGroup) {
     return await withOracleDB(async (connection) => {
-        const result = await connection.execute(
-            `INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName, PantryID, Quantity) 
-            VALUES (SYSDATE, TO_DATE(:ExpiryDate, 'YYYY-MM-DD'), :FoodName, :PantryID, :Quantity)`,
+      try {
+        // Check if FoodName exists in FoodItem table
+        const foodItemExists = await connection.execute(
+          `SELECT COUNT(*) AS COUNT FROM FoodItem WHERE FoodName = :FoodName`,
+          { FoodName },
+          { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+  
+        if (foodItemExists.rows[0].COUNT === 0) {
+          // Insert a new food item if it does not exist
+          console.log('Food item does not exist, inserting:', FoodName);
+          await connection.execute(
+            `INSERT INTO FoodItem (FoodName, ShelfLife, Calories, FoodGroup) 
+            VALUES (:FoodName, :ShelfLife, :Calories, :FoodGroup)`,
             {
-                ExpiryDate,
-                FoodName,
-                PantryID,
-                Quantity
+              FoodName,
+              ShelfLife,
+              Calories,
+              FoodGroup
             },
             { autoCommit: true }
+          );
+        }
+  
+        // Insert the ingredient instance
+        const result = await connection.execute(
+          `INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName, PantryID, Quantity) 
+          VALUES (SYSDATE, TO_DATE(:ExpiryDate, 'YYYY-MM-DD'), :FoodName, :PantryID, :Quantity)`,
+          {
+            ExpiryDate,
+            FoodName,
+            PantryID,
+            Quantity
+          },
+          { autoCommit: true }
         );
-
+  
         return result.rowsAffected > 0;
-    }).catch((err) => {
-        console.error(err);
+      } catch (err) {
+        console.error('Database error in addIngredient:', err);
         return false;
+      }
+    }).catch((err) => {
+      console.error('Error in withOracleDB:', err);
+      return false;
     });
-}
+  }
+  
+  
+
 
 async function fetchCuisineOptions() {
     return await withOracleDB(async (connection) => {
@@ -694,7 +726,6 @@ module.exports = {
     addIngredient,
     fetchCuisineOptions,
     fetchRecipeFoodItems,
-    fetchAllPantries,
     fetchSavedPantries
 };
 
