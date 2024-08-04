@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useParams } from 'next/navigation';
@@ -21,7 +20,7 @@ const PantryDetails = () => {
     foodGroup: '',
   });
   const [openIngredientModal, setOpenIngredientModal] = useState(false);
-  const [error, setError] = useState(null);
+  const [alertModal, setAlertModal] = useState({ open: false, message: '' });
 
   const fetchIngredients = async () => {
     if (id) {
@@ -37,7 +36,7 @@ const PantryDetails = () => {
         setIngredients(data.data || []);
       } catch (error) {
         console.error('Error fetching ingredients:', error);
-        setError('Failed to load ingredients.');
+        setAlertModal({ open: true, message: 'Failed to load ingredients.' });
       }
     }
   };
@@ -49,41 +48,45 @@ const PantryDetails = () => {
   const handleAddIngredient = async () => {
     const { foodName, quantity, expiryDate, shelfLife, calories, foodGroup } = newIngredient;
 
-    if (foodName && quantity && expiryDate && shelfLife && calories && foodGroup) {
-      try {
-        const formattedExpiryDate = expiryDate.toISOString().split('T')[0];
-        const response = await fetch('/api/ingredient', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            PantryID: id,
-            FoodName: foodName,
-            Quantity: parseInt(quantity, 10),
-            ExpiryDate: formattedExpiryDate,
-            ShelfLife: shelfLife,
-            Calories: parseInt(calories, 10),
-            FoodGroup: foodGroup,
-          }),
-        });
+    if (!foodName || !quantity || !expiryDate || !shelfLife || !calories || !foodGroup) {
+      setAlertModal({ open: true, message: 'Please fill in all fields before submitting.' });
+      return;
+    }
 
-        if (response.ok) {
-          setNewIngredient({
-            foodName: '',
-            quantity: '',
-            expiryDate: null,
-            shelfLife: '',
-            calories: '',
-            foodGroup: '',
-          });
-          setOpenIngredientModal(false);
-          fetchIngredients();
-        } else {
-          throw new Error('Failed to add ingredient');
-        }
-      } catch (error) {
-        console.error('Error adding ingredient:', error);
-        setError('Failed to add ingredient.');
+    try {
+      const formattedExpiryDate = expiryDate.toISOString().split('T')[0];
+      const response = await fetch('/api/ingredient', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          PantryID: id,
+          FoodName: foodName,
+          Quantity: parseInt(quantity, 10),
+          ExpiryDate: formattedExpiryDate,
+          ShelfLife: shelfLife,
+          Calories: parseInt(calories, 10),
+          FoodGroup: foodGroup,
+        }),
+      });
+
+      if (response.ok) {
+        setNewIngredient({
+          foodName: '',
+          quantity: '',
+          expiryDate: null,
+          shelfLife: '',
+          calories: '',
+          foodGroup: '',
+        });
+        setOpenIngredientModal(false);
+        fetchIngredients();
+        setAlertModal({ open: true, message: 'Ingredient added successfully!' });
+      } else {
+        throw new Error('Failed to add ingredient');
       }
+    } catch (error) {
+      console.error('Error adding ingredient:', error);
+      setAlertModal({ open: true, message: 'Failed to add ingredient.' });
     }
   };
 
@@ -154,6 +157,14 @@ const PantryDetails = () => {
         />
         <Button onClick={handleAddIngredient}>Submit</Button>
       </Modal>
+      <Modal
+        opened={alertModal.open}
+        onClose={() => setAlertModal({ open: false, message: '' })}
+        title="Notification"
+      >
+        <div>{alertModal.message}</div>
+        <Button onClick={() => setAlertModal({ open: false, message: '' })}>Close</Button>
+      </Modal>
       <ul className="ingredients-list">
         {ingredients.length > 0 ? (
           ingredients.map((ingredient, index) => (
@@ -176,4 +187,3 @@ const PantryDetails = () => {
 };
 
 export default PantryDetails;
-

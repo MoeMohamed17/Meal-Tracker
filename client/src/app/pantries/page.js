@@ -1,16 +1,16 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
 import { Button, TextInput, Modal } from '@mantine/core';
 import NavBar from '../components/NavBar';
 import PantryCard from '../components/PantryCard';
-import './Pantries.css'; // Make sure your CSS file exists for styling
+import './Pantries.css';
 
 const Pantries = () => {
   const [pantries, setPantries] = useState([]);
   const [openPantryModal, setOpenPantryModal] = useState(false);
   const [newPantryCategory, setNewPantryCategory] = useState('');
+  const [alertModal, setAlertModal] = useState({ open: false, message: '' });
 
   // Define fetchPantries outside the useEffect hook
   const fetchPantries = async () => {
@@ -34,7 +34,12 @@ const Pantries = () => {
 
   const handleAddPantry = async () => {
     const selectedUser = localStorage.getItem('selectedUser');
-    if (newPantryCategory && selectedUser) {
+    if (!newPantryCategory) {
+      setAlertModal({ open: true, message: 'Please enter a pantry category.' });
+      return;
+    }
+    
+    if (selectedUser) {
       try {
         const response = await fetch('/api/pantry', {
           method: 'POST',
@@ -45,9 +50,13 @@ const Pantries = () => {
           setNewPantryCategory('');
           setOpenPantryModal(false);
           fetchPantries(); // Refresh the pantry list
+          setAlertModal({ open: true, message: 'Pantry added successfully!' });
+        } else {
+          setAlertModal({ open: true, message: 'Error adding pantry. Please try again.' });
         }
       } catch (error) {
         console.error('Error adding pantry:', error);
+        setAlertModal({ open: true, message: 'Error adding pantry. Please try again.' });
       }
     }
   };
@@ -65,6 +74,14 @@ const Pantries = () => {
           onChange={(e) => setNewPantryCategory(e.currentTarget.value)}
         />
         <Button onClick={handleAddPantry}>Submit</Button>
+      </Modal>
+      <Modal
+        opened={alertModal.open}
+        onClose={() => setAlertModal({ open: false, message: '' })}
+        title="Notification"
+      >
+        <div>{alertModal.message}</div>
+        <Button onClick={() => setAlertModal({ open: false, message: '' })}>Close</Button>
       </Modal>
       <div className="pantries-grid">
         {pantries.map((pantry, index) => (
