@@ -535,7 +535,7 @@ async function fetchUserLevels(columns) {
             SELECT ${selCols}
             FROM UserLevels
             `);
-        return result.rows;
+        return processResults(result);
     }).catch(() => {    
         return [];
     });
