@@ -339,6 +339,41 @@ async function fetchImagesByID(RecipeID, captionless) {
     });
 }
 
+// Insert a single image associated with a recipe
+async function insertImage(RecipeID, ImageURL, Caption) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `INSERT INTO Images (ImageURL, Caption, RecipeID)
+            VALUES (:ImageURL, :Caption, :RecipeID)`,
+            [
+                ImageURL, 
+                Caption, 
+                RecipeID
+            ],
+            { autoCommit: true }
+        );
+        return result.rowsAffected;
+    }).catch(() => {
+        return false;
+    });
+}
+
+// Delete a recipe's images and captions
+async function deleteImages(recipeID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            DELETE FROM Images
+            WHERE RecipeID = :recipeID`,
+            [recipeID],
+            { autoCommit: true}
+        );
+        return 1;
+    }).catch((err) => {
+        console.error(err);
+        return 0;
+    });
+}
+
 async function addImageToRecipe(recipeID, imageURL, caption) {
     return await withOracleDB(async (connection) => {
         // Insert image data into the Images table
@@ -373,6 +408,24 @@ async function insertStep(StepNum, InstructionText, RecipeID) {
         return false;
     });
 }
+
+// Delete a recipe's steps
+async function deleteSteps(recipeID) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            DELETE FROM StepContains
+            WHERE RecipeID = :recipeID`,
+            [recipeID],
+            { autoCommit: true}
+        );
+        return 1;
+    }).catch((err) => {
+        console.error(err);
+        return 0;
+    });
+}
+
+
 
 /*================================================
 ==================USER FUNCTIONS==================
@@ -521,7 +574,7 @@ async function fetchSavedPantries(columns) {
 async function updateRecipe(recipe) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(`
-            UPDATE RecipeCreated2
+            UPDATE RecipeCreated
             SET RecipeName = :recipeName,
                 Cuisine = :cuisine,
                 CookingTime = :cookingTime,
@@ -538,7 +591,7 @@ async function updateRecipe(recipe) {
         return result.rowsAffected;
     }).catch((err) => {
         console.error(err);
-        return 0;
+        return [];
     });
 }
 
@@ -695,6 +748,9 @@ module.exports = {
     fetchCuisineOptions,
     fetchRecipeFoodItems,
     fetchAllPantries,
-    fetchSavedPantries
+    fetchSavedPantries,
+    deleteSteps,
+    deleteImages,
+    insertImage
 };
 

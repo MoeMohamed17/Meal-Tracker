@@ -151,19 +151,6 @@ router.post('/recipe', async (req, res) => {
 });
 
 /*
-API endpoint to DELETE a recipe
-*/
-router.delete('/recipe/:id', async (req, res) => {
-    const recipeID = req.params.id;
-    const rowsAffected = await appService.deleteRecipe(recipeID);
-    if (rowsAffected > 0) {
-        res.json({ message: 'Recipe deleted' });
-    } else {
-        res.status(404).json({ error: 'Recipe not found or not deleted' });
-    }
-});
-
-/*
 API endpoint to GET steps for a specific recipe by ID
 */
 router.get('/recipe/:id/steps', async (req, res) => {
@@ -205,6 +192,47 @@ router.get('/images/:id', async (req, res) => {
     }
 });
 
+/*
+API endpoint to insert multiple images associated with a recipe
+
+*/
+router.post('/images/:id', async (req, res) => {
+    const RecipeID = req.params.id;
+    const ImageURL = req.body.ImageURL;
+    const Caption = req.body.Caption;
+    let success = true; 
+
+    for (let i = 0; i < ImageURL.length; i++) {
+        const response = await appService.insertImage(RecipeID, ImageURL[i], Caption[i]);
+        console.log(response);
+        if (!response) {
+            success = false;
+            break;
+        }
+    }
+
+    if (success) {
+        res.status(201).json({ message: 'Images inserted successfully' });
+    } else {
+        res.status(500).json({ error: 'Failed to insert all images' });
+    }
+});
+
+
+/*
+API endpoint to DELETE all images and captions associated with a recipe
+*/
+router.delete('/images/:id', async (req, res) => {
+    const RecipeID = req.params.id;
+    const rowsAffected = await appService.deleteImages(RecipeID);
+    if (rowsAffected > 0) {
+        res.json({ message: 'Images deleted' });
+    } else {
+        res.status(404).json({ error: 'Images not found or not deleted' });
+    }
+});
+
+
 
 /*================================================
 ==================STEP ENDPOINTS==================
@@ -240,6 +268,30 @@ router.post('/steps/:id', async (req, res) => {
         res.status(201).json({ message: 'Steps inserted successfully' });
     } else {
         res.status(500).json({ error: 'Failed to insert all steps' });
+    }
+});
+
+
+// const recipe = { ...req.body, RecipeID: RecipeID };
+// const rowsAffected = await appService.updateRecipe(recipe);
+// if (rowsAffected > 0) {
+//     res.json({ message: 'Recipe updated' });
+// } else {
+//     res.status(404).json({ error: 'Recipe not found or not updated' });
+// }
+// });
+
+
+/*
+API endpoint to DELETE all steps associated with a recipe
+*/
+router.delete('/steps/:id', async (req, res) => {
+    const RecipeID = req.params.id;
+    const rowsAffected = await appService.deleteSteps(RecipeID);
+    if (rowsAffected > 0) {
+        res.json({ message: 'Steps deleted' });
+    } else {
+        res.status(404).json({ error: 'Steps not found or not deleted' });
     }
 });
 
