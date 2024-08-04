@@ -14,7 +14,7 @@ END;
 -- Create Users table
 CREATE TABLE Users(
     UserID INTEGER,
-    UserName VARCHAR(50),
+    UserName VARCHAR(50) UNIQUE,
     Points INTEGER DEFAULT 0,
     PRIMARY KEY (UserID)
 );
@@ -225,17 +225,17 @@ CREATE TABLE IngredientInstances(
 
 
 -- User
-INSERT INTO Users (UserName) VALUES ('Alice Johnson');
-INSERT INTO Users (UserName, Points) VALUES ('Bob Smith', 50);
-INSERT INTO Users (UserName, Points) VALUES ('Charlie Brown', 150);
-INSERT INTO Users (UserName, Points) VALUES ('Diana Prince', 250);
-INSERT INTO Users (UserName, Points) VALUES ('Evan Thomas', 350);
-INSERT INTO Users (UserName, Points) VALUES ('Fiona Green', 450);
-INSERT INTO Users (UserName, Points) VALUES ('George White', 550);
-INSERT INTO Users (UserName, Points) VALUES ('Hannah Blue', 650);
-INSERT INTO Users (UserName, Points) VALUES ('Isaac Gray', 750);
-INSERT INTO Users (UserName, Points) VALUES ('Julia Black', 850);
-INSERT INTO Users (UserName, Points) VALUES ('Kevin Red', 950);
+INSERT INTO Users (UserName) VALUES ('AliceJohnson');
+INSERT INTO Users (UserName, Points) VALUES ('BobSmith', 50);
+INSERT INTO Users (UserName, Points) VALUES ('CharlieBrown', 150);
+INSERT INTO Users (UserName, Points) VALUES ('DianaPrince', 250);
+INSERT INTO Users (UserName, Points) VALUES ('EvanThomas', 350);
+INSERT INTO Users (UserName, Points) VALUES ('FionaGreen', 450);
+INSERT INTO Users (UserName, Points) VALUES ('GeorgeWhite', 550);
+INSERT INTO Users (UserName, Points) VALUES ('HannahBlue', 650);
+INSERT INTO Users (UserName, Points) VALUES ('IsaacGray', 750);
+INSERT INTO Users (UserName, Points) VALUES ('JuliaBlack', 850);
+INSERT INTO Users (UserName, Points) VALUES ('KevinRed', 950);
 
 -- UserLevels
 INSERT INTO UserLevels (Points, UserLevel) VALUES (0, 1);
