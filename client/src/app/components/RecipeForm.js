@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button, TextInput, Textarea, Title, Group, Select} from '@mantine/core';
+import { Button, TextInput, Textarea, Title, Group, Select, Text } from '@mantine/core';
 import styles from '../newrecipes/newrecipes.css';
 
 const RecipeForm = () => {
@@ -11,6 +11,7 @@ const RecipeForm = () => {
     const [image, setImage] = useState('');
     const [steps, setSteps] = useState(['']);
     const [userID, setUserID] = useState(null);
+    const [newRecipeSuccess, setNewRecipeSuccess] = useState('');
 
     useEffect(() => {
         // Retrieve the UserID from local storage when the component mounts
@@ -67,12 +68,16 @@ const RecipeForm = () => {
                 setTime('');
                 setImage('');
                 setSteps(['']);
+
+                setNewRecipeSuccess('Success!');
+
             } else {
                 console.error('Error creating recipe:', result.error);
             }
 
         } catch (error) {
             console.error('Error adding recipe:', error);
+            setNewRecipeSuccess('');
         }
     };
 
@@ -181,6 +186,7 @@ const RecipeForm = () => {
                 <Button type="submit" size="lg" className="add-recipe-button">
                     Add Recipe
                 </Button>
+                <Text c="green">{newRecipeSuccess}</Text>
             </form>
         </div>
     );

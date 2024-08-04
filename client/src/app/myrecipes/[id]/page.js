@@ -5,7 +5,7 @@ import NavBar from '../../components/NavBar';
 import { useParams } from 'next/navigation';
 import '../MyRecipes.css';
 import GroupRecipes from '@/app/util/GroupRecipes';
-import { TextInput, Textarea, Select, Button } from '@mantine/core';
+import { TextInput, Textarea, Select, Button, Text } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useRouter } from "next/navigation";
 import Link from 'next/link';
@@ -19,7 +19,8 @@ const EditRecipe = () => {
   const [cuisineOptions, setCuisineOptions] = useState([]);
   const [users, setUsers] = useState([]);
   const [steps, setSteps] = useState([]);
-  const [error, setError] = useState('');
+  const [editRecipeSuccess, setEditRecipeSuccess] = useState('');
+  const [deleteSuccess, setDeleteSuccess] = useState('');
 
   const router = useRouter();
 
@@ -115,10 +116,6 @@ const EditRecipe = () => {
     }
 
     const updatedSteps = values.steps && values.steps !== steps.map(step => `${step[1]}`).join('\n') ? { steps: values.steps.split('\n') } : { steps: steps.map((step) => step[1])};
-
-    // console.log(updatedRecipe);
-    console.log(updatedImages);
-    // console.log(updatedSteps);
     
     try {
       const response = await fetch(`/api/recipe/${id}`, {
@@ -172,19 +169,6 @@ const EditRecipe = () => {
       return;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     try {
       const response = await fetch(`/api/images/${id}`, {
         method: 'DELETE',
@@ -219,7 +203,11 @@ const EditRecipe = () => {
       return;
     }
 
-    router.push('/myrecipes');
+    setEditRecipeSuccess('Success!');
+
+    setTimeout(() => {
+      router.push('/myrecipes');
+    }, 1000);
   };
 
 
@@ -240,9 +228,13 @@ const EditRecipe = () => {
       if (!response.ok) {
         throw new Error('Failed to delete recipe');
       }
-      router.push('/myrecipes');
+      setDeleteSuccess('Success!');
+      setTimeout(() => {
+        router.push('/myrecipes');
+      }, 1000);
     } catch (error) {
       console.error('Error deleting recipe:', error);
+      setDeleteSuccess('');
     }
   }
 
@@ -308,11 +300,14 @@ const EditRecipe = () => {
             {...form.getInputProps('steps')}
           />
           <br/>
+          <Text c="green">{editRecipeSuccess}</Text>
           <Button type="submit">Submit</Button>
-
         </form>
+
         <br/>
+        <Text c="green">{deleteSuccess}</Text>
         <Button onClick={handleDelete} color='red'>Delete</Button>
+        
       </div>
     </div>
   );
