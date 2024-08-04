@@ -78,19 +78,22 @@ CREATE TABLE RecipesLiked(
 CREATE TABLE Images(
     ImageURL VARCHAR(512),
     Caption VARCHAR(512),
-    PRIMARY KEY (ImageURL)
-);
-
--- Create ImagesInRecipes table
-CREATE TABLE ImagesInRecipes(
-    ImageURL VARCHAR(512),
     RecipeID INTEGER,
     PRIMARY KEY (ImageURL, RecipeID),
-    FOREIGN KEY (ImageURL) REFERENCES Images(ImageURL)
-    ON DELETE CASCADE,
     FOREIGN KEY (RecipeID) REFERENCES RecipeCreated(RecipeID)
     ON DELETE CASCADE
 );
+
+-- -- Create ImagesInRecipes table
+-- CREATE TABLE ImagesInRecipes(
+--     ImageURL VARCHAR(512),
+--     RecipeID INTEGER,
+--     PRIMARY KEY (ImageURL, RecipeID),
+--     FOREIGN KEY (ImageURL) REFERENCES Images(ImageURL)
+--     ON DELETE CASCADE,
+--     FOREIGN KEY (RecipeID) REFERENCES RecipeCreated(RecipeID)
+--     ON DELETE CASCADE
+-- );
 
 -- Create StepContains table
 CREATE TABLE StepContains(
@@ -364,132 +367,98 @@ VALUES (9, 9);
 INSERT INTO RecipesLiked (RecipeID, UserID) 
 VALUES (10, 10);
 
--- -- Images
--- INSERT INTO Images (ImageURL, Caption) 
--- VALUES ('http://fakeurl.com/yum_chicken.jpg', 'Tasty tasty chicken!');
-
--- INSERT INTO Images (ImageURL, Caption) 
--- VALUES ('http://fakeurl.com/questionable_noodles.jpg', 'Mysterious noodles...');
-
--- INSERT INTO Images (ImageURL, Caption) 
--- VALUES ('http://fakeurl.com/coq_au_vamp.jpg', 'Devious dish!');
-
--- INSERT INTO Images (ImageURL, Caption) 
--- VALUES ('http://fakeurl.com/crunch_crunch_don.jpg', 'Placeholder food.');
-
--- INSERT INTO Images (ImageURL, Caption) 
--- VALUES ('http://fakeurl.com/abc.jpg', 'Nobody somebody somewhere whoever.');
-
--- -- ImagesInRecipes
--- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
--- VALUES ('http://fakeurl.com/yum_chicken.jpg', 4);
-
--- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
--- VALUES ('http://fakeurl.com/questionable_noodles.jpg', 6);
-
--- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
--- VALUES ('http://fakeurl.com/coq_au_vamp.jpg', 5);
-
--- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
--- VALUES ('http://fakeurl.com/crunch_crunch_don.jpg', 9);
-
--- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
--- VALUES ('http://fakeurl.com/abc.jpg', 4);
-
 -- Insert statements for Images table
-INSERT INTO Images (ImageURL, Caption)
-VALUES ('https://static01.nyt.com/images/2021/02/14/dining/carbonara-horizontal/carbonara-horizontal-square640-v2.jpg', 'A delicious plate of Spaghetti Carbonara');
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2021/02/14/dining/carbonara-horizontal/carbonara-horizontal-square640-v2.jpg', 'A delicious plate of Spaghetti Carbonara', 1);
 
-INSERT INTO Images (ImageURL, Caption)
-VALUES ('https://thecozycook.com/wp-content/uploads/2022/03/Sweet-and-Sour-Chicken-f5.jpg', 'Sweet and Sour Chicken served with rice');
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://thecozycook.com/wp-content/uploads/2022/03/Sweet-and-Sour-Chicken-f5.jpg', 'Sweet and Sour Chicken served with rice', 2);
 
-INSERT INTO Images (ImageURL, Caption)
-VALUES ('https://iamafoodblog.b-cdn.net/wp-content/uploads/2021/05/al-pastor-3507w.jpg', 'Traditional Tacos Al Pastor with pineapple');
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://iamafoodblog.b-cdn.net/wp-content/uploads/2021/05/al-pastor-3507w.jpg', 'Traditional Tacos Al Pastor with pineapple', 3);
 
-INSERT INTO Images (ImageURL, Caption)
-VALUES ('https://moribyan.com/wp-content/uploads/2022/05/IMG_4902-scaled-e1609906617281-1.jpg', 'Butter Chicken with creamy sauce');
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://moribyan.com/wp-content/uploads/2022/05/IMG_4902-scaled-e1609906617281-1.jpg', 'Butter Chicken with creamy sauce', 4);
 
-INSERT INTO Images (ImageURL, Caption)
-VALUES ('https://images.services.kitchenstories.io/9GIeqQwpeGj8Te6zRGt07XzEETo=/3840x0/filters:quality(80)/images.kitchenstories.io/wagtailOriginalImages/R23-final-photo-4.jpg', 'Classic French Coq au Vin');
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://images.services.kitchenstories.io/9GIeqQwpeGj8Te6zRGt07XzEETo=/3840x0/filters:quality(80)/images.kitchenstories.io/wagtailOriginalImages/R23-final-photo-4.jpg', 'Classic French Coq au Vin', 5);
 
-INSERT INTO Images (ImageURL, Caption)
-VALUES ('https://inquiringchef.com/wp-content/uploads/2023/02/Authentic-Pad-Thai_square-1908.jpg', 'Authentic Pad Thai noodles');
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://inquiringchef.com/wp-content/uploads/2023/02/Authentic-Pad-Thai_square-1908.jpg', 'Authentic Pad Thai noodles', 6);
 
-INSERT INTO Images (ImageURL, Caption)
-VALUES ('https://holycowvegan.net/wp-content/uploads/2023/02/ethiopian-lentil-stew-recipe-1.jpg', 'Ethiopian Lentil Stew');
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://holycowvegan.net/wp-content/uploads/2023/02/ethiopian-lentil-stew-recipe-1.jpg', 'Ethiopian Lentil Stew', 7);
 
-INSERT INTO Images (ImageURL, Caption)
-VALUES ('https://www.allrecipes.com/thmb/Cr3iNBwelHE5F_uUqLcbzcaEY18=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/351366-feijoada-brazilian-black-bean-stew-Melissa-Goff-4x3-1-0fb041cc43234fedb23d171172e65a10.jpg', 'Traditional Brazilian Feijoada');
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://www.allrecipes.com/thmb/Cr3iNBwelHE5F_uUqLcbzcaEY18=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/351366-feijoada-brazilian-black-bean-stew-Melissa-Goff-4x3-1-0fb041cc43234fedb23d171172e65a10.jpg', 'Traditional Brazilian Feijoada', 8);
 
-INSERT INTO Images (ImageURL, Caption)
-VALUES ('https://www.justonecookbook.com/wp-content/uploads/2021/04/Chicken-Katsudon-9331.jpg', 'Japanese Chicken Katsu Don');
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://www.justonecookbook.com/wp-content/uploads/2021/04/Chicken-Katsudon-9331.jpg', 'Japanese Chicken Katsu Don', 9);
 
-INSERT INTO Images (ImageURL, Caption)
-VALUES ('https://feelgoodfoodie.net/wp-content/uploads/2023/09/Lebanese-Tabbouleh-Salad-TIMG.jpg', 'Fresh Lebanese Tabbouleh');
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://feelgoodfoodie.net/wp-content/uploads/2023/09/Lebanese-Tabbouleh-Salad-TIMG.jpg', 'Fresh Lebanese Tabbouleh', 10);
 
-INSERT INTO Images (ImageURL, Caption)
-VALUES ('https://www.mygreekdish.com/wp-content/uploads/2013/05/Moussaka-recipe-Traditional-Greek-Moussaka-with-Eggplants.jpg', 'Layered Greek Moussaka');
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://www.mygreekdish.com/wp-content/uploads/2013/05/Moussaka-recipe-Traditional-Greek-Moussaka-with-Eggplants.jpg', 'Layered Greek Moussaka', 11);
 
 
--- Insert statements for ImagesInRecipes table
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://static01.nyt.com/images/2021/02/14/dining/carbonara-horizontal/carbonara-horizontal-square640-v2.jpg', 1);
+-- -- Insert statements for ImagesInRecipes table
+-- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+-- VALUES ('https://static01.nyt.com/images/2021/02/14/dining/carbonara-horizontal/carbonara-horizontal-square640-v2.jpg', 1);
 
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://thecozycook.com/wp-content/uploads/2022/03/Sweet-and-Sour-Chicken-f5.jpg', 2);
+-- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+-- VALUES ('https://thecozycook.com/wp-content/uploads/2022/03/Sweet-and-Sour-Chicken-f5.jpg', 2);
 
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://iamafoodblog.b-cdn.net/wp-content/uploads/2021/05/al-pastor-3507w.jpg', 3);
+-- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+-- VALUES ('https://iamafoodblog.b-cdn.net/wp-content/uploads/2021/05/al-pastor-3507w.jpg', 3);
 
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://moribyan.com/wp-content/uploads/2022/05/IMG_4902-scaled-e1609906617281-1.jpg', 4);
+-- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+-- VALUES ('https://moribyan.com/wp-content/uploads/2022/05/IMG_4902-scaled-e1609906617281-1.jpg', 4);
 
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://images.services.kitchenstories.io/9GIeqQwpeGj8Te6zRGt07XzEETo=/3840x0/filters:quality(80)/images.kitchenstories.io/wagtailOriginalImages/R23-final-photo-4.jpg', 5);
+-- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+-- VALUES ('https://images.services.kitchenstories.io/9GIeqQwpeGj8Te6zRGt07XzEETo=/3840x0/filters:quality(80)/images.kitchenstories.io/wagtailOriginalImages/R23-final-photo-4.jpg', 5);
 
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://inquiringchef.com/wp-content/uploads/2023/02/Authentic-Pad-Thai_square-1908.jpg', 6);
+-- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+-- VALUES ('https://inquiringchef.com/wp-content/uploads/2023/02/Authentic-Pad-Thai_square-1908.jpg', 6);
 
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://holycowvegan.net/wp-content/uploads/2023/02/ethiopian-lentil-stew-recipe-1.jpg', 7);
+-- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+-- VALUES ('https://holycowvegan.net/wp-content/uploads/2023/02/ethiopian-lentil-stew-recipe-1.jpg', 7);
 
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://www.allrecipes.com/thmb/Cr3iNBwelHE5F_uUqLcbzcaEY18=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/351366-feijoada-brazilian-black-bean-stew-Melissa-Goff-4x3-1-0fb041cc43234fedb23d171172e65a10.jpg', 8);
+-- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+-- VALUES ('https://www.allrecipes.com/thmb/Cr3iNBwelHE5F_uUqLcbzcaEY18=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/351366-feijoada-brazilian-black-bean-stew-Melissa-Goff-4x3-1-0fb041cc43234fedb23d171172e65a10.jpg', 8);
 
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://www.justonecookbook.com/wp-content/uploads/2021/04/Chicken-Katsudon-9331.jpg', 9);
+-- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+-- VALUES ('https://www.justonecookbook.com/wp-content/uploads/2021/04/Chicken-Katsudon-9331.jpg', 9);
 
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://feelgoodfoodie.net/wp-content/uploads/2023/09/Lebanese-Tabbouleh-Salad-TIMG.jpg', 10);
+-- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+-- VALUES ('https://feelgoodfoodie.net/wp-content/uploads/2023/09/Lebanese-Tabbouleh-Salad-TIMG.jpg', 10);
 
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://www.mygreekdish.com/wp-content/uploads/2013/05/Moussaka-recipe-Traditional-Greek-Moussaka-with-Eggplants.jpg', 11);
+-- INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
+-- VALUES ('https://www.mygreekdish.com/wp-content/uploads/2013/05/Moussaka-recipe-Traditional-Greek-Moussaka-with-Eggplants.jpg', 11);
 
 -- multi image test
-INSERT INTO Images(ImageURL, Caption)
-VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123');
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 1);
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 2);
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 3);
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 4);
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 5);
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 6);
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 7);
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 8);
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 9);
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 10);
-INSERT INTO ImagesInRecipes (ImageURL, RecipeID)
-VALUES ('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 11);
+INSERT INTO Images(ImageURL, Caption, RecipeID)
+VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 1);
+INSERT INTO Images(ImageURL, Caption, RecipeID)
+VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 2);
+INSERT INTO Images(ImageURL, Caption, RecipeID)
+VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 3);
+INSERT INTO Images(ImageURL, Caption, RecipeID)
+VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 4);
+INSERT INTO Images(ImageURL, Caption, RecipeID)
+VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 5);
+INSERT INTO Images(ImageURL, Caption, RecipeID)
+VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 6);
+INSERT INTO Images(ImageURL, Caption, RecipeID)
+VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 7);
+INSERT INTO Images(ImageURL, Caption, RecipeID)
+VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 8);
+INSERT INTO Images(ImageURL, Caption, RecipeID)
+VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 9);
+INSERT INTO Images(ImageURL, Caption, RecipeID)
+VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 10);
+INSERT INTO Images(ImageURL, Caption, RecipeID)
+VALUES('https://www.thepackagingcompany.com/knowledge-sharing/wp-content/uploads/2018/10/ip-mcdonalds-blog.jpg', 'Testing testing 123', 11);
 
 
 -- StepContains

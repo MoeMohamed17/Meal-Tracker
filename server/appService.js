@@ -150,8 +150,7 @@ async function fetchRecipes(columns, filter, searchTerm, img, captionless, user)
                 FROM RecipeCreated r
                 LEFT JOIN Users u ON r.UserID = u.UserID
                 LEFT JOIN RecipeLevels l ON r.Cuisine = l.Cuisine
-                LEFT JOIN ImagesInRecipes ir ON r.RecipeID = ir.RecipeID
-                LEFT JOIN Images i ON ir.ImageURL = i.ImageURL
+                LEFT JOIN Images i ON r.RecipeID = i.RecipeID
                 ${filtString}
                 ORDER BY r.RecipeID`;
 
@@ -327,12 +326,11 @@ async function fetchRecipeSteps(RecipeID) {
 // Fetch all images and captions linked to RecipeID
 async function fetchImagesByID(RecipeID, captionless) {
     return await withOracleDB(async (connection) => {
-        const cols = captionless == 1 ? 'i.ImageURL' : 'i.ImageURL, i.Caption';
+        const cols = captionless == 1 ? 'ImageURL, RecipeID' : 'ImageURL, Caption, RecipeID';
         const result = await connection.execute(`
             SELECT ${cols}
-            FROM ImagesInRecipes ir
-            JOIN Images i ON ir.ImageURL = i.ImageURL
-            WHERE ir.RecipeID = :RecipeID`,
+            FROM Images
+            WHERE RecipeID = :RecipeID`,
         [RecipeID]);
         return processResults(result);
     }).catch((err) => {
@@ -345,15 +343,8 @@ async function addImageToRecipe(recipeID, imageURL, caption) {
     return await withOracleDB(async (connection) => {
         // Insert image data into the Images table
         await connection.execute(
-            `INSERT INTO Images (ImageURL, Caption) VALUES (:imageURL, :caption)`,
-            { imageURL, caption },
-            { autoCommit: true }
-        );
-
-        // Link the image to a recipe in the ImagesInRecipes table
-        await connection.execute(
-            `INSERT INTO ImagesInRecipes (ImageURL, RecipeID) VALUES (:imageURL, :recipeID)`,
-            { imageURL, recipeID },
+            `INSERT INTO Images (ImageURL, Caption, RecipeID) VALUES (:imageURL, :caption, :recipeID)`,
+            { imageURL, caption, recipeID },
             { autoCommit: true }
         );
     }).catch((err) => {
