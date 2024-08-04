@@ -57,7 +57,8 @@ router.get('/recipes', async (req, res) => {
     const id = req.query.id || null;
     const img = req.query.img;
     const captionless = req.query.captionless;
-    const recipes = await appService.fetchRecipes(columns, filter, id, img, captionless);
+    const user = req.query.user || null;
+    const recipes = await appService.fetchRecipes(columns, filter, id, img, captionless, user);
     if (recipes.length === 0) {
         res.status(404).json({ error: 'No recipes found' });
     } else {
@@ -175,6 +176,18 @@ router.get('/recipe/:id/steps', async (req, res) => {
     }
 });
 
+/*
+API endpoint to GET cuisine options
+*/
+router.get('/cuisines', async (req, res) => {
+    const cuisines = await appService.fetchCuisineOptions();
+    if (cuisines.length === 0) {
+        res.status(404).json({ error: 'No cuisines found' });
+    } else {
+        res.json({ data: cuisines });
+    }
+});
+
 /*================================================
 ==================IMAGE ENDPOINTS=================
 ================================================*/
@@ -273,7 +286,22 @@ router.post('/user', async (req, res) => {
 });
 
 
-
+/*================================================
+==================FOODITEM ENDPOINTS==============
+================================================*/
+/*
+API endpoint to GET all food items of a specific recipe
+*/
+router.get('/recipe/:id/fooditems', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const recipeID = req.params.id;
+    const response = await appService.fetchRecipeFoodItems(columns, recipeID);
+    if (response.length === 0) {
+        res.status(404).json({ error: 'No food items found for this recipe' });
+    } else {
+        res.json({ data: response });
+    }
+});
 
 
 
@@ -302,6 +330,47 @@ router.get('/pantry/:id', async (req, res) => {
     res.json({data: tableContent});
 });
 
+/*
+API endpoint to GET all pantries from all users
+*/
+router.get('/pantries', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const tableContent = await appService.fetchSavedPantries(columns);
+    res.json({data: tableContent});
+});
+
+/*
+API endpoint to GET all existing pantries
+*/
+router.get('/savedpantries', async (req, res) => {
+    const columns = req.query.columns ? req.query.columns.split(',') : null;
+    const tableContent = await appService.fetchAllPantries(columns);
+    res.json({data: tableContent});
+});
+
+// Add this endpoint to handle the creation of a new pantry
+router.post('/pantry', async (req, res) => {
+    const { UserID, Category } = req.body;
+    const response = await appService.createPantry(UserID, Category);
+    if (response) {
+        res.status(201).json({ message: 'Pantry created', response });
+    } else {
+        res.status(500).json({ error: 'Failed to create pantry' });
+    }
+});
+
+
+
+// Add this endpoint to handle adding a new ingredient instance
+router.post('/ingredient', async (req, res) => {
+    const { PantryID, FoodName, Quantity, ExpiryDate } = req.body;
+    const response = await appService.addIngredient(PantryID, FoodName, Quantity, ExpiryDate);
+    if (response) {
+        res.status(201).json({ message: 'Ingredient added', response });
+    } else {
+        res.status(500).json({ error: 'Failed to add ingredient' });
+    }
+});
 
 
 
@@ -347,7 +416,7 @@ router.get('/locations', async (req, res) => {
 });
 
 // API endpoint to add an image to a recipe
-router.post('/api/images', async (req, res) => {
+router.post('/images', async (req, res) => {
     const { recipeID, imageURL, caption } = req.body;
 
     try {

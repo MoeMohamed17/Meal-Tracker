@@ -97,10 +97,10 @@ function processResults(result) {
 =================RECIPE FUNCTIONS=================
 ================================================*/
 
-async function fetchRecipes(columns, filter, searchTerm, img, captionless) {
+async function fetchRecipes(columns, filter, searchTerm, img, captionless, user) {
     return await withOracleDB(async (connection) => {
         // Sanitize columns
-        const allCols = ['r.RecipeID', 'r.RecipeName', 'r.Cuisine', 'r.CookingTime', 'l.RecipeLevel', 'u.UserName'];
+        const allCols = ['r.RecipeID', 'r.RecipeName', 'r.Cuisine', 'r.CookingTime', 'l.RecipeLevel', 'u.UserName', 'u.UserID'];
         const pKey = 'r.RecipeID';
         let selCols = columns ? columns : allCols;
         if (!selCols.includes(pKey)) {
@@ -121,6 +121,9 @@ async function fetchRecipes(columns, filter, searchTerm, img, captionless) {
                 // Otherwise, search by RecipeName
                 filters.push(`LOWER(r.RecipeName) LIKE LOWER('%${searchTerm}%')`);
             }
+        }
+        if (user) {
+            filters.push(`u.UserID = ${user}`);
         }
         const filtString = filters.length > 0 ? `WHERE ${filters.join(' AND ')}` : '';
 
@@ -147,8 +150,7 @@ async function fetchRecipes(columns, filter, searchTerm, img, captionless) {
                 FROM RecipeCreated r
                 LEFT JOIN Users u ON r.UserID = u.UserID
                 LEFT JOIN RecipeLevels l ON r.Cuisine = l.Cuisine
-                LEFT JOIN ImagesInRecipes ir ON r.RecipeID = ir.RecipeID
-                LEFT JOIN Images i ON ir.ImageURL = i.ImageURL
+                LEFT JOIN Images i ON r.RecipeID = i.RecipeID
                 ${filtString}
                 ORDER BY r.RecipeID`;
 
@@ -324,12 +326,11 @@ async function fetchRecipeSteps(RecipeID) {
 // Fetch all images and captions linked to RecipeID
 async function fetchImagesByID(RecipeID, captionless) {
     return await withOracleDB(async (connection) => {
-        const cols = captionless == 1 ? 'i.ImageURL' : 'i.ImageURL, i.Caption';
+        const cols = captionless == 1 ? 'ImageURL, RecipeID' : 'ImageURL, Caption, RecipeID';
         const result = await connection.execute(`
             SELECT ${cols}
-            FROM ImagesInRecipes ir
-            JOIN Images i ON ir.ImageURL = i.ImageURL
-            WHERE ir.RecipeID = :RecipeID`,
+            FROM Images
+            WHERE RecipeID = :RecipeID`,
         [RecipeID]);
         return processResults(result);
     }).catch((err) => {
@@ -342,15 +343,8 @@ async function addImageToRecipe(recipeID, imageURL, caption) {
     return await withOracleDB(async (connection) => {
         // Insert image data into the Images table
         await connection.execute(
-            `INSERT INTO Images (ImageURL, Caption) VALUES (:imageURL, :caption)`,
-            { imageURL, caption },
-            { autoCommit: true }
-        );
-
-        // Link the image to a recipe in the ImagesInRecipes table
-        await connection.execute(
-            `INSERT INTO ImagesInRecipes (ImageURL, RecipeID) VALUES (:imageURL, :recipeID)`,
-            { imageURL, recipeID },
+            `INSERT INTO Images (ImageURL, Caption, RecipeID) VALUES (:imageURL, :caption, :recipeID)`,
+            { imageURL, caption, recipeID },
             { autoCommit: true }
         );
     }).catch((err) => {
@@ -475,10 +469,52 @@ async function fetchPantries(UserID) {
     });
 }
 
+/*
+Returns all pantries associated with all users by UserId
+*/
+async function fetchAllPantries(columns) {
+    return await withOracleDB(async (connection) => {
+        const allCols = ['up.UserID', 'up.PantryID', 'u.UserName', 'sp.Category'];
+        const selCols = columns ? columns.join(', ') : allCols.join(', ');
 
+        const query = `
+            SELECT ${selCols}
+            FROM UserPantries up
+            JOIN Users u ON up.UserID = u.UserID
+            JOIN SavedPantry sp ON up.PantryID = sp.PantryID
+            ORDER BY up.UserID
+        `;
 
+        try {
+            const result = await connection.execute(query, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+            console.log('Query result:', result.rows); // Debug: Log query results
+            return result.rows;
+        } catch (error) {
+            console.error('Error executing query:', error);
+            return [];
+        }
+    }).catch((error) => {
+        console.error('Error in withOracleDB:', error);
+        return [];
+    });
+}
 
+/*
+Returns all existing pantries regardless of user
+*/
+async function fetchSavedPantries(columns) {
+    return await withOracleDB(async (connection) => {
+        const allCols = ['sp.PantryID', 'sp.Category'];
+        const selCols = columns ? columns.join(', ') : allCols.join(', ');
 
+        const result = await connection.execute(`
+            SELECT ${selCols}
+            FROM SavedPantry sp`);
+        return processResults(result);
+    }).catch(() => {    
+        return [];
+    });
+}
 
 
 // Update an existing recipe
@@ -522,6 +558,28 @@ async function fetchAllLocations() {
 }
 
 
+// Fetch all ingredient instances for a specific pantry
+async function fetchRecipeFoodItems(columns, recipeID) {
+    return await withOracleDB(async (connection) => {
+        const allCols = ['f.FoodName', 'r.RecipeID', 'f.Quantity'];
+        const selCols = columns ? columns.join(', ') : allCols.join(', ');
+        console.log(selCols);
+
+        const result = await connection.execute(`
+            SELECT ${selCols}
+            FROM FoodsInRecipes f, RecipeCreated r
+            WHERE f.RecipeID = r.RecipeID
+            AND f.RecipeID = :recipeID
+        `, [recipeID]);
+        return processResults(result);
+    }).catch((err) => {
+        console.error(err);
+        return [];
+    });
+}
+
+
+
 
 // Fetch all ingredient instances for a specific pantry
 async function fetchIngredientInstances(pantryID) {
@@ -538,6 +596,77 @@ async function fetchIngredientInstances(pantryID) {
         return [];
     });
 }
+
+// Function to create a new pantry
+async function createPantry(UserID, Category) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `INSERT INTO SavedPantry (Category) 
+            VALUES (:Category)
+            RETURNING PantryID INTO :PantryID`,
+            {
+                Category,
+                PantryID: {
+                    type: oracledb.INTEGER,
+                    dir: oracledb.BIND_OUT
+                }
+            },
+            { autoCommit: true }
+        );
+
+        const pantryID = result.outBinds.PantryID[0];
+
+        await connection.execute(
+            `INSERT INTO UserPantries (UserID, PantryID) 
+            VALUES (:UserID, :PantryID)`,
+            {
+                UserID,
+                PantryID: pantryID
+            },
+            { autoCommit: true }
+        );
+
+        return { PantryID: pantryID, Category };
+    }).catch((err) => {
+        console.error(err);
+        return false;
+    });
+}
+
+// Function to add a new ingredient instance
+async function addIngredient(PantryID, FoodName, Quantity, ExpiryDate) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `INSERT INTO IngredientInstances (DateAdded, ExpiryDate, FoodName, PantryID, Quantity) 
+            VALUES (SYSDATE, TO_DATE(:ExpiryDate, 'YYYY-MM-DD'), :FoodName, :PantryID, :Quantity)`,
+            {
+                ExpiryDate,
+                FoodName,
+                PantryID,
+                Quantity
+            },
+            { autoCommit: true }
+        );
+
+        return result.rowsAffected > 0;
+    }).catch((err) => {
+        console.error(err);
+        return false;
+    });
+}
+
+async function fetchCuisineOptions() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            SELECT DISTINCT Cuisine FROM RecipeCreated ORDER BY Cuisine
+        `);
+        return result.rows.map(row => row[0]); // Map the rows to an array of cuisine names
+    }).catch((err) => {
+        console.error(err);
+        return [];
+    });
+}
+
 
 
 module.exports = {
@@ -560,6 +689,10 @@ module.exports = {
     fetchIngredientInstances,
     UserLikedRecipe,
     UserUnlikedRecipe,
-    addImageToRecipe
+    addImageToRecipe,
+    createPantry,
+    addIngredient,
+    fetchCuisineOptions,
+    fetchRecipeFoodItems
 };
 

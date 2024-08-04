@@ -18,14 +18,14 @@
   
   .user-select-container {
     position: absolute;
-    top: 60%;
+    top: 0%;
     left: 50%;
     transform: translate(-50%, 0);
-    width: 300px; /* Adjust width as needed */
+    width: 300px;
   }
   
   .user-select {
-    width: 100%; /* Ensure the dropdown fills its container */
+    width: 100%;
   }
   
   .start-button {
