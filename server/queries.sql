@@ -426,7 +426,7 @@ INSERT INTO Images (ImageURL, Caption, RecipeID)
 VALUES ('https://holycowvegan.net/wp-content/uploads/2023/02/ethiopian-lentil-stew-recipe-1.jpg', 'Ethiopian Lentil Stew', 7);
 
 INSERT INTO Images (ImageURL, Caption, RecipeID)
-VALUES ('https://https://static01.nyt.com/images/2020/10/30/dining/30tanisrex1-stew/merlin_179039508_8384549d-9354-48f6-88ad-3f0139cf2820-superJumbo.jpg', 'Savoury and superb', 7);
+VALUES ('https://www.vegkit.com/wp-content/uploads/sites/2/2021/12/83051_ethiopian_lentils_detail.jpg', 'Savoury and superb', 7);
 
 INSERT INTO Images (ImageURL, Caption, RecipeID)
 VALUES ('https://static01.nyt.com/images/2022/09/06/dining/nd-dal-adas/merlin_212088567_c8f02dc8-a19a-492b-b8ae-9f70eb58a58f-master768.jpg', 'Utterly appetizing!', 7);
