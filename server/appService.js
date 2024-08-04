@@ -97,10 +97,10 @@ function processResults(result) {
 =================RECIPE FUNCTIONS=================
 ================================================*/
 
-async function fetchRecipes(columns, filter, searchTerm, img, captionless) {
+async function fetchRecipes(columns, filter, searchTerm, img, captionless, user) {
     return await withOracleDB(async (connection) => {
         // Sanitize columns
-        const allCols = ['r.RecipeID', 'r.RecipeName', 'r.Cuisine', 'r.CookingTime', 'l.RecipeLevel', 'u.UserName'];
+        const allCols = ['r.RecipeID', 'r.RecipeName', 'r.Cuisine', 'r.CookingTime', 'l.RecipeLevel', 'u.UserName', 'u.UserID'];
         const pKey = 'r.RecipeID';
         let selCols = columns ? columns : allCols;
         if (!selCols.includes(pKey)) {
@@ -121,6 +121,9 @@ async function fetchRecipes(columns, filter, searchTerm, img, captionless) {
                 // Otherwise, search by RecipeName
                 filters.push(`LOWER(r.RecipeName) LIKE LOWER('%${searchTerm}%')`);
             }
+        }
+        if (user) {
+            filters.push(`u.UserID = ${user}`);
         }
         const filtString = filters.length > 0 ? `WHERE ${filters.join(' AND ')}` : '';
 

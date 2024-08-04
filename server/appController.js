@@ -57,7 +57,8 @@ router.get('/recipes', async (req, res) => {
     const id = req.query.id || null;
     const img = req.query.img;
     const captionless = req.query.captionless;
-    const recipes = await appService.fetchRecipes(columns, filter, id, img, captionless);
+    const user = req.query.user || null;
+    const recipes = await appService.fetchRecipes(columns, filter, id, img, captionless, user);
     if (recipes.length === 0) {
         res.status(404).json({ error: 'No recipes found' });
     } else {
