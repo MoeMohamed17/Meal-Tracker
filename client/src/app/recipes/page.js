@@ -6,8 +6,6 @@ import NavBar from '../components/NavBar';
 import RecipeCard from '../components/RecipeCard';
 import GroupRecipes from "../util/GroupRecipes";
 
-// Mocked Cuisine Data (This should ideally come from a backend or a utility function)
-const cuisineOptions = ['Italian', 'Mexican', 'Chinese', 'Indian', 'American'];
 
 const Recipes = () => {
     const selectedUser = localStorage.getItem('selectedUser');
@@ -17,6 +15,26 @@ const Recipes = () => {
     const [showCaptions, setShowCaptions] = useState(true);
     const [onlyLiked, setOnlyLiked] = useState(false);
     const [likedRecipes, setLikedRecipes] = useState([]);
+    const [cuisineOptions, setCuisineOptions] = useState([]); // State for cuisine options
+
+    useEffect(() => {
+        // Fetch cuisine options from the backend
+        const fetchCuisines = async () => {
+            try {
+                const response = await fetch('/api/cuisines');
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+                const { data } = await response.json();
+                console.log('Fetched cuisines:', data); // Log the data for debugging
+                setCuisineOptions(data);
+            } catch (error) {
+                console.error('Error fetching cuisine options:', error);
+            }
+        };
+
+        fetchCuisines();
+    }, []); // Fetch cuisines on component mount
 
     useEffect(() => {
         const fetchRecipes = async () => {  
@@ -162,5 +180,6 @@ const Recipes = () => {
 };
 
 export default Recipes;
+
 
 
