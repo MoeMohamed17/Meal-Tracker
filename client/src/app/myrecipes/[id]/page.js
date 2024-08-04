@@ -281,7 +281,7 @@ const EditRecipe = () => {
 
           <Select
             label='Change author'
-            data={users.map(user => `${user[0]}. ${user[1]}`)}
+            data={users.map(user => `${user.USERID}. ${user.USERNAME}`)}
             {...form.getInputProps('user')}
           />
           <br/>

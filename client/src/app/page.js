@@ -92,7 +92,7 @@ export default function Home() {
             <Select
               label="Login to Existing User"
               placeholder="Pick a user"
-              data={users.map((user, index) => `${user[0]}. ${user[1]}`)}
+              data={users.map((user, index) => `${user.USERID}. ${user.USERNAME}`)}
               onChange={(value) => setSelectedUser(value.split('.')[0])}
               className={styles.userSelect}
             />
