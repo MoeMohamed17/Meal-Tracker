@@ -303,37 +303,37 @@ VALUES ('Greek', 10);
 
 -- RecipeCreated
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Spaghetti Carbonara', 'Italian', '00 00:20:00', 6);
+VALUES ('Spaghetti Carbonara', 'Italian', '00:20:00', 6);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Sweet and Sour Chicken', 'Chinese', '00 00:30:00', 8);
+VALUES ('Sweet and Sour Chicken', 'Chinese', '00:30:00', 8);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Tacos Al Pastor', 'Mexican', '00 00:25:00', 9);
+VALUES ('Tacos Al Pastor', 'Mexican', '00:25:00', 9);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Butter Chicken', 'Indian', '00 00:40:00', 9);
+VALUES ('Butter Chicken', 'Indian', '00:40:00', 9);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Coq au Vin', 'French', '00 01:00:00', 2);
+VALUES ('Coq au Vin', 'French', '01:00:00', 2);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Pad Thai', 'Thai', '00 00:30:00', 4);
+VALUES ('Pad Thai', 'Thai', '00:30:00', 4);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Lentil Stew', 'Ethiopian', '00 01:00:00', 5);
+VALUES ('Lentil Stew', 'Ethiopian', '01:00:00', 5);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Feijoada', 'Brazilian', '00 05:00:00', 11);
+VALUES ('Feijoada', 'Brazilian', '05:00:00', 11);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Chicken Katsu Don', 'Japanese', '00 00:30:00', 7);
+VALUES ('Chicken Katsu Don', 'Japanese', '00:30:00', 7);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Tabbouleh', 'Lebanese', '00 00:45:00', 9);
+VALUES ('Tabbouleh', 'Lebanese', '00:45:00', 9);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Moussaka', 'Greek', '00 02:00:00', 11);
+VALUES ('Moussaka', 'Greek', '02:00:00', 11);
 
 
 -- RecipesLiked
