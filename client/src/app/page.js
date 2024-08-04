@@ -11,8 +11,11 @@ export default function Home() {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState('');
   const [newUsername, setNewUsername] = useState('')
+  const [newUserError, setNewUserError] = useState('');
 
   const router = useRouter();
+  
+
 
   const fetchUsers = async() => {
     try {
@@ -32,7 +35,11 @@ export default function Home() {
 
 
   const submitUser = async () => {
-    if (newUsername === "") return;
+    const validNames = /^[a-zA-Z]+$/.test(newUsername);
+    if (!validNames || newUsername === '') {
+      setNewUserError('Only letter characters from a-z are accepted.');
+      return;
+    }
 
     try {
       const response = await fetch('api/user', {
@@ -49,6 +56,7 @@ export default function Home() {
       
     } catch (error) {
       console.error(error);
+      setNewUserError('Username already taken.');
     }
   };
 
@@ -107,6 +115,7 @@ export default function Home() {
               placeholder="Dentist Crentist"
               sx={{ width: '100%', textAlign: 'right' }}
               className={styles.userInput}
+              error={newUserError}
               onChange={(event) => { setNewUsername(event.currentTarget.value); }}
             />
             <Button 
