@@ -882,24 +882,37 @@ async function fetchRecipesLikedByAllUsers() {
   }
 
 
-  async function fetchNestedAggregationData() {
+// Fetch count of recipes liked per user level
+async function fetchRecipesLikedPerUserLevel() {
     return await withOracleDB(async (connection) => {
         const query = `
-            SELECT 
-                rl.UserLevel,
-                COUNT(r.RecipeID) AS RecipeCount,
-                AVG(r.CookingTime) AS AvgCookingTime
-            FROM RecipeCreated r
-            JOIN Users u ON r.UserID = u.UserID
-            JOIN UserLevels rl ON u.Points >= rl.Points
-            AND rl.Points = (
-                SELECT MAX(Points)
-                FROM UserLevels
-                WHERE u.Points >= Points
+            WITH UserLikes AS (
+                SELECT 
+                    u.UserID,
+                    u.UserName,
+                    ul.UserLevel,
+                    COUNT(rl.RecipeID) AS RecipesLiked
+                FROM 
+                    Users u
+                JOIN 
+                    RecipesLiked rl ON u.UserID = rl.UserID
+                JOIN 
+                    UserLevels ul ON u.Points = ul.Points
+                GROUP BY 
+                    u.UserID, u.UserName, ul.UserLevel
             )
-            GROUP BY rl.UserLevel
-            ORDER BY rl.UserLevel
+            SELECT 
+                UserLevel,
+                COUNT(UserID) AS NumberOfUsers,
+                AVG(RecipesLiked) AS AverageRecipesLiked
+            FROM 
+                UserLikes
+            GROUP BY 
+                UserLevel
+            ORDER BY 
+                UserLevel
         `;
+        
         const result = await connection.execute(query);
         return processResults(result);
     }).catch((err) => {
@@ -946,5 +959,5 @@ module.exports = {
     fetchLevelCounts,
     fetchCuisineCounts,
     fetchRecipesLikedByAllUsers,
-    fetchNestedAggregationData
+    fetchRecipesLikedPerUserLevel
 };
