@@ -54,7 +54,7 @@ const Recipes = () => {
                 const { data } = await response.json();
                 const groupedRecipes = GroupRecipes(data);
                 setRecipes(groupedRecipes);
-                setDisplayedRecipes(groupedRecipes);
+                setDisplayedRecipes(groupedRecipes); // Initially display all recipes
             } catch (error) {
                 console.error('Error fetching recipes:', error);
             }
@@ -65,19 +65,28 @@ const Recipes = () => {
 
     useEffect(() => {
         const getLikedRecipes = async () => {
-          if (selectedUser) {
-            try {
-              const response = await fetch(`/api/recipes/liked/${selectedUser}/`);
-              const data = await response.json();
-              setLikedRecipes(data.data);
-            } catch (error) {
-              console.error('Error fetching liked recipes:', error);
+            if (selectedUser) {
+                try {
+                    const response = await fetch(`/api/recipes/liked/${selectedUser}/`);
+                    const data = await response.json();
+                    setLikedRecipes(data.data);
+                } catch (error) {
+                    console.error('Error fetching liked recipes:', error);
+                }
             }
-          }
         };
-    
+
         getLikedRecipes();
     }, []);
+
+    useEffect(() => {
+        // Update displayedRecipes whenever likedRecipes or onlyLiked changes
+        if (onlyLiked) {
+            setDisplayedRecipes(recipes.filter(recipe => likedRecipes.includes(recipe.RECIPEID)));
+        } else {
+            setDisplayedRecipes(recipes);
+        }
+    }, [recipes, likedRecipes, onlyLiked]); // Trigger this effect on changes to these dependencies
 
     const fetchLikedByAllRecipes = async () => {
         try {
@@ -102,15 +111,15 @@ const Recipes = () => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ UserID: selectedUser, RecipeID: id}),
+                    body: JSON.stringify({ UserID: selectedUser, RecipeID: id }),
                 });
             } else {
                 await fetch('api/likeRecipe', {
                     method: 'POST',
                     headers: {
-                    'Content-Type': 'application/json'
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ UserID: selectedUser, RecipeID: id}),
+                    body: JSON.stringify({ UserID: selectedUser, RecipeID: id }),
                 });
             }
 
@@ -123,8 +132,6 @@ const Recipes = () => {
             console.error('Error updating liked recipes:', error);
         }
     };
-
-    const onlyLikedRecipes = onlyLiked ? likedRecipes ? recipes.filter(recipe => likedRecipes.includes(recipe.RECIPEID)) : [] : recipes;
 
     return (
         <div>
