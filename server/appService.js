@@ -881,7 +881,6 @@ async function fetchRecipesLikedByAllUsers() {
     });
   }
 
-
 // Fetch count of recipes liked per user level
 async function fetchRecipesLikedPerUserLevel() {
     return await withOracleDB(async (connection) => {
@@ -889,17 +888,16 @@ async function fetchRecipesLikedPerUserLevel() {
             WITH UserLikes AS (
                 SELECT 
                     u.UserID,
-                    u.UserName,
-                    ul.UserLevel,
+                    (SELECT MAX(l.UserLevel)
+                     FROM UserLevels l
+                     WHERE u.Points >= l.Points) AS UserLevel,
                     COUNT(rl.RecipeID) AS RecipesLiked
                 FROM 
                     Users u
-                JOIN 
+                LEFT JOIN 
                     RecipesLiked rl ON u.UserID = rl.UserID
-                JOIN 
-                    UserLevels ul ON u.Points = ul.Points
                 GROUP BY 
-                    u.UserID, u.UserName, ul.UserLevel
+                    u.UserID, u.Points
             )
             SELECT 
                 UserLevel,
@@ -920,7 +918,6 @@ async function fetchRecipesLikedPerUserLevel() {
         return [];
     });
 }
-
 
 module.exports = {
     fetchUser,
