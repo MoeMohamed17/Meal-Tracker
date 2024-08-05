@@ -525,6 +525,44 @@ router.get('/savedpantries', async (req, res) => {
     res.json({data: tableContent});
 });
 
+
+// Fetch pantry by ID
+router.get('/savedpantries/:id', async (req, res) => {
+    const pantryId = req.params.id;
+    try {
+        const pantry = await appService.fetchPantryById(pantryId);
+
+        if (pantry) {
+            res.json(pantry);
+        } else {
+            res.status(404).json({ error: 'Pantry not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching pantry by ID:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+// Add a pantry to a user's collection
+router.post('/userpantries', async (req, res) => {
+    const { UserID, PantryID } = req.body;
+
+    try {
+        const success = await appService.addPantryToUser(UserID, PantryID);
+
+        if (success) {
+            res.status(201).json({ message: 'Pantry added successfully' });
+        } else {
+            res.status(400).json({ error: 'Failed to add pantry' });
+        }
+    } catch (error) {
+        console.error('Error adding pantry to user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 // Add this endpoint to handle the creation of a new pantry
 router.post('/pantry', async (req, res) => {
     const { UserID, Category } = req.body;
