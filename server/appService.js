@@ -1018,6 +1018,37 @@ async function fetchTableData(tableName, columns) {
     });
   }
   
+  // Fetch pantry by ID, returning pantry details and the owner
+async function fetchPantryById(pantryId) {
+    return await withOracleDB(async (connection) => {
+        const query = `
+            SELECT PantryID, Category, UserID AS ownerId
+            FROM UserPantries
+            WHERE PantryID = :pantryId
+        `;
+        const result = await connection.execute(query, [pantryId]);
+        return result.rows.length > 0 ? result.rows[0] : null;
+    }).catch((err) => {
+        console.error('Error fetching pantry by ID:', err);
+        return null;
+    });
+}
+
+// Add a pantry to a user's collection
+async function addPantryToUser(userId, pantryId) {
+    return await withOracleDB(async (connection) => {
+        const query = `
+            INSERT INTO UserPantries (UserID, PantryID)
+            VALUES (:UserID, :PantryID)
+        `;
+        await connection.execute(query, { UserID: userId, PantryID: pantryId }, { autoCommit: true });
+        return true;
+    }).catch((err) => {
+        console.error('Error adding pantry to user:', err);
+        return false;
+    });
+}
+
 
 module.exports = {
     fetchUser,
@@ -1063,5 +1094,7 @@ module.exports = {
     fetchTableNames,
     fetchTableData,
     fetchTableColumns,
-    updatePoints
+    updatePoints,
+    fetchPantryById,
+    addPantryToUser
 };
