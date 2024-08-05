@@ -725,7 +725,15 @@ router.get('/table-data', async (req, res) => {
     }
   });
   
-  
+  router.get('/recipes/liked-by-all', async (req, res) => {
+    try {
+      const recipes = await appService.fetchRecipesLikedByAllUsers();
+      res.json({ data: recipes });
+    } catch (error) {
+      console.error('Error fetching recipes liked by all users:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
 
 module.exports = router;
 

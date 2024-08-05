@@ -1100,6 +1100,26 @@ async function addPantryToUser(userId, pantryId) {
 }
 
 
+async function fetchRecipesLikedByAllUsers() {
+    return await withOracleDB(async (connection) => {
+      const result = await connection.execute(`
+        SELECT r.RecipeID, r.RecipeName, r.Cuisine, r.CookingTime, l.RecipeLevel, u.UserName, i.ImageURL, i.Caption
+        FROM RecipeCreated r
+        JOIN RecipesLiked rl ON r.RecipeID = rl.RecipeID
+        LEFT JOIN Users u ON r.UserID = u.UserID
+        LEFT JOIN RecipeLevels l ON r.Cuisine = l.Cuisine
+        LEFT JOIN Images i ON r.RecipeID = i.RecipeID
+        GROUP BY r.RecipeID, r.RecipeName, r.Cuisine, r.CookingTime, l.RecipeLevel, u.UserName, i.ImageURL, i.Caption
+        HAVING COUNT(rl.UserID) = (SELECT COUNT(*) FROM Users)
+      `);
+      return processResults(result);
+    }).catch((err) => {
+      console.error(err);
+      return [];
+    });
+  }
+
+
 module.exports = {
     fetchUser,
     fetchAllUsers,
@@ -1148,5 +1168,6 @@ module.exports = {
     fetchPantryById,
     addPantryToUser,
     fetchLevelCounts,
-    fetchCuisineCounts
+    fetchCuisineCounts,
+    fetchRecipesLikedByAllUsers
 };
