@@ -131,7 +131,6 @@ const Admin = () => {
       {!loading && !error && selectedTable && (
         <div>
           <div>
-            <h3>Toggle Columns</h3>
             {availableColumns.map((column) => (
               <label key={column} style={{ marginRight: '10px' }}>
                 <input
