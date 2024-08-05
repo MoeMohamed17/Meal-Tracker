@@ -480,15 +480,15 @@ Given a UserID, returns the User's UserID, Name, points, and corresponding rank
 */
 async function fetchUser(UserID, columns) {
     return await withOracleDB(async (connection) => {
-        const allCols = ['u.UserId', 'u.UserName', 'u.Points', 'p.UserLevel'];
+        const allCols = ['u.UserId', 'u.UserName', 'u.Points', 'l.UserLevel'];
         const selCols = columns ? columns.join(', ') : allCols.join(', ');
 
         const result = await connection.execute(`
             SELECT ${selCols}
             FROM Users u
-            JOIN UserLevels p ON u.Points >= p.Points 
+            JOIN UserLevels l ON u.Points >= l.Points 
             WHERE u.UserID=${UserID}
-            AND p.Points = (
+            AND l.Points = (
                 SELECT MAX(Points)
                 FROM UserLevels
                 WHERE u.Points >= Points
@@ -587,6 +587,39 @@ async function updatePoints(UserID) {
     });
 
 }
+
+// Fetch counts of users at each level
+async function fetchLevelCounts() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            SELECT agg.UserLevel, COUNT(*) AS UserCount
+            FROM (
+                SELECT u.UserID, (
+                    SELECT MAX(l.UserLevel)
+                    FROM UserLevels l
+                    WHERE u.Points >= l.Points
+                ) AS UserLevel
+                FROM Users u
+            ) agg
+            GROUP BY agg.UserLevel
+            ORDER BY agg.UserLevel
+        `);
+        return processResults(result);
+    }).catch((err) => {
+        console.error(err);
+        return [];
+    });
+}
+
+
+// SELECT ${selCols}
+// FROM Users u
+// JOIN UserLevels p ON u.Points >= p.Points 
+// AND p.Points = (
+//     SELECT MAX(Points)
+//     FROM UserLevels
+//     WHERE u.Points >= Points)
+// ['u.UserId', 'u.UserName', 'u.Points', 'p.UserLevel'];
 
 
 /*
@@ -973,6 +1006,23 @@ async function fetchCuisineOptions() {
     });
 }
 
+// Fetches number of recipes for each cuisine
+async function fetchCuisineCounts(threshold) {
+    return await withOracleDB(async (connection) => {
+        const having = threshold ? `HAVING COUNT(*) >= ${threshold}` : '';
+        const query = `
+            SELECT Cuisine, COUNT(*) AS Count
+            FROM RecipeCreated
+            GROUP BY Cuisine
+            ${having}
+        `;
+        const result = await connection.execute(query);
+        return processResults(result);
+    }).catch((err) => {
+        console.error(err);
+        return [];
+    });
+}
 
 async function fetchTableNames() {
     return await withOracleDB(async (connection) => {
@@ -1063,5 +1113,7 @@ module.exports = {
     fetchTableNames,
     fetchTableData,
     fetchTableColumns,
-    updatePoints
+    updatePoints,
+    fetchLevelCounts,
+    fetchCuisineCounts
 };

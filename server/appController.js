@@ -185,6 +185,20 @@ router.get('/cuisines', async (req, res) => {
     }
 });
 
+
+/*
+API endpoint to aggregate counts across user levels
+*/
+router.get('/cuisine-counts', async (req, res) => {
+    const threshold = req.query.threshold ? parseInt(req.query.threshold) : null;
+    const data = await appService.fetchCuisineCounts(threshold);
+    if (data) {
+        res.status(201).json({ message: 'Aggregated data fetched', data });
+    } else {
+        res.status(500).json({ error: 'Failed to fetch data' });
+    }
+});
+
 /*================================================
 ==================IMAGE ENDPOINTS=================
 ================================================*/
@@ -381,6 +395,18 @@ router.put('/points/:id', async (req, res) => {
         res.status(201).json({ message: 'Points updated' });
     } else {
         res.status(500).json({ error: 'Failed to update points' });
+    }
+});
+
+/*
+API endpoint to aggregate counts across user levels
+*/
+router.get('/level-counts', async (req, res) => {
+    const data = await appService.fetchLevelCounts();
+    if (data) {
+        res.status(201).json({ message: 'Aggregated data fetched', data });
+    } else {
+        res.status(500).json({ error: 'Failed to fetch data' });
     }
 });
 
