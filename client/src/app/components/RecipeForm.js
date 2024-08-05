@@ -21,8 +21,8 @@ const RecipeForm = () => {
   }, []);
 
   const validateTimeFormat = (time) => {
-    // Regular expression to match the HH:MM:SS format
-    const regex = /^([0-1]?[0-9]|2[0-3]):([0-5]?[0-9]):([0-5]?[0-9])$/;
+    // Regular expression to match the D HH:MM format
+    const regex = /^\d (?:[01]?\d|2[0-3]):[0-5]\d$/;
     return regex.test(time);
   };
 
@@ -172,7 +172,7 @@ const RecipeForm = () => {
           required
         />
         <TextInput
-          label="Cooking Time (HH:MM:SS)"
+          label="Cooking Time (D HH:MM)"
           value={time}
           onChange={(e) => setTime(e.target.value)}
           required
@@ -207,7 +207,7 @@ const RecipeForm = () => {
         onClose={() => setTimeErrorModal(false)}
         title="Invalid Cooking Time"
       >
-        <Text>Please enter the cooking time in the format HH:MM:SS.</Text>
+        <Text>Please enter the cooking time in the format D HH:MM.</Text>
         <Button onClick={() => setTimeErrorModal(false)}>Close</Button>
       </Modal>
     </div>

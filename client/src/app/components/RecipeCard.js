@@ -79,7 +79,7 @@ const RecipeCard = ({ id, name, level, cuisine, time, imageUrl, caption, liked, 
               {/* <strong>Cuisine:</strong> {cuisine} */}
             </p>
             <p>
-              <strong>Time:</strong> {time}
+              <strong>Time (D HH:MM):</strong> {time}
             </p>
           </div>
         </Link>

@@ -92,9 +92,21 @@ const EditRecipe = () => {
     }
   });
 
+  const validateTimeFormat = (time) => {
+    const regex = /^\d (?:[01]?\d|2[0-3]):[0-5]\d$/;
+    return regex.test(time);
+  };
+
+
   const handleSubmit = async (values) => {
     form.setFieldError('url', '');
     form.setFieldError('caption', '');
+    form.setFieldError('time', '')
+
+    if (!validateTimeFormat(values.time)) {
+      form.setFieldError('time', 'Must take the format D HH:MM.');
+      return;
+    }
   
     const updatedRecipe = {
       RecipeName: values.name || recipe.RECIPENAME,
@@ -267,6 +279,7 @@ const EditRecipe = () => {
           <TextInput
             label="Time to prepare"
             placeholder={recipe.COOKINGTIME}
+            error={form.errors.time}
             {...form.getInputProps('time')}
           />
           <br/>
