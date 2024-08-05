@@ -20,7 +20,7 @@ const RecipeDetails = () => {
           throw new Error('Failed to fetch recipe details');
         }
         const data = await response.json();
-        setRecipe(data.data[0]); // Assuming the first item contains the recipe details
+        setRecipe(data.data[0]);
       } catch (error) {
         console.error('Error fetching recipe:', error);
       }
@@ -68,16 +68,16 @@ const RecipeDetails = () => {
   return (
     <div>
       <NavBar />
-      <h1>{recipe[1]}</h1> {/* Recipe Name */}
-      <p><strong>Cuisine:</strong> {recipe[2]}</p> {/* Cuisine */}
-      <p><strong>Cooking Time:</strong> {recipe[3]}</p> {/* Cooking Time */}
-      <p><strong>Created By:</strong> {recipe[5]}</p> {/* Creator's Name */}
+      <h1>{recipe[1]}</h1> 
+      <p><strong>Cuisine:</strong> {recipe[2]}</p> 
+      <p><strong>Cooking Time:</strong> {recipe[3]}</p> 
+      <p><strong>Created By:</strong> {recipe[5]}</p> 
 
       <div className="recipe-steps">
         <h2>Steps</h2>
         <ol>
           {steps.map((step, index) => (
-            <li key={index}>{step[1]}</li> // Instruction Text
+            <li key={index}>{step[1]}</li> 
           ))}
         </ol>
       </div>
@@ -86,7 +86,7 @@ const RecipeDetails = () => {
         <h2>Ingredients</h2>
         <ol>
           {foods.map((fooditem, index) => (
-            <li key={index}>{`${fooditem.QUANTITY}x ${fooditem.FOODNAME}`}</li> // Instruction Text
+            <li key={index}>{`${fooditem.QUANTITY}x ${fooditem.FOODNAME}`}</li> 
           ))}
         </ol>
       </div>

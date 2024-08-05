@@ -11,8 +11,7 @@ const Pantries = () => {
   const [openPantryModal, setOpenPantryModal] = useState(false);
   const [newPantryCategory, setNewPantryCategory] = useState('');
   const [alertModal, setAlertModal] = useState({ open: false, message: '' });
-  const [pantryIdToAdd, setPantryIdToAdd] = useState(''); // New state for pantry ID input
-
+  const [pantryIdToAdd, setPantryIdToAdd] = useState(''); 
   const fetchPantries = async () => {
     const selectedUser = localStorage.getItem('selectedUser');
     if (selectedUser) {

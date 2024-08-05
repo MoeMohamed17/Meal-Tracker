@@ -320,36 +320,40 @@ async function fetchRecipeSteps(RecipeID) {
     });
 }
 
-// Fetch RecipeLevels Table (Cuisine, RecipeLevel)
-async function fetchRecipeLevels(columns) {
+// Insert a single step associated with a recipe
+async function insertStep(StepNum, InstructionText, RecipeID) {
     return await withOracleDB(async (connection) => {
-        const allCols = ['Cuisine', 'RecipeLevel'];
-        const selCols = columns ? columns.join(', ') : allCols.join(', ');
-
-        const result = await connection.execute(`
-            SELECT ${selCols}
-            FROM RecipeLevels`);
-        return processResults(result);
-    }).catch(() => {    
-        return [];
+        const result = await connection.execute(
+            `INSERT INTO StepContains (StepNum, InstructionText, RecipeID)
+            VALUES (:StepNum, :InstructionText, :RecipeID)`,
+            [
+                StepNum, 
+                InstructionText, 
+                RecipeID
+            ],
+            { autoCommit: true }
+        );
+        return result.rowsAffected;
+    }).catch(() => {
+        return false;
     });
 }
 
-//fetches all steps from all recipes
-async function fetchAllSteps(columns) {
+// Delete a recipe's steps
+async function deleteSteps(recipeID) {
     return await withOracleDB(async (connection) => {
-        const allCols = ['RecipeID', 'StepNum', 'InstructionText'];
-        const selCols = columns ? columns.join(', ') : allCols.join(', ');
-
         const result = await connection.execute(`
-            SELECT ${selCols}
-            FROM StepContains`);
-        return processResults(result);
-    }).catch(() => {    
-        return [];
+            DELETE FROM StepContains
+            WHERE RecipeID = :recipeID`,
+            [recipeID],
+            { autoCommit: true}
+        );
+        return 1;
+    }).catch((err) => {
+        console.error(err);
+        return 0;
     });
 }
-
 
 /*================================================
 ==================IMAGE FUNCTIONS=================
@@ -404,20 +408,6 @@ async function deleteImages(recipeID) {
         return 0;
     })}
 
-// Fetch All Images 
-async function fetchAllImages(columns) {
-    return await withOracleDB(async (connection) => {
-        const allCols = ['RecipeID', 'Caption', 'ImageURL'];
-        const selCols = columns ? columns.join(', ') : allCols.join(', ');
-
-        const result = await connection.execute(`
-            SELECT ${selCols}
-            FROM Images`);
-        return processResults(result);
-    }).catch(() => {    
-        return [];
-    });
-}
 
 async function addImageToRecipe(recipeID, imageURL, caption) {
     return await withOracleDB(async (connection) => {
@@ -433,44 +423,30 @@ async function addImageToRecipe(recipeID, imageURL, caption) {
     });
 }
 
-
-
-// Insert a single step associated with a recipe
-async function insertStep(StepNum, InstructionText, RecipeID) {
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute(
-            `INSERT INTO StepContains (StepNum, InstructionText, RecipeID)
-            VALUES (:StepNum, :InstructionText, :RecipeID)`,
-            [
-                StepNum, 
-                InstructionText, 
-                RecipeID
-            ],
-            { autoCommit: true }
-        );
-        return result.rowsAffected;
-    }).catch(() => {
-        return false;
-    });
-}
-
-// Delete a recipe's steps
-async function deleteSteps(recipeID) {
+// Update an existing recipe
+async function updateRecipe(recipe) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(`
-            DELETE FROM StepContains
-            WHERE RecipeID = :recipeID`,
-            [recipeID],
-            { autoCommit: true}
-        );
-        return 1;
+            UPDATE RecipeCreated
+            SET RecipeName = :recipeName,
+                Cuisine = :cuisine,
+                CookingTime = :cookingTime,
+                UserID = :userID
+            WHERE RecipeID = :recipeID
+        `, {
+            recipeName: recipe.RecipeName,
+            cuisine: recipe.Cuisine,
+            cookingTime: recipe.CookingTime,
+            userID: recipe.UserID,
+            recipeID: recipe.RecipeID
+        });
+        await connection.commit();
+        return result.rowsAffected;
     }).catch((err) => {
         console.error(err);
-        return 0;
+        return [];
     });
 }
-
-
 
 /*================================================
 ==================USER FUNCTIONS==================
@@ -523,23 +499,7 @@ async function fetchAllUsers(columns) {
     });
 }
 
-/*
-Returns Points and UserLevel 
-*/
-async function fetchUserLevels(columns) {
-    return await withOracleDB(async (connection) => {
-        const allCols = ['Points', 'UserLevel'];
-        const selCols = columns ? columns.join(', ') : allCols.join(', ');
 
-        const result = await connection.execute(`
-            SELECT ${selCols}
-            FROM UserLevels
-            `);
-        return processResults(result);
-    }).catch(() => {    
-        return [];
-    });
-}
 
 // Create a new user
 async function createUser(UserName) {
@@ -611,17 +571,10 @@ async function fetchLevelCounts() {
     });
 }
 
-
-// SELECT ${selCols}
-// FROM Users u
-// JOIN UserLevels p ON u.Points >= p.Points 
-// AND p.Points = (
-//     SELECT MAX(Points)
-//     FROM UserLevels
-//     WHERE u.Points >= Points)
-// ['u.UserId', 'u.UserName', 'u.Points', 'p.UserLevel'];
-
-
+/*================================================
+==================PANTRIES FUNCTIONS==================
+================================================*/
+/*
 /*
 Returns all pantries associated with UserID
 */
@@ -669,137 +622,6 @@ async function fetchAllPantries(columns) {
     });
 }
 
-/*
-Returns all existing pantries regardless of user
-*/
-async function fetchSavedPantries(columns) {
-    return await withOracleDB(async (connection) => {
-        const allCols = ['sp.PantryID', 'sp.Category'];
-        const selCols = columns ? columns.join(', ') : allCols.join(', ');
-
-        const result = await connection.execute(`
-            SELECT ${selCols}
-            FROM SavedPantry sp`);
-        return processResults(result);
-    }).catch(() => {    
-        return [];
-    });
-}
-
-
-// Update an existing recipe
-async function updateRecipe(recipe) {
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute(`
-            UPDATE RecipeCreated
-            SET RecipeName = :recipeName,
-                Cuisine = :cuisine,
-                CookingTime = :cookingTime,
-                UserID = :userID
-            WHERE RecipeID = :recipeID
-        `, {
-            recipeName: recipe.RecipeName,
-            cuisine: recipe.Cuisine,
-            cookingTime: recipe.CookingTime,
-            userID: recipe.UserID,
-            recipeID: recipe.RecipeID
-        });
-        await connection.commit();
-        return result.rowsAffected;
-    }).catch((err) => {
-        console.error(err);
-        return [];
-    });
-}
-
-
-/*================================================
-==================LOCATION FUNCTIONS==================
-================================================*/
-
-//fetches all locations
-async function fetchAllLocations(columns) {
-    return await withOracleDB(async (connection) => {
-        const allCols = ['LocationType', 'Street', 'City', 'Province'];
-        const selCols = columns ? columns.join(', ') : allCols.join(', ');
-
-        const result = await connection.execute(`
-            SELECT ${selCols}
-            FROM Locations`);
-        return processResults(result);
-    }).catch(() => {    
-        return [];
-    });
-}
-
-//fetches user locations
-async function fetchUserLocations(columns) {
-    return await withOracleDB(async (connection) => {
-        const allCols = ['UserID', 'Street', 'City', 'Province'];
-        const selCols = columns ? columns.join(', ') : allCols.join(', ');
-
-        const result = await connection.execute(`
-            SELECT ${selCols}
-            FROM UserLocations`);
-        return processResults(result);
-    }).catch(() => {    
-        return [];
-    });
-}
-
-
-/*================================================
-==================GROCERY FUNCTIONS==================
-================================================*/
-//fetches user locations
-async function fetchAllGroceryStores(columns) {
-    return await withOracleDB(async (connection) => {
-        const allCols = ['StoreName', 'Street', 'City', 'Province'];
-        const selCols = columns ? columns.join(', ') : allCols.join(', ');
-
-        const result = await connection.execute(`
-            SELECT ${selCols}
-            FROM GroceryStore`);
-        return processResults(result);
-    }).catch(() => {    
-        return [];
-    });
-}
-
-//fetches nearbystores
-async function fetchAllNearbyStores(columns) {
-    return await withOracleDB(async (connection) => {
-        const allCols = ['LocationStreet', 'LocationCity', 'LocationProvince', 'GroceryStoreStreet', 'GroceryStoreCity', 'GroceryStoreProvince', 'Distance'];
-        const selCols = columns ? columns.join(', ') : allCols.join(', ');
-
-        const result = await connection.execute(`
-            SELECT ${selCols}
-            FROM NearbyStores`);
-        return processResults(result);
-    }).catch(() => {    
-        return [];
-    });
-}
-
-
-
-
-// // Fetch all locations
-// async function fetchAllLocations() {
-//     return await withOracleDB(async (connection) => {
-//         const result = await connection.execute(`
-//             SELECT Street, City, Province, LocationType
-//             FROM Locations
-//             ORDER BY City, Street
-//         `);
-//         return result.rows;
-//     }).catch((err) => {
-//         console.error(err);
-//         return [];
-//     });
-// }
-
-
 // Fetch all ingredient instances for a specific pantry
 async function fetchRecipeFoodItems(columns, recipeID) {
     return await withOracleDB(async (connection) => {
@@ -821,54 +643,6 @@ async function fetchRecipeFoodItems(columns, recipeID) {
 }
 
 
-//fetches FoodItem
-async function fetchAllFoodItems(columns) {
-    return await withOracleDB(async (connection) => {
-        const allCols = ['FoodName', 'ShelfLife', 'Calories', 'FoodGroup'];
-        const selCols = columns ? columns.join(', ') : allCols.join(', ');
-
-        const result = await connection.execute(`
-            SELECT ${selCols}
-            FROM FoodItem`);
-        return processResults(result);
-    }).catch(() => {    
-        return [];
-    });
-}
-
-
-//fetches Healthy FoodItem
-async function fetchAllHealthyFoodItems(columns) {
-    return await withOracleDB(async (connection) => {
-        const allCols = ['Calories', 'FoodGroup', 'Healthy'];
-        const selCols = columns ? columns.join(', ') : allCols.join(', ');
-
-        const result = await connection.execute(`
-            SELECT ${selCols}
-            FROM HealthyLookup`);
-        return processResults(result);
-    }).catch(() => {    
-        return [];
-    });
-}
-
-//fetches food items in all recipes
-async function fetchAllFoodsInRecipes(columns) {
-    return await withOracleDB(async (connection) => {
-        const allCols = ['FoodName', 'RecipeID', 'Quantity'];
-        const selCols = columns ? columns.join(', ') : allCols.join(', ');
-
-        const result = await connection.execute(`
-            SELECT ${selCols}
-            FROM FoodsInRecipes`);
-        return processResults(result);
-    }).catch(() => {    
-        return [];
-    });
-}
-
-
-
 
 
 // Fetch all ingredient instances for a specific pantry
@@ -886,22 +660,6 @@ async function fetchIngredientInstances(pantryID) {
         return [];
     });
 }
-
-//fetches all ingredient instances in all recipes
-async function fetchAllIngredientInstances(columns) {
-    return await withOracleDB(async (connection) => {
-        const allCols = ['DateAdded', 'ExpiryDate', 'FoodName', 'PantryID', 'Quantity'];
-        const selCols = columns ? columns.join(', ') : allCols.join(', ');
-
-        const result = await connection.execute(`
-            SELECT ${selCols}
-            FROM IngredientInstances`);
-        return processResults(result);
-    }).catch(() => {    
-        return [];
-    });
-}
-
 
 
 // Function to create a new pantry
@@ -991,7 +749,7 @@ async function addIngredient(PantryID, FoodName, Quantity, ExpiryDate, ShelfLife
     });
   }
   
-  
+
 
 
 async function fetchCuisineOptions() {
@@ -1024,6 +782,11 @@ async function fetchCuisineCounts(threshold) {
     });
 }
 
+
+/*================================================
+==================ADMIN FUNCTIONS==================
+================================================*/
+
 async function fetchTableNames() {
     return await withOracleDB(async (connection) => {
       const result = await connection.execute(`
@@ -1051,7 +814,6 @@ async function fetchTableColumns(tableName) {
 
 async function fetchTableData(tableName, columns) {
     return await withOracleDB(async (connection) => {
-      // If no columns specified, select all columns
       const allColsQuery = `SELECT column_name FROM user_tab_columns WHERE table_name = '${tableName.toUpperCase()}'`;
       const allColsResult = await connection.execute(allColsQuery);
       const allCols = allColsResult.rows.map((row) => row[0]);
@@ -1099,7 +861,7 @@ async function addPantryToUser(userId, pantryId) {
     });
 }
 
-
+// fetch recipes every user has liked
 async function fetchRecipesLikedByAllUsers() {
     return await withOracleDB(async (connection) => {
       const result = await connection.execute(`
@@ -1157,7 +919,6 @@ module.exports = {
     createRecipe,
     updateRecipe,
     deleteRecipe,
-    fetchAllLocations,
     fetchLikedRecipes,
     fetchUserLikedRecipes,
     insertStep,
@@ -1173,21 +934,9 @@ module.exports = {
     fetchCuisineOptions,
     fetchRecipeFoodItems,
     fetchAllPantries,
-    fetchSavedPantries,
     deleteSteps,
     deleteImages,
     insertImage,
-    fetchUserLevels,
-    fetchRecipeLevels,
-    fetchAllImages,
-    fetchAllSteps,
-    fetchUserLocations,
-    fetchAllGroceryStores,
-    fetchAllNearbyStores,
-    fetchAllFoodItems,
-    fetchAllHealthyFoodItems,
-    fetchAllFoodsInRecipes,
-    fetchAllIngredientInstances,
     fetchTableNames,
     fetchTableData,
     fetchTableColumns,

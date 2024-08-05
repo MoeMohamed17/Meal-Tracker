@@ -163,16 +163,6 @@ router.get('/recipe/:id/steps', async (req, res) => {
     }
 });
 
-/* 
-API endpoint to GET RecipeLevels (Cuisine, RecipeLevel)
-*/
-router.get('/recipelevels', async (req, res) => {
-    const columns = req.query.columns ? req.query.columns.split(',') : null;
-    const tableContent = await appService.fetchRecipeLevels(columns);
-    res.json({data: tableContent});
-});
-
-
 /*
 API endpoint to GET cuisine options
 */
@@ -271,16 +261,6 @@ router.delete('/images/:id', async (req, res) => {
     }
 });
 
-
-/* 
-API endpoint to GET all images
-*/
-router.get('/images', async (req, res) => {
-    const columns = req.query.columns ? req.query.columns.split(',') : null;
-    const tableContent = await appService.fetchAllImages(columns);
-    res.json({data: tableContent});
-});
-
 /*================================================
 ==================STEP ENDPOINTS==================
 ================================================*/
@@ -318,17 +298,6 @@ router.post('/steps/:id', async (req, res) => {
     }
 });
 
-
-// const recipe = { ...req.body, RecipeID: RecipeID };
-// const rowsAffected = await appService.updateRecipe(recipe);
-// if (rowsAffected > 0) {
-//     res.json({ message: 'Recipe updated' });
-// } else {
-//     res.status(404).json({ error: 'Recipe not found or not updated' });
-// }
-// });
-
-
 /*
 API endpoint to DELETE all steps associated with a recipe
 */
@@ -341,16 +310,6 @@ router.delete('/steps/:id', async (req, res) => {
         res.status(404).json({ error: 'Steps not found or not deleted' });
     }
 });
-
-
-
-//API endpoint to GET all steps for all recipes
-router.get('/steps', async (req, res) => {
-    const columns = req.query.columns ? req.query.columns.split(',') : null;
-    const tableContent = await appService.fetchAllSteps(columns);
-    res.json({data: tableContent});
-});
-
 
 
 /*================================================
@@ -374,16 +333,6 @@ router.get('/users', async (req, res) => {
     const tableContent = await appService.fetchAllUsers(columns);
     res.json({data: tableContent});
 });
-
-/* 
-API endpoint to GET all users' points and level
-*/
-router.get('/userlevels', async (req, res) => {
-    const columns = req.query.columns ? req.query.columns.split(',') : null;
-    const tableContent = await appService.fetchUserLevels(columns);
-    res.json({data: tableContent});
-});
-
 
 /*
 API endpoint to CREATE a new user
@@ -443,52 +392,9 @@ router.get('/recipe/:id/fooditems', async (req, res) => {
     }
 });
 
-/*
-API endpoint to GET all food items
-*/
-router.get('/fooditems', async (req, res) => {
-    const columns = req.query.columns ? req.query.columns.split(',') : null;
-    const tableContent = await appService.fetchAllFoodItems(columns);
-    res.json({data: tableContent});
-});
-
-/*
-API endpoint to GET all healthy food items
-*/
-router.get('/healthyfooditems', async (req, res) => {
-    const columns = req.query.columns ? req.query.columns.split(',') : null;
-    const tableContent = await appService.fetchAllHealthyFoodItems(columns);
-    res.json({data: tableContent});
-});
-
-/*
-API endpoint to GET all foods in all recipes
-*/
-router.get('/fooditemsinrecipes', async (req, res) => {
-    const columns = req.query.columns ? req.query.columns.split(',') : null;
-    const tableContent = await appService.fetchAllFoodsInRecipes(columns);
-    res.json({data: tableContent});
-});
-
-
-
-
-
 /*================================================
 ==================PANTRY ENDPOINTS=================
 ================================================*/
-/*
-API endpoint to GET all ingredient instances of a specific pantry
-*/
-// router.get('/pantry/:id/ingredients', async (req, res) => {
-//     const pantryID = req.params.id;
-//     const ingredientInstances = await appService.fetchIngredientInstances(pantryID);
-//     if (ingredientInstances.length === 0) {
-//         res.status(404).json({ error: 'No ingredients found for this pantry' });
-//     } else {
-//         res.json({ data: ingredientInstances });
-//     }
-// });
 
 // API endpoint to GET all ingredient instances of a specific pantry
 router.get('/pantry/:id/ingredients', async (req, res) => {
@@ -504,39 +410,11 @@ router.get('/pantry/:id/ingredients', async (req, res) => {
 
 
 /*
-API endpoint to GET all ingredient instances in all pantries
-*/
-router.get('/ingredientinstances', async (req, res) => {
-    const columns = req.query.columns ? req.query.columns.split(',') : null;
-    const tableContent = await appService.fetchAllIngredientInstances(columns);
-    res.json({data: tableContent});
-});
-
-
-/*
 API endpoint to GET a user's pantries
 */
 router.get('/pantry/:id', async (req, res) => {
     const UserID = req.params.id;
     const tableContent = await appService.fetchPantries(UserID);
-    res.json({data: tableContent});
-});
-
-/*
-API endpoint to GET all pantries from all users
-*/
-router.get('/pantries', async (req, res) => {
-    const columns = req.query.columns ? req.query.columns.split(',') : null;
-    const tableContent = await appService.fetchSavedPantries(columns);
-    res.json({data: tableContent});
-});
-
-/*
-API endpoint to GET all existing pantries
-*/
-router.get('/savedpantries', async (req, res) => {
-    const columns = req.query.columns ? req.query.columns.split(',') : null;
-    const tableContent = await appService.fetchAllPantries(columns);
     res.json({data: tableContent});
 });
 
@@ -589,8 +467,6 @@ router.post('/pantry', async (req, res) => {
     }
 });
 
-
-
 // endpoint to handle adding a new ingredient instance
 router.post('/ingredient', async (req, res) => {
     const { PantryID, FoodName, Quantity, ExpiryDate, ShelfLife, Calories, FoodGroup } = req.body;
@@ -602,9 +478,6 @@ router.post('/ingredient', async (req, res) => {
     }
   });
   
-
-
-
 /*
 API endpoint to UPDATE an existing recipe
 */
@@ -633,59 +506,6 @@ router.delete('/recipe/:id', async (req, res) => {
 });
 
 
-// /*
-// API endpoint to GET all locations
-// */
-// router.get('/locations', async (req, res) => {
-//     const locations = await appService.fetchAllLocations();
-//     if (locations.length === 0) {
-//         res.status(404).json({ error: 'No locations found' });
-//     } else {
-//         res.json({ data: locations });
-//     }
-// });
-
-
-/*================================================
-==================LOCATION ENDPOINTS=================
-================================================*/
-
-/*
-API endpoint to GET all locations
-*/
-router.get('/locations', async (req, res) => {
-    const columns = req.query.columns ? req.query.columns.split(',') : null;
-    const tableContent = await appService.fetchAllLocations(columns);
-    res.json({data: tableContent});
-});
-
-/*
-API endpoint to GET all user locations
-*/
-router.get('/userlocations', async (req, res) => {
-    const columns = req.query.columns ? req.query.columns.split(',') : null;
-    const tableContent = await appService.fetchUserLocations(columns);
-    res.json({data: tableContent});
-});
-
-/*================================================
-==================GROCERY ENDPOINTS=================
-================================================*/
-/*
-API endpoint to GET all grocery stores
-*/
-router.get('/grocerystores', async (req, res) => {
-    const columns = req.query.columns ? req.query.columns.split(',') : null;
-    const tableContent = await appService.fetchAllGroceryStores(columns);
-    res.json({data: tableContent});
-});
-
-router.get('/nearbystores', async (req, res) => {
-    const columns = req.query.columns ? req.query.columns.split(',') : null;
-    const tableContent = await appService.fetchAllNearbyStores(columns);
-    res.json({data: tableContent});
-});
-
 
 
 // API endpoint to add an image to a recipe
@@ -703,6 +523,21 @@ router.post('/images', async (req, res) => {
 });
 
 
+// Get ALL recipes liked by all users (division)
+router.get('/recipes/liked-by-all', async (req, res) => {
+    try {
+      const recipes = await appService.fetchRecipesLikedByAllUsers();
+      res.json({ data: recipes });
+    } catch (error) {
+      console.error('Error fetching recipes liked by all users:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+/*================================================
+==================ADMIN ENDPOINTS=================
+================================================*/
+
 router.get('/tables', async (req, res) => {
     try {
       const tables = await appService.fetchTableNames();
@@ -711,7 +546,7 @@ router.get('/tables', async (req, res) => {
       console.error('Error fetching table names:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
-  });
+});
 
 // Get list of columns for a specific table
 router.get('/table-columns', async (req, res) => {
@@ -724,7 +559,7 @@ router.get('/table-columns', async (req, res) => {
       console.error('Error fetching table columns:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
-  });
+});
   
 // Get data for a specific table with optional column filtering
 router.get('/table-data', async (req, res) => {
@@ -738,17 +573,8 @@ router.get('/table-data', async (req, res) => {
       console.error('Error fetching table data:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
-  });
+});
   
-  router.get('/recipes/liked-by-all', async (req, res) => {
-    try {
-      const recipes = await appService.fetchRecipesLikedByAllUsers();
-      res.json({ data: recipes });
-    } catch (error) {
-      console.error('Error fetching recipes liked by all users:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  });
 
 module.exports = router;
 

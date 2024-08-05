@@ -29,7 +29,6 @@ const RecipeForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Ensure userID is available
     if (!userID) {
       console.error('No user ID available. Please log in.');
       return;
@@ -37,7 +36,7 @@ const RecipeForm = () => {
 
     // Validate cooking time format
     if (!validateTimeFormat(time)) {
-      setTimeErrorModal(true); // Show the modal if the time format is incorrect
+      setTimeErrorModal(true); 
       return;
     }
 

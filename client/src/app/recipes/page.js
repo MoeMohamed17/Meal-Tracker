@@ -15,7 +15,7 @@ const Recipes = () => {
     const [showCaptions, setShowCaptions] = useState(true);
     const [onlyLiked, setOnlyLiked] = useState(false);
     const [likedRecipes, setLikedRecipes] = useState([]);
-    const [cuisineOptions, setCuisineOptions] = useState([]); // State for cuisine options
+    const [cuisineOptions, setCuisineOptions] = useState([]); 
 
     useEffect(() => {
         // Fetch cuisine options from the backend
@@ -44,7 +44,7 @@ const Recipes = () => {
                     img: 'true',
                     captionless: showCaptions ? '0' : '1',
                     ...(cuisineFilter && { filter: cuisineFilter }),
-                    ...(searchQuery && { id: searchQuery }), // Assuming 'id' is used to filter by name or id
+                    ...(searchQuery && { id: searchQuery }),
                 });
 
                 const response = await fetch(`/api/recipes?${params}`);
@@ -61,7 +61,7 @@ const Recipes = () => {
         };
 
         fetchRecipes();
-    }, [cuisineFilter, searchQuery, showCaptions]); // Dependencies to trigger re-fetch
+    }, [cuisineFilter, searchQuery, showCaptions]);
 
     useEffect(() => {
         const getLikedRecipes = async () => {
@@ -86,7 +86,7 @@ const Recipes = () => {
         } else {
             setDisplayedRecipes(recipes);
         }
-    }, [recipes, likedRecipes, onlyLiked]); // Trigger this effect on changes to these dependencies
+    }, [recipes, likedRecipes, onlyLiked]);
 
     const fetchLikedByAllRecipes = async () => {
         try {

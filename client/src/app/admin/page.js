@@ -14,7 +14,7 @@ const Admin = () => {
   const [loading, setLoading] = useState(false); // Loading state
   const [error, setError] = useState(null); // Error state
 
-  // Fetch available tables when component mounts
+  // Fetch available tables
   useEffect(() => {
     const fetchTables = async () => {
       try {
@@ -23,7 +23,7 @@ const Admin = () => {
           throw new Error('Failed to fetch tables');
         }
         const tablesJson = await response.json();
-        setTables(tablesJson.data); // Set tables from response
+        setTables(tablesJson.data); 
         if (tablesJson.data.length > 0) {
           setSelectedTable(tablesJson.data[0]); // Select first table by default
         }
@@ -41,15 +41,14 @@ const Admin = () => {
       if (!selectedTable) return;
       setLoading(true);
       try {
-        // Fetch columns for the selected table
         const columnsResponse = await fetch(`/api/table-columns?table=${selectedTable}`);
         if (!columnsResponse.ok) {
           throw new Error(`Failed to fetch columns for table ${selectedTable}`);
         }
         const columnsJson = await columnsResponse.json();
         const columns = columnsJson.data || [];
-        setAvailableColumns(columns); // Set available columns
-        setConfiguredColumns(columns); // Set configured columns to all initially
+        setAvailableColumns(columns); 
+        setConfiguredColumns(columns); //all columns initially
         setVisibleColumns(columns); // Show all columns initially
 
         // Fetch data for the selected columns
@@ -86,7 +85,7 @@ const Admin = () => {
   const handleRefreshData = async () => {
     setLoading(true);
     try {
-      const columnsQuery = configuredColumns.join(','); // Prepare configured columns
+      const columnsQuery = configuredColumns.join(','); 
       const dataResponse = await fetch(`/api/table-data?table=${selectedTable}&columns=${columnsQuery}`);
       if (!dataResponse.ok) {
         throw new Error(`Failed to fetch data for table ${selectedTable}`);
