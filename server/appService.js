@@ -576,8 +576,7 @@ async function updatePoints(UserID) {
             SET Points = Points+50
             WHERE UserID = :UserID
         `, {
-            UserID: UserID, 
-            Points: Points
+            UserID: UserID
         });
         await connection.commit();
         // console.log(result.rowsAffected);
