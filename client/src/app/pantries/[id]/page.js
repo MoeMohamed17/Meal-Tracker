@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useParams } from 'next/navigation';
@@ -48,8 +49,16 @@ const PantryDetails = () => {
   const handleAddIngredient = async () => {
     const { foodName, quantity, expiryDate, shelfLife, calories, foodGroup } = newIngredient;
 
+    // Check if all fields are filled
     if (!foodName || !quantity || !expiryDate || !shelfLife || !calories || !foodGroup) {
       setAlertModal({ open: true, message: 'Please fill in all fields before submitting.' });
+      return;
+    }
+
+    // Validate expiry date
+    const today = new Date();
+    if (expiryDate <= today) {
+      setAlertModal({ open: true, message: 'Expiry date must be after today.' });
       return;
     }
 
@@ -100,13 +109,23 @@ const PantryDetails = () => {
         onClose={() => setOpenIngredientModal(false)}
         title="Add New Ingredient"
       >
-        <TextInput
+        <Select
           label="Food Name"
-          placeholder="Enter food name"
+          placeholder="Select food name"
           value={newIngredient.foodName}
-          onChange={(e) =>
-            setNewIngredient({ ...newIngredient, foodName: e.currentTarget.value })
+          onChange={(value) =>
+            setNewIngredient({ ...newIngredient, foodName: value })
           }
+          data={[
+            { value: 'Chicken', label: 'Chicken' },
+            { value: 'Potatoes', label: 'Potatoes' },
+            { value: 'Olive Oil', label: 'Olive Oil' },
+            { value: 'Uncooked Rice', label: 'Uncooked Rice' },
+            { value: 'Uncooked Noodles', label: 'Uncooked Noodles' },
+            { value: 'Butter', label: 'Butter' },
+            { value: 'Ground Beef', label: 'Ground Beef' },
+            { value: 'Sliced Ham', label: 'Sliced Ham' },
+          ]}
         />
         <TextInput
           label="Quantity"
