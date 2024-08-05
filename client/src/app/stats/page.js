@@ -10,6 +10,7 @@ const Stats = () => {
   const selectedUser = localStorage.getItem('selectedUser');
   const [cuisineCounts, setCuisineCounts] = useState([]);
   const [levelCounts, setLevelCounts] = useState([]);
+  const [likedRecipesCounts, setLikedRecipesCounts] = useState([]); // New state for liked recipes data
   const [threshold, setThreshold] = useState(0);
 
 
@@ -39,6 +40,19 @@ const Stats = () => {
     fetchLevelCounts();
   }, [threshold]);
 
+  useEffect(() => {
+    const fetchLikedRecipesCounts = async () => {
+      try {
+        const response = await fetch(`/api/recipes-liked-per-user-level`);
+        const data = await response.json();
+        setLikedRecipesCounts(data.data); // Set data from the new API
+      } catch (error) {
+        console.error('Error fetching liked recipes per user level:', error);
+      }
+    };
+    fetchLikedRecipesCounts();
+  }, []); 
+
   return (
     <div>
       <NavBar/>
@@ -48,6 +62,9 @@ const Stats = () => {
         </Grid.Col>
         <Grid.Col span={6}>
           <CountTable countData={levelCounts} attr1={'USERLEVEL'} attr2={'USERCOUNT'} title={'User Distribution by Level'}/>
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <CountTable countData={likedRecipesCounts} attr1={'USERLEVEL'} attr2={'NUMBEROFUSERS'} attr3={'AVERAGERECIPESLIKED'} title={'Recipes Liked Per User Level'} />
         </Grid.Col>
         <Grid.Col span={6}>
           <div style={{paddingLeft:'20px', width:'50%'}}>
@@ -69,3 +86,4 @@ const Stats = () => {
 };
 
 export default Stats;
+
