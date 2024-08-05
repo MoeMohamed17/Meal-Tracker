@@ -333,7 +333,10 @@ INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
 VALUES ('Tabbouleh', 'Lebanese', '00:45:00', 9);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Moussaka', 'Greek', '02:00:00', 11);
+VALUES ('Moussaka', 'Greek', '02:00:00', 9);
+
+INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
+VALUES ('Lasagna', 'Italian', '04:00:00', 9);
 
 
 -- RecipesLiked
@@ -366,6 +369,39 @@ VALUES (9, 9);
 
 INSERT INTO RecipesLiked (RecipeID, UserID) 
 VALUES (10, 10);
+
+INSERT INTO RecipesLiked (RecipeID, UserID) 
+VALUES (11, 11);
+
+INSERT INTO RecipesLiked (RecipeID, UserID) 
+VALUES (12, 2);
+
+INSERT INTO RecipesLiked (RecipeID, UserID) 
+VALUES (12, 3);
+
+INSERT INTO RecipesLiked (RecipeID, UserID) 
+VALUES (12, 4);
+
+INSERT INTO RecipesLiked (RecipeID, UserID) 
+VALUES (12, 5);
+
+INSERT INTO RecipesLiked (RecipeID, UserID) 
+VALUES (12, 6);
+
+INSERT INTO RecipesLiked (RecipeID, UserID) 
+VALUES (12, 7);
+
+INSERT INTO RecipesLiked (RecipeID, UserID) 
+VALUES (12, 8);
+
+INSERT INTO RecipesLiked (RecipeID, UserID) 
+VALUES (12, 9);
+
+INSERT INTO RecipesLiked (RecipeID, UserID) 
+VALUES (12, 10);
+
+INSERT INTO RecipesLiked (RecipeID, UserID) 
+VALUES (12, 11);
 
 -- Insert statements for Images table
 INSERT INTO Images (ImageURL, Caption, RecipeID)
@@ -467,6 +503,15 @@ VALUES ('https://static01.nyt.com/images/2017/03/27/dining/27COOKING-MOUSSAKA/27
 INSERT INTO Images (ImageURL, Caption, RecipeID)
 VALUES ('https://static01.nyt.com/images/2011/10/26/dining/26APPE_SPAN/26APPE_SPAN-articleLarge-v2.jpg', 'Like a casserole, except Greek and not horrible', 11);
 
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2018/01/30/dining/30COOKING-WEEKNIGHT-LASAGNA/30COOKING-WEEKNIGHT-LASAGNA-superJumbo.jpg', 'The best lasagna you''ll ever make!', 12);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2023/08/31/multimedia/RS-Lasagna-hkjl/RS-Lasagna-hkjl-threeByTwoMediumAt2X.jpg', 'Shove it in your mouth this instant', 12);
+
+INSERT INTO Images (ImageURL, Caption, RecipeID)
+VALUES ('https://static01.nyt.com/images/2022/10/16/magazine/16mag-eat-site/16mag-eat-site-superJumbo.jpg', 'Garfield approved', 12);
+
 -- StepContains
 INSERT INTO StepContains (StepNum, InstructionText, RecipeID)
 VALUES (1, 'Do stuff1.', 1);
@@ -533,6 +578,12 @@ VALUES (1, 'Do stuff11.', 11);
 
 INSERT INTO StepContains (StepNum, InstructionText, RecipeID)
 VALUES (2, 'Eat11.', 11);
+
+INSERT INTO StepContains (StepNum, InstructionText, RecipeID)
+VALUES (1, 'Do stuff12.', 12);
+
+INSERT INTO StepContains (StepNum, InstructionText, RecipeID)
+VALUES (2, 'Eat112.', 12);
 
 -- Locations table
 INSERT INTO Locations (Street, City, Province, LocationType)
