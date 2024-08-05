@@ -303,40 +303,40 @@ VALUES ('Greek', 10);
 
 -- RecipeCreated
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Spaghetti Carbonara', 'Italian', '00:20:00', 6);
+VALUES ('Spaghetti Carbonara', 'Italian', '0 00:20', 6);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Sweet and Sour Chicken', 'Chinese', '00:30:00', 8);
+VALUES ('Sweet and Sour Chicken', 'Chinese', '0 00:30', 8);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Tacos Al Pastor', 'Mexican', '00:25:00', 9);
+VALUES ('Tacos Al Pastor', 'Mexican', '0 00:25', 9);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Butter Chicken', 'Indian', '00:40:00', 9);
+VALUES ('Butter Chicken', 'Indian', '0 00:40', 9);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Coq au Vin', 'French', '01:00:00', 2);
+VALUES ('Coq au Vin', 'French', '0 01:00', 2);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Pad Thai', 'Thai', '00:30:00', 4);
+VALUES ('Pad Thai', 'Thai', '0 00:30', 4);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Lentil Stew', 'Ethiopian', '01:00:00', 5);
+VALUES ('Lentil Stew', 'Ethiopian', '0 01:00', 5);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Feijoada', 'Brazilian', '05:00:00', 11);
+VALUES ('Feijoada', 'Brazilian', '0 05:00', 11);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Chicken Katsu Don', 'Japanese', '00:30:00', 7);
+VALUES ('Chicken Katsu Don', 'Japanese', '0 00:30', 7);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Tabbouleh', 'Lebanese', '00:45:00', 9);
+VALUES ('Tabbouleh', 'Lebanese', '0 00:45', 9);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Moussaka', 'Greek', '02:00:00', 9);
+VALUES ('Moussaka', 'Greek', '0 02:00', 9);
 
 INSERT INTO RecipeCreated (RecipeName, Cuisine, CookingTime, UserID)
-VALUES ('Lasagna', 'Italian', '04:00:00', 9);
+VALUES ('Lasagna', 'Italian', '0 04:00', 9);
 
 
 -- RecipesLiked
