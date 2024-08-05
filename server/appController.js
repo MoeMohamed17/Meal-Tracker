@@ -372,7 +372,7 @@ router.post('/user', async (req, res) => {
 });
 
 /*
-API endpoint to UPDATE 50 points associated with a user
+API endpoint to UPDATE points associated with a user
 */
 router.put('/points/:id', async (req, res) => {
     const UserID = req.params.id;
