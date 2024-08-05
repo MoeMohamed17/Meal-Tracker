@@ -568,6 +568,28 @@ async function createUser(UserName) {
 }
 
 
+// Update points associated with UserID
+async function updatePoints(UserID, Points) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            UPDATE Users
+            SET Points = :Points
+            WHERE UserID = :UserID
+        `, {
+            UserID: UserID, 
+            Points: Points
+        });
+        await connection.commit();
+        // console.log(result.rowsAffected);
+        return 1;
+    }).catch((err) => {
+        console.error(err);
+        return 0;
+    });
+
+}
+
+
 /*
 Returns all pantries associated with UserID
 */
@@ -1041,5 +1063,6 @@ module.exports = {
     fetchAllIngredientInstances,
     fetchTableNames,
     fetchTableData,
-    fetchTableColumns
+    fetchTableColumns,
+    updatePoints
 };

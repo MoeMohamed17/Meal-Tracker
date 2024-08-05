@@ -371,6 +371,20 @@ router.post('/user', async (req, res) => {
     }
 });
 
+/*
+API endpoint to UPDATE points associated with a user
+*/
+router.put('/user/:id', async (req, res) => {
+    const UserID = req.params.id;
+    const Points = req.body.Points;
+    const response = await appService.updatePoints(UserID, Points);
+    if (response === 1) {
+        res.status(201).json({ message: 'Points updated' });
+    } else {
+        res.status(500).json({ error: 'Failed to update points' });
+    }
+});
+
 
 /*================================================
 ==================FOODITEM ENDPOINTS==============
