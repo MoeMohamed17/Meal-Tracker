@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from "react";
@@ -6,10 +5,11 @@ import NavBar from '../components/NavBar';
 import RecipeCard from '../components/RecipeCard';
 import GroupRecipes from "../util/GroupRecipes";
 
-
 const Recipes = () => {
-    const selectedUser = localStorage.getItem('selectedUser');
+    const selectedUser = typeof window !== 'undefined' ? localStorage.getItem('selectedUser') : null;
     const [recipes, setRecipes] = useState([]);
+    const [likedByAlRecipes, setLikedByAllRecipes] = useState([]);
+    const [displayedRecipes, setDisplayedRecipes] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [cuisineFilter, setCuisineFilter] = useState('');
     const [showCaptions, setShowCaptions] = useState(true);
@@ -52,7 +52,9 @@ const Recipes = () => {
                     throw new Error('Network response was not ok');
                 }
                 const { data } = await response.json();
-                setRecipes(GroupRecipes(data));
+                const groupedRecipes = GroupRecipes(data);
+                setRecipes(groupedRecipes);
+                setDisplayedRecipes(groupedRecipes);
             } catch (error) {
                 console.error('Error fetching recipes:', error);
             }
@@ -60,8 +62,6 @@ const Recipes = () => {
 
         fetchRecipes();
     }, [cuisineFilter, searchQuery, showCaptions]); // Dependencies to trigger re-fetch
-
-
 
     useEffect(() => {
         const getLikedRecipes = async () => {
@@ -77,38 +77,51 @@ const Recipes = () => {
         };
     
         getLikedRecipes();
-      }, []);
+    }, []);
 
-
+    const fetchLikedByAllRecipes = async () => {
+        try {
+            const response = await fetch('/api/recipes/liked-by-all');
+            if (!response.ok) {
+                throw new Error('Failed to fetch recipes liked by all users');
+            }
+            const { data } = await response.json();
+            const groupedRecipes = GroupRecipes(data);
+            setLikedByAllRecipes(groupedRecipes);
+            setDisplayedRecipes(groupedRecipes);
+        } catch (error) {
+            console.error('Error fetching recipes liked by all users:', error);
+        }
+    };
 
     const likeAction = async (id) => {
-    try {
-        if (likedRecipes && likedRecipes.includes(id)) {
-            const response = await fetch('api/unlikeRecipe', {
-                method: 'POST',
-                headers: {
+        try {
+            if (likedRecipes && likedRecipes.includes(id)) {
+                await fetch('api/unlikeRecipe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ UserID: selectedUser, RecipeID: id}),
+                });
+            } else {
+                await fetch('api/likeRecipe', {
+                    method: 'POST',
+                    headers: {
                     'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ UserID: selectedUser, RecipeID: id}),
-            });
-        } else {
-            const response = await fetch('api/likeRecipe', {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ UserID: selectedUser, RecipeID: id}),
-            });
+                    },
+                    body: JSON.stringify({ UserID: selectedUser, RecipeID: id}),
+                });
+            }
+
+            const updatedLikes = await fetch(`/api/recipes/liked/${selectedUser}/`);
+            const data = await updatedLikes.json();
+            setLikedRecipes(data.data);
+            console.log(data.data);
+
+        } catch (error) {
+            console.error('Error updating liked recipes:', error);
         }
-
-        const updatedLikes = await fetch(`/api/recipes/liked/${selectedUser}/`);
-        const data = await updatedLikes.json();
-        setLikedRecipes(data.data);
-        console.log(data.data);
-
-    } catch (error) {
-        console.error('Error fetching pantries:', error);
-    }
     };
 
     const onlyLikedRecipes = onlyLiked ? likedRecipes ? recipes.filter(recipe => likedRecipes.includes(recipe.RECIPEID)) : [] : recipes;
@@ -152,10 +165,16 @@ const Recipes = () => {
                         />
                         Liked Recipes
                     </label>
+                    <button onClick={() => setDisplayedRecipes(recipes)}>
+                        Show All Recipes
+                    </button>
+                    <button onClick={fetchLikedByAllRecipes}>
+                        Recipes Liked by All Users
+                    </button>
                 </div>
                 <div className='recipe-grid'>
-                    {onlyLikedRecipes && onlyLikedRecipes.length > 0 ? (
-                        onlyLikedRecipes.map((recipe, index) => (
+                    {displayedRecipes && displayedRecipes.length > 0 ? (
+                        displayedRecipes.map((recipe, index) => (
                             <RecipeCard
                                 key={index}
                                 id={recipe.RECIPEID}
@@ -180,6 +199,3 @@ const Recipes = () => {
 };
 
 export default Recipes;
-
-
-
