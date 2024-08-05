@@ -199,6 +199,21 @@ router.get('/cuisine-counts', async (req, res) => {
     }
 });
 
+
+router.get('/nested-aggregation', async (req, res) => {
+    try {
+        const data = await appService.fetchNestedAggregationData();
+        if (data.length === 0) {
+            res.status(404).json({ error: 'No data found' });
+        } else {
+            res.json({ data });
+        }
+    } catch (error) {
+        console.error('Error fetching nested aggregation data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 /*================================================
 ==================IMAGE ENDPOINTS=================
 ================================================*/

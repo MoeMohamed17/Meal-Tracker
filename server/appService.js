@@ -1120,6 +1120,33 @@ async function fetchRecipesLikedByAllUsers() {
   }
 
 
+  async function fetchNestedAggregationData() {
+    return await withOracleDB(async (connection) => {
+        const query = `
+            SELECT 
+                rl.UserLevel,
+                COUNT(r.RecipeID) AS RecipeCount,
+                AVG(r.CookingTime) AS AvgCookingTime
+            FROM RecipeCreated r
+            JOIN Users u ON r.UserID = u.UserID
+            JOIN UserLevels rl ON u.Points >= rl.Points
+            AND rl.Points = (
+                SELECT MAX(Points)
+                FROM UserLevels
+                WHERE u.Points >= Points
+            )
+            GROUP BY rl.UserLevel
+            ORDER BY rl.UserLevel
+        `;
+        const result = await connection.execute(query);
+        return processResults(result);
+    }).catch((err) => {
+        console.error(err);
+        return [];
+    });
+}
+
+
 module.exports = {
     fetchUser,
     fetchAllUsers,
@@ -1169,5 +1196,6 @@ module.exports = {
     addPantryToUser,
     fetchLevelCounts,
     fetchCuisineCounts,
-    fetchRecipesLikedByAllUsers
+    fetchRecipesLikedByAllUsers,
+    fetchNestedAggregationData
 };
