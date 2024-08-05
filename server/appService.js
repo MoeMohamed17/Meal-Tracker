@@ -568,12 +568,12 @@ async function createUser(UserName) {
 }
 
 
-// Update points associated with UserID
-async function updatePoints(UserID, Points) {
+// Add 50 points to points associated with UserID
+async function updatePoints(UserID) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(`
             UPDATE Users
-            SET Points = :Points
+            SET Points = Points+50
             WHERE UserID = :UserID
         `, {
             UserID: UserID, 

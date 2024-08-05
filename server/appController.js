@@ -372,12 +372,11 @@ router.post('/user', async (req, res) => {
 });
 
 /*
-API endpoint to UPDATE points associated with a user
+API endpoint to UPDATE 50 points associated with a user
 */
-router.put('/user/:id', async (req, res) => {
+router.put('/points/:id', async (req, res) => {
     const UserID = req.params.id;
-    const Points = req.body.Points;
-    const response = await appService.updatePoints(UserID, Points);
+    const response = await appService.updatePoints(UserID);
     if (response === 1) {
         res.status(201).json({ message: 'Points updated' });
     } else {
