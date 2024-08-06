@@ -103,11 +103,6 @@ const EditRecipe = () => {
     form.setFieldError('caption', '');
     form.setFieldError('time', '')
 
-    if (!validateTimeFormat(values.time)) {
-      form.setFieldError('time', 'Must take the format D HH:MM.');
-      return;
-    }
-  
     const updatedRecipe = {
       RecipeName: values.name || recipe.RECIPENAME,
       Cuisine: values.cuisine || recipe.CUISINE,
@@ -115,6 +110,11 @@ const EditRecipe = () => {
       UserID: (values.user && values.user.split('.')[1].trim() !== recipe.USERNAME) ? values.user.split('.')[0] : recipe.USERID,
       InstructionText: values.steps ? values.steps.split('\n') : steps.map(step => `${step[1]}`)
     };
+  
+    if (!validateTimeFormat(updatedRecipe.CookingTime)) {
+      form.setFieldError('time', 'Must take the format D HH:MM.');
+      return;
+    }
   
     const updatedImages = {
       ImageURL: values.url ? values.url.split('\n') : recipe.IMAGEURL,
