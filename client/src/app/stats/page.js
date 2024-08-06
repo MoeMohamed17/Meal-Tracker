@@ -10,7 +10,7 @@ const Stats = () => {
   const selectedUser = localStorage.getItem('selectedUser');
   const [cuisineCounts, setCuisineCounts] = useState([]);
   const [levelCounts, setLevelCounts] = useState([]);
-  const [likedRecipesCounts, setLikedRecipesCounts] = useState([]); // New state for liked recipes data
+  const [likedRecipesCounts, setLikedRecipesCounts] = useState([]); 
   const [threshold, setThreshold] = useState(0);
 
 

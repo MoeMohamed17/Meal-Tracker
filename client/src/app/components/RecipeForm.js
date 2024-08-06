@@ -15,7 +15,7 @@ const RecipeForm = () => {
   const [timeErrorModal, setTimeErrorModal] = useState(false);
 
   useEffect(() => {
-    // Retrieve the UserID from local storage when the component mounts
+    // Retrieve the UserID from local storage
     const storedUserID = localStorage.getItem('selectedUser');
     setUserID(storedUserID);
   }, []);

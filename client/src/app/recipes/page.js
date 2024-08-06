@@ -26,7 +26,7 @@ const Recipes = () => {
                     throw new Error(`Network response was not ok: ${response.statusText}`);
                 }
                 const { data } = await response.json();
-                console.log('Fetched cuisines:', data); // Log the data for debugging
+                console.log('Fetched cuisines:', data); 
                 setCuisineOptions(data);
             } catch (error) {
                 console.error('Error fetching cuisine options:', error);
@@ -34,12 +34,11 @@ const Recipes = () => {
         };
 
         fetchCuisines();
-    }, []); // Fetch cuisines on component mount
+    }, []); 
 
     useEffect(() => {
         const fetchRecipes = async () => {  
             try {
-                // Construct query parameters based on user input
                 const params = new URLSearchParams({
                     img: 'true',
                     captionless: showCaptions ? '0' : '1',
