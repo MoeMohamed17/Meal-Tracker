@@ -5,78 +5,19 @@ import { useState, useEffect } from "react";
 import { Button, TextInput, Modal, Select } from "@mantine/core";
 import NavBar from "../../components/NavBar";
 
-//Add days to a date
+// Helper function to add days to a date
 const addDays = (date, days) => {
   const result = new Date(date);
   result.setDate(result.getDate() + days);
   return result;
 };
 
-//list of food items 
-const foodItemList = [
-  {
-    value: "Chicken",
-    label: "Chicken",
-    shelfLife: 3,
-    calories: 300,
-    foodGroup: "Protein Foods",
-  },
-  {
-    value: "Potatoes",
-    label: "Potatoes",
-    shelfLife: 14,
-    calories: 200,
-    foodGroup: "Vegetables",
-  },
-  {
-    value: "Olive Oil",
-    label: "Olive Oil",
-    shelfLife: 3650,
-    calories: 400,
-    foodGroup: "Others",
-  },
-  {
-    value: "Uncooked Rice",
-    label: "Uncooked Rice",
-    shelfLife: 3650,
-    calories: 400,
-    foodGroup: "Grains",
-  },
-  {
-    value: "Uncooked Noodles",
-    label: "Uncooked Noodles",
-    shelfLife: 3650,
-    calories: 300,
-    foodGroup: "Grains",
-  },
-  {
-    value: "Butter",
-    label: "Butter",
-    shelfLife: 90,
-    calories: 500,
-    foodGroup: "Dairy",
-  },
-  {
-    value: "Ground Beef",
-    label: "Ground Beef",
-    shelfLife: 3,
-    calories: 400,
-    foodGroup: "Protein Foods",
-  },
-  {
-    value: "Sliced Ham",
-    label: "Sliced Ham",
-    shelfLife: 4,
-    calories: 300,
-    foodGroup: "Protein Foods",
-  },
-];
-
 const PantryDetails = () => {
   const params = useParams();
   const id = params.id;
 
   const [ingredients, setIngredients] = useState([]);
+  const [foodItems, setFoodItems] = useState([]);
   const [newIngredient, setNewIngredient] = useState({
     foodName: "",
     quantity: "",
@@ -88,6 +29,7 @@ const PantryDetails = () => {
   const [openIngredientModal, setOpenIngredientModal] = useState(false);
   const [alertModal, setAlertModal] = useState({ open: false, message: "" });
 
+  // Fetch ingredients from the pantry
   const fetchIngredients = async () => {
     if (id) {
       try {
@@ -107,24 +49,40 @@ const PantryDetails = () => {
     }
   };
 
+  // Fetch food items with their details from the database
+  const fetchFoodItems = async () => {
+    try {
+      const response = await fetch("/api/fooditems");
+      if (!response.ok) {
+        throw new Error("Failed to fetch food items");
+      }
+      const data = await response.json();
+      setFoodItems(data.data || []);
+    } catch (error) {
+      console.error("Error fetching food items:", error);
+      setAlertModal({ open: true, message: "Failed to load food items." });
+    }
+  };
+
   useEffect(() => {
     fetchIngredients();
+    fetchFoodItems(); // Fetch food items from API
   }, [id]);
 
   const handleFoodNameChange = (value) => {
-    const selectedFood = foodItemList.find((item) => item.value === value);
+    const selectedFood = foodItems.find((item) => item.FOODNAME === value);
 
     if (selectedFood) {
       const today = new Date();
-      const calculatedExpiryDate = addDays(today, selectedFood.shelfLife);
+      const calculatedExpiryDate = addDays(today, selectedFood.SHELFLIFE);
 
       setNewIngredient({
         ...newIngredient,
-        foodName: selectedFood.value,
+        foodName: selectedFood.FOODNAME,
         expiryDate: calculatedExpiryDate,
-        shelfLife: selectedFood.shelfLife,
-        calories: selectedFood.calories,
-        foodGroup: selectedFood.foodGroup,
+        shelfLife: selectedFood.SHELFLIFE,
+        calories: selectedFood.CALORIES,
+        foodGroup: selectedFood.FOODGROUP,
       });
     }
   };
@@ -207,7 +165,10 @@ const PantryDetails = () => {
           placeholder="Select food name"
           value={newIngredient.foodName}
           onChange={handleFoodNameChange}
-          data={foodItemList}
+          data={foodItems.map((item) => ({
+            value: item.FOODNAME,
+            label: item.FOODNAME,
+          }))}
         />
         <TextInput
           label="Quantity"
@@ -220,7 +181,11 @@ const PantryDetails = () => {
         <TextInput
           label="Expiry Date"
           placeholder="Expiry date"
-          value={newIngredient.expiryDate ? newIngredient.expiryDate.toLocaleDateString() : ''}
+          value={
+            newIngredient.expiryDate
+              ? newIngredient.expiryDate.toLocaleDateString()
+              : ""
+          }
           disabled
         />
         <TextInput
