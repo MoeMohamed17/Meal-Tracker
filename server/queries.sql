@@ -788,28 +788,28 @@ VALUES (1, 12);
 
 -- Create FoodItem table
 INSERT INTO FoodItem (FoodName, ShelfLife, Calories, FoodGroup)
-VALUES ('Chicken', '3 00:00:00', 300, 'Meat');
+VALUES ('Chicken', '3', 300, 'Meat');
 
 INSERT INTO FoodItem (FoodName, ShelfLife, Calories, FoodGroup)
-VALUES ('Potatoes', '14 00:00:00', 200, 'Vegetable');
+VALUES ('Potatoes', '14', 200, 'Vegetable');
 
 INSERT INTO FoodItem (FoodName, ShelfLife, Calories, FoodGroup)
-VALUES ('Olive oil', '3650 00:00:00', 400, 'Fat');
+VALUES ('Olive oil', '3650', 400, 'Fat');
 
 INSERT INTO FoodItem (FoodName, ShelfLife, Calories, FoodGroup)
-VALUES ('Uncooked rice', '3650 00:00:00', 400, 'Carbohydrate');
+VALUES ('Uncooked rice', '3650', 400, 'Carbohydrate');
 
 INSERT INTO FoodItem (FoodName, ShelfLife, Calories, FoodGroup)
-VALUES ('Uncooked noodles', '3650 00:00:00', 300, 'Carbohydrate');
+VALUES ('Uncooked noodles', '3650', 300, 'Carbohydrate');
 
 INSERT INTO FoodItem (FoodName, ShelfLife, Calories, FoodGroup)
-VALUES ('Butter', '90 00:00:00', 500, 'Fat');
+VALUES ('Butter', '90', 500, 'Fat');
 
 INSERT INTO FoodItem (FoodName, ShelfLife, Calories, FoodGroup)
-VALUES ('Ground beef', '3 00:00:00', 400, 'Meat');
+VALUES ('Ground beef', '3', 400, 'Meat');
 
 INSERT INTO FoodItem (FoodName, ShelfLife, Calories, FoodGroup)
-VALUES ('Sliced ham', '4 00:00:00', 300, 'Meat');
+VALUES ('Sliced ham', '4', 300, 'Meat');
 
 
 -- Create HealthyLookup table

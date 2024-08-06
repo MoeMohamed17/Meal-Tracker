@@ -919,6 +919,20 @@ async function fetchRecipesLikedPerUserLevel() {
     });
 }
 
+async function fetchFoodItems() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(`
+            SELECT FoodName, ShelfLife, Calories, FoodGroup
+            FROM FoodItem
+            ORDER BY FoodName
+        `);
+        return processResults(result);
+    }).catch((err) => {
+        console.error('Error fetching food items:', err);
+        return [];
+    });
+}
+
 module.exports = {
     fetchUser,
     fetchAllUsers,
@@ -956,5 +970,6 @@ module.exports = {
     fetchLevelCounts,
     fetchCuisineCounts,
     fetchRecipesLikedByAllUsers,
-    fetchRecipesLikedPerUserLevel
+    fetchRecipesLikedPerUserLevel,
+    fetchFoodItems
 };

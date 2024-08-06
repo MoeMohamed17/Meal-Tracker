@@ -576,6 +576,16 @@ router.get('/table-data', async (req, res) => {
     }
 });
   
+// Fetch all food items with their details
+router.get('/fooditems', async (req, res) => {
+    try {
+        const foodItems = await appService.fetchFoodItems();
+        res.json({ data: foodItems });
+    } catch (error) {
+        console.error('Error fetching food items:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 module.exports = router;
 
