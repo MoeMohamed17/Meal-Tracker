@@ -64,9 +64,6 @@ const Stats = () => {
           <CountTable countData={levelCounts} attr1={'USERLEVEL'} attr2={'USERCOUNT'} title={'User Distribution by Level'}/>
         </Grid.Col>
         <Grid.Col span={6}>
-          <CountTable countData={likedRecipesCounts} attr1={'USERLEVEL'} attr2={'NUMBEROFUSERS'} attr3={'AVERAGERECIPESLIKED'} title={'Recipes Liked Per User Level'} />
-        </Grid.Col>
-        <Grid.Col span={6}>
           <div style={{paddingLeft:'20px', width:'50%'}}>
             <NumberInput 
               description = 'Threshold count for cuisine' 
@@ -77,7 +74,9 @@ const Stats = () => {
               allowDecimal={false}
             />
           </div>
-
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <CountTable countData={likedRecipesCounts} attr1={'USERLEVEL'} attr2={'NUMBEROFUSERS'} attr3={'AVERAGERECIPESLIKED'} title={'Recipes Liked Per User Level'} />
         </Grid.Col>
       </Grid>
       
